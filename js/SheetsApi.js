@@ -131,10 +131,35 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
      * @param inputValues a 2D array of the values to be added
      * @returns           a promise
      */
-    function batchAdd(inputRange, inputValues) {
+    function update(inputRange, inputValues) {
         let params = {
             spreadsheetId: sheetId,
             range: inputRange,
+            valueInputOption: "USER_ENTERED",
+            values: inputValues
+        }
+        return gapi.client.sheets.spreadsheets.values.update(params);
+    }
+
+    /**
+     * This method returns the cells updated of batchAdd
+     * @param response the response of update(inputRange, inputValues)
+     * @return number of rows updated
+     */
+    function parseUpdate(response) {
+        return response.result.updatedCells;
+    }
+
+    /**
+     * Returns a promise for adding the inputValues to the sheet
+     * @param inputRange   a string value of target sheet in the spreadsheet
+     * @param inputValues a 2D array of the values to be added
+     * @returns           a promise
+     */
+    function batchAdd(inputRange, inputValues) {
+        let params = {
+            spreadsheetId: sheetId,
+            range: inputRange + "!A:A",
             majorDimension: "ROWS",
             valueInputOption: "USER_ENTERED",
             values: inputValues
@@ -170,6 +195,8 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
         getSheet,
         parseSheetValues,
         filterByKeyword,
+        update,
+        parseUpdate,
         batchAdd,
         parseBatchAdd,
         parseErrorMessage
