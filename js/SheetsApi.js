@@ -1,13 +1,28 @@
+/**
+ * Consider this function as a class definition in java.
+ * Use `let sa = new SheetsApi(inputSheetid, inputApiKey, inputClientId);` to create a instance of SheetsApi.
+ * Then use `sa.functionName(argument...)` to use the functions of it.
+ * @param inputSheetId   The target sheet id
+ * @param inputApiKey    The ApiKey of the application
+ * @param inputClientId  The Client Id of the application
+ * @returns {object}     An object of the SheetsApi containing necessary functions
+ * @constructor
+ */
 function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
-    
     let sheetId = inputSheetId;
     let API_KEY = inputApiKey;
     let CLIENT_ID = inputClientId;
-    
     /**
      * Below 5 functions are used for client initialization of the google sheet api
      * Need to configure the sheetId, API_KEY, and CLIENT_ID when creating the SheetsApi
      * object.
+     */
+
+    /** Private
+     * This function is called when the client status updated, such as signing in and signing out.
+     * If a client is signed in, "Ready to make api call" will be logged through console.
+     * Else, "Need log in" will be logged through console.
+     * @param isSignedIn Status of the client
      */
     function updateSignInStatus(isSignedIn) {
         if (isSignedIn) {
@@ -17,6 +32,9 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
         }
     }
 
+    /** Private
+     * This function calls the google api to initialize the gapi.client.
+     */
     function initClient() {
         let SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
 
@@ -31,21 +49,35 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
         });
     }
 
+    /** Public
+     * This function should be called after created the SheetsApi instance.
+     * It will then call the initClient() function and get the gapi.client ready.
+     */
     function handleClientLoad() {
         gapi.load('client:auth2', initClient);
     }
 
+    /** Public
+     * This function is called to let a user sign in.
+     * Can be used for button's onclick
+     * @param event
+     */
     function handleSignInClick(event) {
         gapi.auth2.getAuthInstance().signIn();
     }
 
+    /** Public
+     * This function is called to let a user sign out
+     * Can be used for button's onclick
+     * @param event
+     */
     function handleSignOutClick(event) {
         gapi.auth2.getAuthInstance().signOut();
     }
 
-    /**
+    /** Public
      * This method returns a promise for getting the information of the spreadsheet
-     * @returns       a promise
+     * @returns {Promise}
      */
     function getSpreadsheetInfo() {
         let params = {
@@ -54,24 +86,23 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
         return gapi.client.sheets.spreadsheets.get(params);
     }
 
-    /**
+    /** Public
      * This method returns an object containing the title of the spreadsheet and
      * the sheets information in the spreadsheet
-     * @param response the response of getSpreadsheetInfo()
-     * @return an object
+     * @param response The response of getSpreadsheetInfo()
+     * @returns {object}
      */
     function parseSpreadsheetInfo(response) {
-        let info = {
+        return {
             title: response.result.properties.title,
             sheets: response.result.sheets
-        }
-        return info;
+        };
     }
 
-    /**
+    /** Public
      * This method returns a promise for getting the target sheet
-     * @param inputRange the string specifying the range
-     * @returns          a promise
+     * @param inputRange The string specifying the range
+     * @returns {Promise}
      */
     function getSheet(inputRange) {
         let params = {
@@ -81,23 +112,23 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
         return gapi.client.sheets.spreadsheets.values.get(params);
     }
 
-    /**
+    /** Public
      * This method returns a 2D array of values in the getSheet response
-     * @param response the response of getSheet(inputRange)
-     * @return a 2D array of values of target sheet
+     * @param response  The response of getSheet(inputRange)
+     * @returns {array} A 2D array of values of target sheet
      */
     function parseSheetValues(response) {
         return response.result.values;
     }
 
-    /**
+    /** Public
      * Returns the 2D array after filtering the input array.
-     * @param values  the input 2D array
-     * @param keyword the searching keyword
-     * @param columnIndex the specific index of column to be filtered
+     * @param values      The input 2D array
+     * @param keyword     The searching keyword
+     * @param columnIndex The specific index of column to be filtered
      *                    if less than 0, then any column includes the keyword
      *                    will add the row to the result.
-     * @returns       a 2D array
+     * @returns {array}   A 2D array
      */
     function filterByKeyword(values, keyword, columnIndex) {
         let shouldStay = false;
@@ -106,7 +137,7 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
             shouldStay = false;
             if (columnIndex < 0) {
                 for (let j = 0; j < values[i].length; j++) {
-                    if (values[i][j].includes(keyword)) {
+                    if (values[i][j] !== undefined && values[i][j].includes(keyword)) {
                         shouldStay = true;
                         break;
                     }
@@ -125,11 +156,11 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
         return values;
     }
 
-    /**
+    /** Public
      * Returns a promise for adding the inputValues to the sheet
-     * @param inputRange   a string value of target sheet in the spreadsheet
-     * @param inputValues a 2D array of the values to be added
-     * @returns           a promise
+     * @param inputRange  A string value of target sheet in the spreadsheet
+     * @param inputValues A 2D array of the values to be added
+     * @returns {Promise}
      */
     function update(inputRange, inputValues) {
         let params = {
@@ -137,24 +168,24 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
             range: inputRange,
             valueInputOption: "USER_ENTERED",
             values: inputValues
-        }
+        };
         return gapi.client.sheets.spreadsheets.values.update(params);
     }
 
-    /**
+    /** Public
      * This method returns the cells updated of batchAdd
-     * @param response the response of update(inputRange, inputValues)
-     * @return number of rows updated
+     * @param response The response of update(inputRange, inputValues)
+     * @returns {int}  Number of rows updated
      */
     function parseUpdate(response) {
         return response.result.updatedCells;
     }
 
-    /**
+    /** Public
      * Returns a promise for adding the inputValues to the sheet
-     * @param inputRange   a string value of target sheet in the spreadsheet
-     * @param inputValues a 2D array of the values to be added
-     * @returns           a promise
+     * @param inputRange  A string value of target sheet in the spreadsheet
+     * @param inputValues A 2D array of the values to be added
+     * @returns {Promise}
      */
     function batchAdd(inputRange, inputValues) {
         let params = {
@@ -167,23 +198,370 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
         return gapi.client.sheets.spreadsheets.values.append(params);
     }
 
-    /**
+    /** Public
      * This method returns the rows updated of batchAdd
-     * @param response the response of batchAdd(inputRange, inputValues)
-     * @return number of rows updated
+     * @param response  The response of batchAdd(inputRange, inputValues)
+     * @returns {int}   Number of rows updated
      */
     function parseBatchAdd(response) {
         return response.result.updates.updatedRows;
     }
 
-    /**
+    /** Public
      * This function parses the error response and logs the error message
-     * to the console.error and returns the error message. 
-     * @param reason the error response of a promise
+     * to the console.error and returns the error message.
+     * @param reason     The error response of a promise
+     * @returns {String} The error message
      */
     function parseErrorMessage(reason) {
         console.error('error: ' + reason.result.error.message);
         return reason.result.error.message;
+    }
+
+    /** Public
+     * This function will return a promise for getting the headers of the target sheet
+     * @param sheetName The target sheet name
+     * @returns {Promise}
+     */
+    function getTableHeaders(sheetName) {
+        let params = {
+            spreadsheetId: sheetId,
+            range: sheetName + "!1:1"
+        };
+        return gapi.client.sheets.spreadsheets.values.get(params);
+    }
+
+    /** Public
+     * This function takes the response of getTableHeaders and return an array of headers
+     * @param response  Response from getTableHeaders
+     * @returns {array} An array of headers
+     */
+    function parseTableHeaders(response) {
+        return response.result.values[0];
+    }
+
+    /** Public
+     * This function returns the `A1` notation of corresponding column name
+     * @param headers    The array of headers
+     * @param colName    The target column name
+     * @returns {String} Return the `A1` notation of the colName. If headers not found, null will be returned
+     */
+    function getNotationFromColName(headers, colName) {
+        for (let i = 0; i < headers.length; i++) {
+            if (colName === headers[i]) {
+                return getCharFromNum(i);
+            }
+        }
+        return null;
+    }
+
+    /** Public
+     * This function takes the number and return a corresponding capital char
+     * This is a helper method for getNotationFromColName
+     * @param num The number
+     * @returns {string}
+     */
+    function getCharFromNum(num) {
+        return String.fromCharCode('A'.charCodeAt(0) + num);
+    }
+
+    //Function for select
+    /** Public
+     * Following the sql format `Select returnCols from sheetName where conditions`
+     * This will return a promise to send the gapi batchGet request
+     * @param headers     An array of the headers of the target sheet
+     * @param returnCols  An array of the names of columns need to return. Pass "*" will return all columns.
+     * @param sheetName   The target sheet name
+     * @returns {Promise}
+     */
+    function selectFromTableWhereConditions(headers, returnCols, sheetName) {
+        let ranges = [];
+        if (returnCols === "*") {
+            ranges[0] = sheetName;
+        } else {
+            for (let i = 0; i < returnCols.length; i++) {
+                let notation = getNotationFromColName(headers, returnCols[i]);
+                ranges[i] = sheetName + "!" + notation + ":" + notation;
+            }
+        }
+        let params = {
+            spreadsheetId: sheetId,
+            ranges: ranges
+        };
+        return gapi.client.sheets.spreadsheets.values.batchGet(params);
+    }
+
+    /** Public
+     * Take the response from the selectFromTableWhereConditions and return the wanted type of values
+     * @param response    The response from selectFromTableWhereConditions
+     * @param returnCols  An array of the names of columns need to return,
+     *                    should be the same as it is in the selectFromTableWhereConditions.
+     * @param conditions  An array of conditions. Each condition is an object with format:
+     *                    {header:"the name of a header", value:"the value to check for"}.
+     * @param returnType  0 for an array of objects. 1 for a 2D array including headers
+     * @returns {*}       Either an array of objects or a 2D array including headers
+     */
+    function parseSelect(response, returnCols, conditions, returnType) {
+        let result = parseConditionSelectResult(response);
+        console.log(result);
+        if (returnCols !== "*") {
+            result = inverse2DArray(result);
+            console.log(result);
+        } else {
+            result = result[0];
+        }
+        result = filterByConditions(result, conditions);
+        if (returnType === 0) {
+            return arrayToObjects(result);
+        } else {
+            return result;
+        }
+    }
+
+    /** Private
+     * This function takes a 2D array including headers and returns an array of objects.
+     * This is a helper method for parseSelectResponse
+     * @param array     A 2D array
+     * @returns {array} An array of objects
+     */
+    function arrayToObjects(array) {
+        let headers = array[0];
+        let result = [];
+        let tempStr = "";
+        for (let i = 1; i < array.length; i++) {
+            tempStr = "{";
+            for (let j = 0; j< array[i].length; j++) {
+                tempStr += "'" + headers[j] + "':'" + array[i][j] + "'";
+                if (j < array[i].length - 1) {
+                    tempStr += ",";
+                }
+            }
+            tempStr += "}";
+            result[i-1] = JSON.parse(tempStr);
+        }
+        return result;
+    }
+
+    /** Private
+     * This function takes the response from Select and returns a 2D array of values
+     * This is a helper method for parseSelectResponse
+     * @param response  The response from Select
+     * @returns {array} A 2D array of values
+     */
+    function parseConditionSelectResult(response) {
+        let valueRanges = response.result.valueRanges;
+        let result = [];
+        for (let i = 0; i < valueRanges.length; i++) {
+            let values = valueRanges[i].values;
+            result[i] = [];
+            for (let j = 0; j < values.length; j++) {
+                result[i][j] = sizeOneArrayToValue(values[j]);
+            }
+        }
+        return result;
+    }
+
+    /** Private
+     * This function takes an array and returns its only value if its length is 1
+     * This is a helper method for parseSelectResponse
+     * @param array     Input array
+     * @returns {array} A value if the array.length is 1 or the array itself
+     */
+    function sizeOneArrayToValue(array) {
+        if (array.length === 1) {
+            return array[0];
+        }
+        return array;
+    }
+
+    /** Private
+     * This function inverse a 2D array
+     * This is a helper method for parseSelectResponse
+     * @param array     Input array
+     * @returns {array} The inverse of the input array
+     */
+    function inverse2DArray(array) {
+        console.log("In inverse function");
+        console.log(array);
+        let result = [];
+        for (let i = 0; i < array[0].length; i++) {
+            result[i] = [];
+        }
+        console.log(result);
+        for (let i = 0; i < array.length; i++) {
+            for (let j = 0; j < array[i].length; j++) {
+                result[j][i] = array[i][j];
+            }
+        }
+        return result;
+    }
+
+    /** Private
+     * This function parses the conditions and return the 2D array after filtering
+     * This is a helper method for parseSelectResponse
+     * @param values     Input 2D array
+     * @param conditions An array of input conditions with format {header:"the name of a header", value:"the value to check for"}
+     * @returns {array}  The 2D array after filtering
+     */
+    function filterByConditions(values, conditions) {
+        for (let i = 0; i < conditions.length; i++) {
+            let conditionHeader = conditions[i].header;
+            let conditionValue = conditions[i].value;
+            let headerIndex = -1;
+            for (let j = 0; j < values[0].length; j++) {
+                if (conditionHeader === values[0][j]) {
+                    headerIndex = j;
+                    break;
+                }
+            }
+            values = filterByKeyword(values, conditionValue, headerIndex);
+        }
+        return values;
+    }
+
+    //Function for insert
+    /** Public
+     * Following the sql format `insert into sheetName values(toInsert)`
+     * This function will return a promise to send the gapi append request
+     * @param headers   An array of the headers of the target sheet
+     * @param sheetName The target sheet name
+     * @param toInsert  This is an array of objects with format [{header1:"value1", header2:"value2"}, {...},...,{...}]
+     * @returns {Promise}
+     */
+    function insertIntoTableColValues(headers, sheetName, toInsert) {
+        let values = [];
+        for (let i = 0; i < toInsert.length; i++) {
+            values[i] = objectToArrayByHeaders(headers, toInsert[i]);
+        }
+        let params = {
+            spreadsheetId: sheetId,
+            range: sheetName + "!A:A",
+            majorDimension: "ROWS",
+            valueInputOption: "RAW",
+            values: values
+        };
+        return gapi.client.sheets.spreadsheets.values.append(params);
+    }
+
+    /** Public
+     * This function takes the response of insert and returns the updated row number
+     * @param response The response of insert
+     * @returns {int}
+     */
+    function parseInsert(response) {
+        return response.result.updates.updatedRows;
+    }
+
+    /** Private
+     * This function takes an array of objects and corresponding headers and transfer it into a 2D array
+     * This is a helper method for insertIntoTableColValues
+     * @param headers  An array of the headers of the target sheet
+     * @param toInsert This is an array of objects with format [{header1:"value1", header2:"value2"}, {...},...,{...}]
+     * @returns {Array}
+     */
+    function objectToArrayByHeaders(headers, toInsert) {
+        let values = [];
+        for (let i = 0; i < headers.length; i++) {
+            let value = toInsert[headers[i]];
+            if (value) {
+                values[i] = value;
+            }
+        }
+        return values;
+    }
+
+    //Function for update
+    /** Public
+     * Following the sql format `update sheetName set colVal where conditions`
+     * This function will return a promise to send the gapi batchUpdate request
+     * @param sheetValues This is the whole set of values including the headers in the target sheet
+     * @param sheetName   The target sheet name
+     * @param colVal      An object of values to be updated with format {header:"value"}
+     * @param conditions  An array of input conditions with format {header:"the name of a header", value:"the value to check for"}
+     * @returns {Promise}
+     */
+    function batchUpdateTable(sheetValues, sheetName, colVal, conditions) {
+        let values = sheetValues.slice();
+        let headers = sheetValues[0];
+        let params = {
+            spreadsheetId: sheetId
+        };
+        let data = [];
+        for (let i = 0; i < conditions.length; i++) {
+            let rowValues = objectToArrayByHeaders(headers, colVal);
+            let rowNumbers = getRowNumbersByCondition(headers, values, conditions[i]);
+            if (rowNumbers.length < 1) console.log("No row found");
+            else console.log(rowNumbers);
+            for (let j = 0; j < rowNumbers.length; j++) {
+                let rowNumber = rowNumbers[j] + 1;
+                data[data.length] = {
+                    range: sheetName + "!" + rowNumber + ":" + rowNumber,
+                    majorDimension: "ROWS",
+                    values: [fillRowValues(rowValues, values[rowNumber-1])]
+                };
+            }
+        }
+        console.log(data);
+        let requestBody = {
+            valueInputOption: 'RAW',
+            data: data
+        };
+        return gapi.client.sheets.spreadsheets.values.batchUpdate(params, requestBody);
+        /*.then(response => {
+            console.log(response);
+        }, reason => {
+            console.error(reason.result.error.message);
+        });*/
+    }
+
+    /** Public
+     * This function takes the response of batchUpdateTable and return the updated row number
+     * @param response The response of batchUpdateTable
+     * @returns {int}
+     */
+    function parseBatchUpdate(response) {
+        return response.result.responses.totalUpdatedRows;
+    }
+
+    /** Private
+     * This will return an array of row numbers of which rows meet the condition
+     * This is a helper method for batchUpdateTable
+     * @param headers   The headers of the target sheet
+     * @param values    The values of the target sheet excluding the headers
+     * @param condition An object of condition
+     * @returns {Array}
+     */
+    function getRowNumbersByCondition(headers, values, condition) {
+        let header = condition.header;
+        let value = condition.value;
+        let rowNumbers = [];
+        for (let i = 0; i < headers.length; i++) {
+            if (header === headers[i]) {
+                for (let j = 1; j < values.length; j++) {
+                    if (values[j][i] === value) {
+                        rowNumbers[rowNumbers.length] = j;
+                        console.log(rowNumbers);
+                    }
+                }
+            }
+        }
+        return rowNumbers;
+    }
+
+    /** Private
+     * This function fill the rowValues with the original values from the sheet and return it
+     * This is a helper method for batchUpdateTable
+     * @param rowValues The target array of row values
+     * @param values    The array of original values
+     * @returns {array}
+     */
+    function fillRowValues(rowValues, values) {
+        for (let i = 0; i < rowValues.length; i++) {
+            if (rowValues[i] === undefined) {
+                rowValues[i] = values[i];
+            }
+        }
+        return rowValues;
     }
 
     return Object.freeze({
@@ -199,6 +577,16 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
         parseUpdate,
         batchAdd,
         parseBatchAdd,
-        parseErrorMessage
+        parseErrorMessage,
+        getTableHeaders,
+        parseTableHeaders,
+        getNotationFromColName,
+        getCharFromNum,
+        selectFromTableWhereConditions,
+        parseSelect,
+        insertIntoTableColValues,
+        parseInsert,
+        batchUpdateTable,
+        parseBatchUpdate
     })
 }
