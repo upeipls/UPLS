@@ -1,3 +1,8 @@
 /*
  * This file will contain all css for this system.
  */
+.dropdown_items {
+  display: none;
+}
+
+.show {display: block;}
