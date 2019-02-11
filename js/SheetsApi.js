@@ -135,17 +135,11 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
         let values = response.result.values;
         let headers = values[0].slice();
         let colIndex = [];
-        if (returnCols === "*") {
-            for (let i = 0; i < headers.length; i++) {
-                colIndex[colIndex.length] = i;
-            }
-        } else {
-            for (let i = 0; i < returnCols.length; i++) {
-                for (let j = 0; j < headers.length; j++) {
-                    if (headers[j] === returnCols[i]) {
-                        colIndex[colIndex.length] = j;
-                        break;
-                    }
+        for (let i = 0; i < returnCols.length; i++) {
+            for (let j = 0; j < headers.length; j++) {
+                if (headers[j] === returnCols[i]) {
+                    colIndex[colIndex.length] = j;
+                    break;
                 }
             }
         }
@@ -475,6 +469,35 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
         return rowValues;
     }
 
+    /** Public
+     * This function will return a promise to add the columns to the target sheet.
+     * @param sheetName     The target sheet name
+     * @param colNames      An array of input column names
+     * @param headersLength The length of the current headers
+     * @returns {Promise}
+     */
+    function alterTableAddCol(sheetName, colNames, headersLength) {
+        let startNotation = getCharFromNum(headersLength);
+        let endNotation = getCharFromNum(headersLength + colNames.length - 1);
+        console.log(startNotation + ":" + endNotation);
+        let params = {
+            spreadsheetId: sheetId,
+            range: sheetName + "!" + startNotation + "1:" + endNotation + "1",
+            valueInputOption: "RAW",
+            values: [colNames]
+        };
+        return gapi.client.sheets.spreadsheets.values.update(params);
+    }
+
+    /**
+     * This function will parse the response from alterTableAddCol and return the updated columns
+     * @param response The response from alterTableAddCol
+     * @returns {int}
+     */
+    function parseAlter(response) {
+        return response.result.updatedColumns;
+    }
+
     return Object.freeze({
         handleClientLoad,
         handleSignInClick,
@@ -494,6 +517,8 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
         insertIntoTableColValues,
         parseInsert,
         batchUpdateTable,
-        parseBatchUpdate
-    })
+        parseBatchUpdate,
+        alterTableAddCol,
+        parseAlter
+    });
 }
