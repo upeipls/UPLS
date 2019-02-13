@@ -67,6 +67,11 @@ Windows: https://git-scm.com/download/win
 3.  Once complete, close the command line
 
 # Usage
+## To Start
+When all installation steps are complete, you must start a local server in the UPLS directory that was created in the UPLS installation.
+1. Open the command prompt (or terminal) and go to your local UPLS directory: `cd your/path/to/UPLS/`
+2. Start the a local server with python3: `python3 -m http.server` This command's default port is 8000. Later, when you wish to exit the program and stop the server, you can either close the window in which you entered this command, or press control+C in the window to send an interupt to stop the process.
+3. Now you can access the webpages in the UPLS directory by opening your web browser and going to http://localhost:8000/
 
 # Troubleshooting
 
