@@ -65,13 +65,13 @@ function loadData() {
     });
 }
 ```
-The inputRange is in A1 notation. Valid ranges are:
-•	Sheet1!A1:B2 refers to the first two cells in the top two rows of Sheet1.
-•	Sheet1!A:A refers to all the cells in the first column of Sheet1.
-•	Sheet1!1:2 refers to the all the cells in the first two rows of Sheet1.
-•	Sheet1!A5:A refers to all the cells of the first column of Sheet 1, from row 5 onward.
-•	A1:B2 refers to the first two cells in the top two rows of the first visible sheet.
-•	Sheet1 refers to all the cells in Sheet1.
+The inputRange is in A1 notation. Valid ranges are:<br>
+•	Sheet1!A1:B2 refers to the first two cells in the top two rows of Sheet1.<br>
+•	Sheet1!A:A refers to all the cells in the first column of Sheet1.<br>
+•	Sheet1!1:2 refers to the all the cells in the first two rows of Sheet1.<br>
+•	Sheet1!A5:A refers to all the cells of the first column of Sheet 1, from row 5 onward.<br>
+•	A1:B2 refers to the first two cells in the top two rows of the first visible sheet.<br>
+•	Sheet1 refers to all the cells in Sheet1.<br>
 If the sheet name has spaces or starts with a bracket, surround the sheet name with single quotes ('), e.g. 'Sheet One'!A1:B2. For simplicity, it is safe to always surround the sheet name with single quotes.
 
 ##Example
