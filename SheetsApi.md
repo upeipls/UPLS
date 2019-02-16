@@ -28,19 +28,27 @@ After successfully created the OAuth 2.0 client ID, please get into the client I
 ## Functions
 |Function name                 |Return type|Parameters                                      |Description   | 
 |------------------------------|-----------|------------------------------------------------|--------------|
-|updateSignInStatus(isSignedIn)|void	     |boolean: isSignedIn true if a user is signed in.|The console will log “Ready to make api call” when a user signs in and “Need log in.” when a user signs out.|
-|initClient()	                 |void	     |N/A	                                            |This is the function initializing the client of gapi. It is a *private function* and should not be called.|
-|handleClientLoad()	           |void       |N/A	                                            |This is the function to load the gapi. Should be called after created the SheetsApi instance.|
-|handleSignInClick(event)	     |void	     |event (can be ignored)	                        |This is the function to handle the user’s sign in operation.|
-|handleSignOutClick(event)	   |void	     |event (can be ignored)	                        |This is the function to handle the user’s sign out operation.|
-|getSpreadsheetInfo()	         |Promise	   |N/A	                                            |This *private helper function* will return a promise for getting the information of the spreadsheet.|
-|parseSpreadsheetInfo(response)|Object	   |response from getSpreadsheetInfo() 	            |This function will return an object containing the title of the spreadsheet and the sheets information in the spreadsheet.|
-|getSheet(inputRange)	         |Promise	   |inputRange: string value specifying the required range of the sheet.|This *private helper function* returns a promise for getting the target sheet.|
-|parseSheetValues(response)	   |String[][] |response from getSheet(inputRange)	            |This function parses the response from getSheet(inputRange) and returns a 2D array of values.|
-|filterByKeyword(values, keyword, columnIndex)|String[][]|values is the input 2D array. keyword is filter keyword. columnIndex is the specific index of column to be filtered if less than 0, then any column including the keyword will add the row to the result.|This function returns the 2D array after filtering the input array by the keyword.|
-|batchAdd(inputRange, inputValues)|Promise	 |inputRange for this function, normally only the sheet name. inputValues is a 2D array of the values to be added.|This *private helper function* returns a promise for batch adding the values to a sheet.|
-|parseBatchAdd(response)	    |int	       |response is the response from batchAdd(inputRange, inputValues)|This function parses the response from batchAdd(inputRange, inputValues) and returns the number of rows updated.|
-|parseErrorMessage(reason)	  |String	     |reason is the error response from a promise.  	|This *private helper function* parses the error response and logs the error message to the console.error and returns the error message.|
+|handleClientLoad()	           |void       |N/A.	                                            |This is the function to load the gapi. Should be called after created the SheetsApi instance.|
+|handleSignInClick(event)	     |void	     |event (can be ignored).	                        |This is the function to handle the user’s sign in operation.|
+|handleSignOutClick(event)	   |void	     |event (can be ignored).	                        |This is the function to handle the user’s sign out operation.|
+|getSpreadsheetInfo()	         |Promise	   |N/A.	                                            |This function will return a promise for getting the information of the spreadsheet.|
+|parseSpreadsheetInfo(response)|Object	   |response: the response from getSpreadsheetInfo(). 	            |This function will return an object containing the title of the spreadsheet and the sheets information in the spreadsheet.|
+|getSheet(sheetName)	         |Promise	   |sheetName: the target sheet name.|This function returns a promise for getting the target sheet.|
+|parseSheetValues(response)	   |String[][] |response: the response from getSheet(sheetName).	            |This function parses the response from getSheet(inputRange) and returns a 2D array of values.|
+|selectFromTableWhereConditions(response, returnCold, condtions, returnType)|String[][] or object[]|response: the response from getSheet.<br>returnCols: an array of the names of columns need to return, passing "*" will return all columns.<br>conditions: an arrya of conditions. Each condition is an object with format: {header:"the name of a header", values:"the values to check for"}.<br>returnType: int 0 for an array of objects, 1 for a 2D array.|This function takes the response from the getSheet and return the wanted type of values.|
+|update(inputRange, inputValues)|Promise|inputRange: the target cells that are to be updated.<br>inputValues: a 2D array of the values.|This function returns a promise for update cells.|
+|parseUpdate(response)|int|response: the response from update(inputRange, inputValues).|This function parses the response from update(inputRange, inputValues) and returns the number of rows updated.|
+|parseErrorMessage(reason)	  |String	     |reason: the error response from a promise.|This function parses the error response and logs the error message to the console.error and returns the error message.|
+|getTableHeaders(sheetName)|Promise|sheetName: the target sheet name.|This function will return a promise for getting the headers of the target sheet.|
+|parseTableHeaders(response)|String[]|response: the response from getTablesHeaders(sheetName).|This function takes the response of getTableHeaders and return an array of headers.|
+|getNotationFromColName(headers, colName)|String|headers: the array of headers.<br>colName: the target column name.|This function returns the 'A1' notation of corresponding column name.|
+|getCharFromNum(num)|String|num: the number or index. Starting from 0.|This function takes the number and return a corresponding capital character.|
+|insertIntoTableColValues(headers, sheetName, toInsert)|Promise|headers: an array of the headers of the target sheet.<br>sheetName: the target sheet name.<br>toInsert: this is an array of objects with format [{header1:"value1", header2:"value2"}, {...},...,{...}].|This function does things like the sql sentence 'insert into sheetName values(toInsert)'.|
+|parseInsert(resposne)|int|response: the response from insert...|This function takes the reponse of insert... and returns the number of rows updated|
+|batchUpdateTable(sheetValues, sheetName, colVal, conditions)|Promise|sheetValues: the whole set of values of the target sheet, including the headers.<br>sheetName: the target sheet name.<br>colVal: an object of value to be updated with format {header: "value"}.<br>conditions: an array of conditions. Each condition is an object with format: {header:"the name of a header", value:"the value to check for"}.|This function does things like the sql sentence 'update sheetName set colVal where conditions'|
+|parseBatchUpdate(response)|int|response: the response of batchUpdateTable.|This function takes the response of batchUpdateTable and return the updated row number.|
+|alterTableAddCol(sheetName, colNames, headersLength)|Promise|sheetName: the target sheet name.<br>colNames： an array of inpu column names.<br>headersLength: the length of current headers.|This functio nwill return a promise to add the columns to the target sheet.|
+|parseAlter(response)|int|resposne: the response from alterTableAddCol.|This function will parse the response from talterTableAddCol and return the updated columns.|
 
 The Promise can be used as following:
 ```
@@ -57,11 +65,66 @@ function loadData() {
     });
 }
 ```
-The inputRange is in A1 notation. Valid ranges are:
-•	Sheet1!A1:B2 refers to the first two cells in the top two rows of Sheet1.
-•	Sheet1!A:A refers to all the cells in the first column of Sheet1.
-•	Sheet1!1:2 refers to the all the cells in the first two rows of Sheet1.
-•	Sheet1!A5:A refers to all the cells of the first column of Sheet 1, from row 5 onward.
-•	A1:B2 refers to the first two cells in the top two rows of the first visible sheet.
-•	Sheet1 refers to all the cells in Sheet1.
+The inputRange is in A1 notation. Valid ranges are:<br>
+•	Sheet1!A1:B2 refers to the first two cells in the top two rows of Sheet1.<br>
+•	Sheet1!A:A refers to all the cells in the first column of Sheet1.<br>
+•	Sheet1!1:2 refers to the all the cells in the first two rows of Sheet1.<br>
+•	Sheet1!A5:A refers to all the cells of the first column of Sheet 1, from row 5 onward.<br>
+•	A1:B2 refers to the first two cells in the top two rows of the first visible sheet.<br>
+•	Sheet1 refers to all the cells in Sheet1.<br>
 If the sheet name has spaces or starts with a bracket, surround the sheet name with single quotes ('), e.g. 'Sheet One'!A1:B2. For simplicity, it is safe to always surround the sheet name with single quotes.
+
+##Example
+```
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Personal Librarian</title>
+    <style>
+        table, th, td {
+            border: solid 1px black;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 4px 8px;
+        }
+    </style>
+</head>
+<body>
+    <p><a href="https://docs.google.com/spreadsheets/d/1n2w0s1lqSZ4kHX3zeNYTUNRPEr1aextWaG_
+    bsJisn8/edit?usp=sharing" target="_blank">Spreadsheet share
+    link</a></p>
+    <button id="signin-button" onclick="ts.handleSignInClick()">Sign in</button>
+    <button id="signout-button" onclick="ts.handleSignOutClick()">Sign out</button>
+    <button onclick="loadData()">Load Data</button>
+    <table id="data"></table>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="SheetsApi.js"></script>
+    <script>
+        let ts = new SheetsApi("1n2w0s1lqSZ4kHX3zeNYT-UNRPEr1aextWaG_bsJisn8","AIzaSyDeampVGzzd8NvBiUtEsNVmNkAQU1TZ17I","21358841826-edt9rotek8r1rbivt91nabpn2sc2g6ts.apps.googleusercontent.com");
+        ts.handleClientLoad();
+        function loadData() {
+            ts.getSheet("student_info").then(response => {
+                let values = ts.parseSheetValues(response);
+                let columns = values[0].length;
+                let rows = values.length;
+                let temp = "";
+                let tempValue = "";
+                for (let i = 0; i < rows; i++) {
+                    temp += "<tr>";
+                    for (let j = 0; j < columns; j++) {
+                        tempValue = values[i][j]===undefined?"":values[i][j];
+                        temp += (i===0?"<th":"<td") + " id='" + ts.getCharFromNum(j) + (i+1) + "'>" + tempValue + (i===0?"</th>":"</td>");
+                    }
+                    temp += "</tr>";
+                }
+                $("#data").html(temp);
+            }, reason => {
+                console.log(ts.parseErrorMessage(reason));
+            });
+        }
+    </script>
+</body>
+</html>
+```
