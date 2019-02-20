@@ -50,11 +50,28 @@ After successfully created the OAuth 2.0 client ID, please get into the client I
 |alterTableAddCol(sheetName, colNames, headersLength)|Promise|sheetName: the target sheet name.<br>colNames： an array of inpu column names.<br>headersLength: the length of current headers.|This functio nwill return a promise to add the columns to the target sheet.|
 |parseAlter(response)|int|resposne: the response from alterTableAddCol.|This function will parse the response from talterTableAddCol and return the updated columns.|
 
-The Promise can be used as following:
+####One function to implement
+This function is called when the gapi is ready. In other words, when the handleClientLoad() is finished, it will automatically call the updateSignInStatus(isSignedIn) function.
+```
+function updateSignInStatus(isSignedIn) {
+    if (isSignedIn) {
+        //Codes once the user signed in
+    } else {
+        //Codes once the user signed out
+    }
+}
+```
+####The Promise can be used as following:
 ```
 let sa = new SheetsApi("example", "example", "example");
 sa.handleClientLoad();
-
+function updateSignInStatus(isSignedIn) {
+    if (isSignedIn) {
+        loadData();
+    } else {
+        Console.log("Need Log In.");
+    }
+}
 function loadData() {
     sa.getSheet("student_info").then(response => {
         let result = sa.parseSheetValues(response);
@@ -65,7 +82,7 @@ function loadData() {
     });
 }
 ```
-The inputRange is in A1 notation. Valid ranges are:<br>
+####The inputRange is in A1 notation. Valid ranges are:<br>
 •	Sheet1!A1:B2 refers to the first two cells in the top two rows of Sheet1.<br>
 •	Sheet1!A:A refers to all the cells in the first column of Sheet1.<br>
 •	Sheet1!1:2 refers to the all the cells in the first two rows of Sheet1.<br>
@@ -104,6 +121,21 @@ If the sheet name has spaces or starts with a bracket, surround the sheet name w
     <script>
         let ts = new SheetsApi("1n2w0s1lqSZ4kHX3zeNYT-UNRPEr1aextWaG_bsJisn8","AIzaSyDeampVGzzd8NvBiUtEsNVmNkAQU1TZ17I","21358841826-edt9rotek8r1rbivt91nabpn2sc2g6ts.apps.googleusercontent.com");
         ts.handleClientLoad();
+        
+        /** 
+         * This function is called when the client status updated, such as signing in and signing out.
+         * If a client is signed in, isSignedIn is true.
+         * Else, isSignedIn is false.
+         * @param isSignedIn Status of the client
+         */
+        function updateSignInStatus(isSignedIn) {
+            if (isSignedIn) {
+                console.log("Ready to make api call.");
+                loadData();
+            } else {
+                console.log("Need log in.");
+            }
+        }
         function loadData() {
             ts.getSheet("student_info").then(response => {
                 let values = ts.parseSheetValues(response);
