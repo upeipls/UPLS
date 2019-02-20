@@ -104,6 +104,21 @@ If the sheet name has spaces or starts with a bracket, surround the sheet name w
     <script>
         let ts = new SheetsApi("1n2w0s1lqSZ4kHX3zeNYT-UNRPEr1aextWaG_bsJisn8","AIzaSyDeampVGzzd8NvBiUtEsNVmNkAQU1TZ17I","21358841826-edt9rotek8r1rbivt91nabpn2sc2g6ts.apps.googleusercontent.com");
         ts.handleClientLoad();
+        
+        /** 
+         * This function is called when the client status updated, such as signing in and signing out.
+         * If a client is signed in, isSignedIn is true.
+         * Else, isSignedIn is false.
+         * @param isSignedIn Status of the client
+         */
+        function updateSignInStatus(isSignedIn) {
+            if (isSignedIn) {
+                console.log("Ready to make api call.");
+                loadData();
+            } else {
+                console.log("Need log in.");
+            }
+        }
         function loadData() {
             ts.getSheet("student_info").then(response => {
                 let values = ts.parseSheetValues(response);

@@ -1,0 +1,152 @@
+textarea {
+    border: solid 1px black;
+}
+
+h1 {
+    width: fit-content;
+    margin: 16px auto;
+}
+
+table, th, td {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    border: solid 1px black;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px 24px;
+}
+
+#content {
+    margin: 24px;
+}
+
+.card {
+    position: absolute;
+    top: calc(50vh - 393px);
+    left: calc(50vw - 223px);
+    background-color: aliceblue;
+    width: 400px;
+    height: 422px;
+    margin: 50px auto;
+    border: solid 1px black;
+    border-radius: 16px;
+    padding: 16px 24px 24px 24px;
+    z-index: 99;
+}
+
+.vocabulary {
+    width: 400px;
+    height: 150px;
+}
+
+#disable-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.input-label {
+    margin: 16px 0;
+}
+
+.input-box {
+    width: 200px;
+    height: 2em;
+    margin: 8px 0 0 0;
+    padding-left: 8px;
+    padding-right: 8px;
+    border: solid 1px black;
+}
+
+.button {
+    width: calc(50% - 16px);
+    height: 40px;
+    background: white;
+    border: solid 1px black;
+}
+
+.button:hover {
+    background-color: gainsboro;
+}
+
+.borderless-btn {
+    background: none;
+    border: none;
+}
+
+.borderless-btn:hover {
+    color: grey;
+    cursor: pointer;
+}
+
+@keyframes blur
+{
+    0%      {
+        -webkit-filter: blur(0);
+        -ms-filter: blur(0);
+        filter: blur(0);
+    }
+    100%    {
+        -webkit-filter: blur(15px);
+        -ms-filter: blur(15px);
+        filter: blur(15px);
+    }
+}
+
+@-webkit-keyframes blur /* Safari and Chrome */
+{
+    0%      {
+        -webkit-filter: blur(0);
+        -ms-filter: blur(0);
+        filter: blur(0);
+    }
+    100%    {
+        -webkit-filter: blur(15px);
+        -ms-filter: blur(15px);
+        filter: blur(15px);
+    }
+}
+
+@keyframes remove-blur
+{
+    0%      {
+        -webkit-filter: blur(15px);
+        -ms-filter: blur(15px);
+        filter: blur(15px);
+    }
+    100%    {
+        -webkit-filter: blur(0);
+        -ms-filter: blur(0);
+        filter: blur(0);
+    }
+}
+
+@-webkit-keyframes remove-blur /* Safari and Chrome */
+{
+    0%      {
+        -webkit-filter: blur(15px);
+        -ms-filter: blur(15px);
+        filter: blur(15px);
+    }
+    100%    {
+        -webkit-filter: blur(0);
+        -ms-filter: blur(0);
+        filter: blur(0);
+    }
+}
+
+.blur {
+    animation: blur 0.7s;
+    animation-fill-mode: forwards;
+}
+
+.remove-blur {
+    animation: remove-blur 0.7s;
+    animation-fill-mode: forwards;
+}

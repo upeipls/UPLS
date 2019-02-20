@@ -13,24 +13,10 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
     let API_KEY = inputApiKey;
     let CLIENT_ID = inputClientId;
     /**
-     * Below 5 functions are used for client initialization of the google sheet api
+     * Below 4 functions are used for client initialization of the google sheet api
      * Need to configure the sheetId, API_KEY, and CLIENT_ID when creating the SheetsApi
      * object.
      */
-
-    /** Private
-     * This function is called when the client status updated, such as signing in and signing out.
-     * If a client is signed in, "Ready to make api call" will be logged through console.
-     * Else, "Need log in" will be logged through console.
-     * @param isSignedIn Status of the client
-     */
-    function updateSignInStatus(isSignedIn) {
-        if (isSignedIn) {
-            console.log("Ready to make api call.");
-        } else {
-            console.log("Need log in.");
-        }
-    }
 
     /** Private
      * This function calls the google api to initialize the gapi.client.

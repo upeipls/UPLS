@@ -6,3 +6,15 @@
 }
 
 .show {display: block;}
+
+.fl-lt {
+  float: left;
+}
+
+.fl-rt {
+  float: right;
+}
+
+.invisible {
+  display: none;
+}
