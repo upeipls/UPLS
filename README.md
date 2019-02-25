@@ -1,5 +1,5 @@
 # Intro
-The University Personal Librarian System (UPLS) is a CRM (Customer Relationship Management) like piece of software built for the University of Prince Edward Island. Robertson Library librarians will use this software to record student interactions as well as submit and update student information as needed.
+The University Personal Librarian System (UPLS) is a CRM (Customer Relationship Management) like piece of software built for the University of Prince Edward Island. Robertson Library librarians will use this software to record student interactions as well as submit and update student information as needed. See the [UPLS Wiki](/upeipls/UPLS/wiki) for more information.
 
 ---
 # Dependencies
