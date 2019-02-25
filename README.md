@@ -17,7 +17,7 @@ Microsoft Edge: https://www.microsoft.com/en-ca/windows/microsoft-edge
 
 Mac Safari: https://support.apple.com/downloads/safari
 
-## Git 
+## Git (optional)
 Windows: https://git-scm.com/download/win
 
 ---
@@ -55,7 +55,7 @@ Windows: https://git-scm.com/download/win
 
 ## `UPLS`:
 
-#### `Via WebSite`:
+#### `Via GitHub`:
 1.  Navigate with your favourite(default) browser to https://github.com/upeipls/UPLS
 2.  Click the green "Clone or Download" button on the right side of the page
 3.  Click download zip
