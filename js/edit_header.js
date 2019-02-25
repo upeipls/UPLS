@@ -1,5 +1,3 @@
-let sa = SheetsApi("1n2w0s1lqSZ4kHX3zeNYT-UNRPEr1aextWaG_bsJisn8","AIzaSyDeampVGzzd8NvBiUtEsNVmNkAQU1TZ17I","21358841826-edt9rotek8r1rbivt91nabpn2sc2g6ts.apps.googleusercontent.com");
-sa.handleClientLoad();
 function updateSignInStatus(isSignedIn) {
     if (isSignedIn) {
         loadHeaders();
