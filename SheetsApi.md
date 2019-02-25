@@ -35,7 +35,7 @@ After successfully created the OAuth 2.0 client ID, please get into the client I
 |parseSpreadsheetInfo(response)|Object	   |response: the response from getSpreadsheetInfo(). 	            |This function will return an object containing the title of the spreadsheet and the sheets information in the spreadsheet.|
 |getSheet(sheetName)	         |Promise	   |sheetName: the target sheet name.|This function returns a promise for getting the target sheet.|
 |parseSheetValues(response)	   |String[][] |response: the response from getSheet(sheetName).	            |This function parses the response from getSheet(inputRange) and returns a 2D array of values.|
-|selectFromTableWhereConditions(response, returnCold, condtions, returnType)|String[][] or object[]|response: the response from getSheet.<br>returnCols: an array of the names of columns need to return, passing "*" will return all columns.<br>conditions: an arrya of conditions. Each condition is an object with format: {header:"the name of a header", values:"the values to check for"}.<br>returnType: int 0 for an array of objects, 1 for a 2D array.|This function takes the response from the getSheet and return the wanted type of values.|
+|selectFromTableWhereConditions(response, returnCold, condtions, returnType)|String[][] or object[]|response: the response from getSheet.<br>returnCols: an array of the names of columns need to return, passing "*" will return all columns.<br>conditions: an arrya of conditions. Each condition is an object with format: {header:"the name of a header", values:"the values to check for"}.<br>returnType: int 0 for an array of objects, 1 for a 2D array.|This function takes the response from the getSheet, parses the conditions and returns the wanted type of values.|
 |update(inputRange, inputValues)|Promise|inputRange: the target cells that are to be updated.<br>inputValues: a 2D array of the values.|This function returns a promise for update cells.|
 |parseUpdate(response)|int|response: the response from update(inputRange, inputValues).|This function parses the response from update(inputRange, inputValues) and returns the number of rows updated.|
 |parseErrorMessage(reason)	  |String	     |reason: the error response from a promise.|This function parses the error response and logs the error message to the console.error and returns the error message.|
@@ -43,6 +43,7 @@ After successfully created the OAuth 2.0 client ID, please get into the client I
 |parseTableHeaders(response)|String[]|response: the response from getTablesHeaders(sheetName).|This function takes the response of getTableHeaders and return an array of headers.|
 |getNotationFromColName(headers, colName)|String|headers: the array of headers.<br>colName: the target column name.|This function returns the 'A1' notation of corresponding column name.|
 |getCharFromNum(num)|String|num: the number or index. Starting from 0.|This function takes the number and return a corresponding capital character.|
+|arrayToObjects|Object[]|array: A 2D array with the headers in the first row.|This function takes a 2D array including headers and returns an array of objects.|
 |insertIntoTableColValues(headers, sheetName, toInsert)|Promise|headers: an array of the headers of the target sheet.<br>sheetName: the target sheet name.<br>toInsert: this is an array of objects with format [{header1:"value1", header2:"value2"}, {...},...,{...}].|This function does things like the sql sentence 'insert into sheetName values(toInsert)'.|
 |parseInsert(resposne)|int|response: the response from insert...|This function takes the reponse of insert... and returns the number of rows updated|
 |batchUpdateTable(sheetValues, sheetName, colVal, conditions)|Promise|sheetValues: the whole set of values of the target sheet, including the headers.<br>sheetName: the target sheet name.<br>colVal: an object of value to be updated with format {header: "value"}.<br>conditions: an array of conditions. Each condition is an object with format: {header:"the name of a header", value:"the value to check for"}.|This function does things like the sql sentence 'update sheetName set colVal where conditions'|
@@ -50,7 +51,7 @@ After successfully created the OAuth 2.0 client ID, please get into the client I
 |alterTableAddCol(sheetName, colNames, headersLength)|Promise|sheetName: the target sheet name.<br>colNames： an array of inpu column names.<br>headersLength: the length of current headers.|This functio nwill return a promise to add the columns to the target sheet.|
 |parseAlter(response)|int|resposne: the response from alterTableAddCol.|This function will parse the response from talterTableAddCol and return the updated columns.|
 
-####One function to implement
+#### One function to implement
 This function is called when the gapi is ready. In other words, when the handleClientLoad() is finished, it will automatically call the updateSignInStatus(isSignedIn) function.
 ```
 function updateSignInStatus(isSignedIn) {
@@ -61,7 +62,7 @@ function updateSignInStatus(isSignedIn) {
     }
 }
 ```
-####The Promise can be used as following:
+#### The Promise can be used as following:
 ```
 let sa = new SheetsApi("example", "example", "example");
 sa.handleClientLoad();
@@ -82,7 +83,7 @@ function loadData() {
     });
 }
 ```
-####The inputRange is in A1 notation. Valid ranges are:<br>
+#### The inputRange is in A1 notation. Valid ranges are:<br>
 •	Sheet1!A1:B2 refers to the first two cells in the top two rows of Sheet1.<br>
 •	Sheet1!A:A refers to all the cells in the first column of Sheet1.<br>
 •	Sheet1!1:2 refers to the all the cells in the first two rows of Sheet1.<br>
@@ -91,7 +92,7 @@ function loadData() {
 •	Sheet1 refers to all the cells in Sheet1.<br>
 If the sheet name has spaces or starts with a bracket, surround the sheet name with single quotes ('), e.g. 'Sheet One'!A1:B2. For simplicity, it is safe to always surround the sheet name with single quotes.
 
-##Example
+## Example
 ```
 <!DOCTYPE html>
 <html>

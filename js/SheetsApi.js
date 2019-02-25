@@ -109,7 +109,8 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
 
     /** Public
      * Following the sql format `Select returnCols from sheetName where conditions`
-     * This will return a promise to send the gapi batchGet request
+     * This function can be used instead of parseSheetValues(response)
+     * This will return either an array of objects or a 2D array including headers
      * @param response    The response of getSheet(inputRange)
      * @param returnCols  An array of the names of columns need to return. Pass "*" will return all columns.
      * @param conditions  An array of conditions. Each condition is an object with format:
@@ -291,7 +292,7 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
         return String.fromCharCode('A'.charCodeAt(0) + num);
     }
 
-    /** Private
+    /** Public
      * This function takes a 2D array including headers and returns an array of objects.
      * This is a helper method for parseSelectResponse
      * @param array     A 2D array
@@ -304,13 +305,16 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
         for (let i = 1; i < array.length; i++) {
             tempStr = "{";
             for (let j = 0; j< array[i].length; j++) {
-                tempStr += "'" + headers[j] + "':'" + array[i][j] + "'";
+                tempStr += "\"" + headers[j] + "\":\"" + array[i][j] + "\"";
                 if (j < array[i].length - 1) {
                     tempStr += ",";
                 }
             }
             tempStr += "}";
-            result[i-1] = JSON.parse(tempStr);
+            result[i-1] = JSON.parse(tempStr.replace(/\n/g, "\\n")
+                .replace(/\r/g, "\\r")
+                .replace(/\t/g, "\\t")
+                .replace(/\f/g, "\\f"));
         }
         return result;
     }
@@ -500,6 +504,7 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
         parseTableHeaders,
         getNotationFromColName,
         getCharFromNum,
+        arrayToObjects,
         insertIntoTableColValues,
         parseInsert,
         batchUpdateTable,
