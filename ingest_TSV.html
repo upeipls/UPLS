@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TSV Ingest</title>
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <script src="https://d3js.org/d3-fetch.v1.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="Api.js"></script>
+</head>
+<body>
+<Script language="JavaScript">
+    let sheetID = "1gNQpWqetXTtiyZIa9RiAiwpnJWNa6nTeQGZDcGAHWS0";
+    let sa = new SheetsApi("1gNQpWqetXTtiyZIa9RiAiwpnJWNa6nTeQGZDcGAHWS0", "AIzaSyD5KpN_FCSGTRJGlDFN9CvXD3gyg-f8ZC4", "656316403501-g3io4mu5ibfebpls8jrnht04rg8g2mr1.apps.googleusercontent.com");
+    sa.handleClientLoad();
+    let sheetHeaders;
+    let objectArray;
+
+
+    var openFile = function(event) {
+        var input = event.target;
+        var reader = new FileReader();
+        //reader returns result, split data by newline and by tab
+        //results are stored in 2D array of [row][column]
+        reader.onload=function(){
+            var text = reader.result;
+
+            let data = text.split('\n');
+            for(var i = 0; i < data.length; i++) {
+                let temp = data[i].split('\t');
+                data[i] = temp;
+            }
+
+
+
+            objectArray = arrayToObjects(data);
+            sa.getTableHeaders("Students").then(response => {
+                sheetHeaders = sa.parseTableHeaders(response);
+                sa.insertIntoTableColValues(sheetHeaders, "Students", objectArray).then(response => {
+                    console.log(sa.parseInsert(response));
+                });
+            });
+
+
+            //run through data for validation
+            for(var j = 1; j < data.length; j++){
+                validateEmail(data, j);
+                validateID(data, j);
+            }
+            console.log(data);
+        };
+        reader.readAsText(input.files[0]);
+    }
+    //validate email cells
+    function validateEmail(data,x){
+        //validate email address
+        if(!data[x][3].includes("@upei.ca")){
+            window.alert("There is an incorrect email address at: " + data[x][3] + " row: " + x);
+        }
+    }
+    function validateID(data,x){
+        //validate student ID
+        if(!data[x][0].match(/^[0-9]+$/)){
+        window.alert("There is an incorrect Student ID at: " + data[x][0] + " row: " + x);
+        }
+    }
+    function validateText(data,x,y) {
+        //validate any text
+        if(!data[x][y].match(/^[A-Z]/)){
+            window.alert("There is an incorrect text input at: " + data[x][y] + " row: " + x);
+        }
+    }
+    function validateCatYear(data,x){
+        //validate catalog year
+        if(!data[x][11].match(/[0-9]+-/)){
+            window.alert("There is an incorrect Catalog Year at: " + data[x][11] + " row: " + x);
+        }
+    }
+    function validateDate(data, x){
+        //validate the ingest date just to be sure
+        //TODO: Replace Y with the actual column ingest date will be added to once
+        // api functions are included
+        if(!data[x][y].match(/^\d{4}-\d{2}-\d{2}$/)){
+            window.alert("There is an incorrect ingest date at: " + data[x][y] + " row: " + x);
+        }
+    }
+
+    function arrayToObjects(array) {
+        let headers = array[0];
+        let result = [];
+        let tempStr = "";
+        for (let i = 1; i < array.length; i++) {
+            tempStr = "{";
+            for (let j = 0; j< array[i].length; j++) {
+                tempStr += "\"" + headers[j] + "\":\"" + array[i][j] + "\"";
+                if (j < array[i].length - 1) {
+                    tempStr += ",";
+                }
+            }
+            tempStr += "}";
+            console.log(tempStr);
+            result[i-1] = JSON.parse(tempStr.replace(/\n/g, "\\n")
+                .replace(/\r/g, "\\r")
+                .replace(/\t/g, "\\t")
+                .replace(/\f/g, "\\f"));
+        }
+        return result;
+    }
+
+
+</Script>
+
+<input type="file" id="TSV" name="TSV" accept="text/tab-separated-values" onchange="openFile(event)"><br>
+<output id="output"></output>
+<input type="button" id="signin" name="signin" value="Sign In" onclick="sa.handleSignInClick()">
+<div id="message"></div>
+<form action="index.html">
+    <input type="submit" value="Return to Main">
+</form>
+</body>
+</html>
