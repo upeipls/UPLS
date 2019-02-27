@@ -4,16 +4,32 @@
 
 function mainMenu() {
 	var main_menu = "\
-	<a href=\"main_page.html\">Home</a>\
-	<a href=\"add_student.html\">Add Student</a>\
-	<a href=\"group_email.html\">Group Email</a>\
-	<a href=\"aggregation.html\">Aggregate</a>\
-	<a href=\"view_student.html\">View Student</a>\
-   <button onmouseover=\"dropdown()\" id=\"dropdown\">Admin Menu</button>\
-   <div id=\"dropdown_items\" class=\"dropdown_items\">\
-     <a href=\"batch_ingest.html\">Batch Ingest</a>\
-     <a href=\"edit_interaction_categories.html\">Interaction Categories</a>\
-     <a href=\"edit_student_categories.html\">Student Categories</a>\
+	<form action=\"main_page.html\" class=\"menu_bar_form\">\
+		<button type=\"submit\" class=\"flow_button\">Home</button>\
+	</form>\
+	<form action=\"add_student.html\" class=\"menu_bar_form\">\
+		<button type=\"submit\" class=\"flow_button\">Add Student</button>\
+	</form>\
+	<form action=\"group_email.html\" class=\"menu_bar_form\">\
+		<button type=\"submit\" class=\"flow_button\">Group Email</button>\
+	</form>\
+	<form action=\"aggregation.html\" class=\"menu_bar_form\">\
+		<button type=\"submit\" class=\"flow_button\">Aggregate</button>\
+	</form>\
+	<form action=\"view_student.html\" class=\"menu_bar_form\">\
+		<button type=\"submit\" class=\"flow_button\">View Student</button>\
+	</form>\
+   <button onclick=\"dropdown()\" id=\"dropdown\"  class=\"admin_flow_button\">Admin Menu</button>\
+   <div id=\"dropdown_items\" class=\"dropdown_items\" paddingTop=\"2px\">\
+   <form action=\"batch_ingest.html\" class=\"menu_bar_form\">\
+		<button type=\"submit\" class=\"admin_flow_button\">Batch Ingest</button>\
+	</form>\
+	<form action=\"edit_interaction_categories.html\" class=\"menu_bar_form\">\
+		<button type=\"submit\" class=\"admin_flow_button\">Interaction Categories</button>\
+	</form>\
+	<form action=\"edit_student_categories.html\" class=\"menu_bar_form\">\
+		<button type=\"submit\" class=\"admin_flow_button\">Student Categories</button>\
+	</form>\
 	</div>\
 	";
   document.getElementById("main_menu").innerHTML = main_menu;
