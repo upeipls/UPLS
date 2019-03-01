@@ -28,6 +28,7 @@ After successfully created the OAuth 2.0 client ID, please get into the client I
 ## Functions
 |Function name                 |Return type|Parameters                                      |Description   | 
 |------------------------------|-----------|------------------------------------------------|--------------|
+|setKeys(inputSheetId, inputApiKey, inputClientId)|N/A|inputSheetId: the target sheet id<br>inputApiKey: The ApiKey of the application<br>inputClientId: The Client Id of the application|This function initialize the sheets api object created|
 |handleClientLoad()	           |void       |N/A.	                                            |This is the function to load the gapi. Should be called after created the SheetsApi instance.|
 |handleSignInClick(event)	     |void	     |event (can be ignored).	                        |This is the function to handle the user’s sign in operation.|
 |handleSignOutClick(event)	   |void	     |event (can be ignored).	                        |This is the function to handle the user’s sign out operation.|

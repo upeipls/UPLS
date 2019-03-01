@@ -1,17 +1,27 @@
 /**
  * Consider this function as a class definition in java.
- * Use `let sa = new SheetsApi(inputSheetid, inputApiKey, inputClientId);` to create a instance of SheetsApi.
+ * Use `let sa = new SheetsApi();` to create a instance of SheetsApi.
  * Then use `sa.functionName(argument...)` to use the functions of it.
- * @param inputSheetId   The target sheet id
- * @param inputApiKey    The ApiKey of the application
- * @param inputClientId  The Client Id of the application
  * @returns {object}     An object of the SheetsApi containing necessary functions
  * @constructor
  */
-function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
-    let sheetId = inputSheetId;
-    let API_KEY = inputApiKey;
-    let CLIENT_ID = inputClientId;
+function SheetsApi() {
+    let sheetId = "";
+    let API_KEY = "";
+    let CLIENT_ID = "";
+
+    /** Public
+     * This function initialize the sheets api object created.
+     * @param inputSheetId   The target sheet id
+     * @param inputApiKey    The ApiKey of the application
+     * @param inputClientId  The Client Id of the application
+     */
+    function setKeys(inputSheetId, inputApiKey, inputClientId) {
+        sheetId = inputSheetId;
+        API_KEY = inputApiKey;
+        CLIENT_ID = inputClientId;
+    }
+
     /**
      * Below 4 functions are used for client initialization of the google sheet api
      * Need to configure the sheetId, API_KEY, and CLIENT_ID when creating the SheetsApi
@@ -489,6 +499,7 @@ function SheetsApi(inputSheetId, inputApiKey, inputClientId) {
     }
 
     return Object.freeze({
+        setKeys,
         handleClientLoad,
         handleSignInClick,
         handleSignOutClick,
