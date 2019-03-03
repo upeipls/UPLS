@@ -134,7 +134,7 @@ function SheetsApi() {
         let colIndex = [];
         for (let i = 0; i < returnCols.length; i++) {
             for (let j = 0; j < headers.length; j++) {
-                if (headers[j] === returnCols[i]) {
+                if (returnCols === "*" || headers[j] === returnCols[i]) {
                     colIndex[colIndex.length] = j;
                     break;
                 }
@@ -299,7 +299,13 @@ function SheetsApi() {
      * @returns {string}
      */
     function getCharFromNum(num) {
-        return String.fromCharCode('A'.charCodeAt(0) + num);
+        let result = "";
+        if (num > 25) {
+            result += String.fromCharCode('A'.charCodeAt(0) + num / 26 - 1);
+            num = num % 26;
+        }
+        result += String.fromCharCode('A'.charCodeAt(0) + num);
+        return result;
     }
 
     /** Public
@@ -486,7 +492,7 @@ function SheetsApi() {
             valueInputOption: "RAW",
             values: [colNames]
         };
-        return gapi.client.sheets.spreadsheets.values.update(params);
+        return gapi.client.sheets.spreadsheets.values.append(params);
     }
 
     /**
