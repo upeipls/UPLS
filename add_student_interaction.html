@@ -1,0 +1,34 @@
+<!--
+This file will provide the backbone for adding an interaction for a single student.
+-->
+<html>
+  <head></head>
+  <title>Add Student Interaction</title>
+  <link rel="stylesheet" type="text/css" href="css/upls_styles.css">
+  <script src="js/main_menu.js"></script>
+  </head>
+  <body onload="mainMenu()">
+    <div class="main_menu" id="main_menu"></div>
+    <form action="/view_student_interactions.html" onsubmit="interactionSubmit()">
+    Student: <input type="text" id="student_name" readonly> <input type="number" id="student_id" readonly>
+    Email: <input type="text" id="student_email" readonly> <br>
+    Interaction Type:
+    <select id="interaction_type" required>
+    </select> <br>
+    Interaction Date: <input type="date" id="interaction_date" required><br>
+    Librarian Initiated? <input type="radio" name="librarian_initiated" value="yes" id="librarian_initiated_yes" checked>Yes <input type="radio" name="librarian_initiated" value="no" id="librarian_initiated_no">No <br>
+    Follow-up Interaction? <input type="radio" name="follow_up" value="yes" id="follow_up_yes" checked>Yes <input type="radio" name="follow_up" value="no" id="follow_up_no">No<br>
+    Time Spent (minutes): <input type="number" min="1" id="time_spent" required><br>
+    Communication Channel:
+    <select id="communication_channel" required>
+    </select><br>
+    URL: <input type="url" id="url"><br>
+    Notes: <textarea id="notes"></textarea><br>
+    <input type="submit" value="Submit">
+    <input type="button" value="Cancel" onclick="interactionCancel()">
+    </form>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="js/SheetsApi.js"></script>
+    <script src="js/add_student_interaction.js"></script>
+  </body>
+</html>

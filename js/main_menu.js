@@ -10,6 +10,9 @@ function mainMenu() {
 	<form action=\"add_student.html\" class=\"menu_bar_form\">\
 		<button type=\"submit\" class=\"flow_button\">Add Student</button>\
 	</form>\
+	<form action=\"add_student_interaction.html\" class=\"menu_bar_form\">\
+		<button type=\"submit\" class=\"flow_button\">Add Student Interaction</button>\
+	</form>\
 	<form action=\"group_email.html\" class=\"menu_bar_form\">\
 		<button type=\"submit\" class=\"flow_button\">Group Email</button>\
 	</form>\

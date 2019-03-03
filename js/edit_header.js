@@ -1,3 +1,5 @@
+sa = new SheetsApi();
+sa.handleClientLoad();
 function updateSignInStatus(isSignedIn) {
     if (isSignedIn) {
         loadHeaders();
