@@ -1,96 +1,32 @@
-<!--
-This file will provide the backbone for viewing student info.
--->
+<!DOCTYPE html>
 <html>
-  <head>
-  <title>View Student</title>
-  <link rel="stylesheet" type="text/css" href="cs/upls_styles.css">
-  <script src="js/main_menu.js"></script> 
-  <script src="https://apis.google.com/js/api.js"></script>
-  <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
-  <script src="functions.js"></script>
-  <script>
-    let sa = SheetsApi("1n2w0s1lqSZ4kHX3zeNYT-UNRPEr1aextWaG_bsJisn8","AIzaSyDeampVGzzd8NvBiUtEsNVmNkAQU1TZ17I","21358841826-edt9rotek8r1rbivt91nabpn2sc2g6ts.apps.googleusercontent.com");
-    sa.handleClientLoad();	
-  </script>
-  </head>
-  <body class='body'>
-	<script type="text/javascript">
-	var condition = {
-		header : "",
-		value : "",
-	};
-	function getStudentInfo(){
-		var studentID = new Array();
-		//function to get the student ID from the URL passed to the page
-		function getParams(){
-			var idx = document.URL.indexOf('?');
-			var params = new Array();
-			if (idx != -1) {
-				var pairs = document.URL.substring(idx+1, document.URL.length).split('&');
-				for (var i=0; i<pairs.length; i++){
-					nameVal = pairs[i].split('=');
-					params[nameVal[0]] = nameVal[1];
-				}
-			}
-			return params;
-		}
-		params = getParams();
-		studentID[0] = unescape(params["studentID"]);
-		//creating condition object to hold the header and the ID value
-		condition = {
-			header : "STUDENT_ID",
-			value : studentID[0],
-		};
-		var headers = [];
-		var arrayaa = [];
-		var studentInfo = [];
-		var conditions = new Array();
-		conditions[0] = condition;
-			sa.getSheet("UPLS").then(response => {
-				(sa.getTableHeaders(response));
-				headers = sa.parseTableHeaders(response);
-					sa.getSheet("UPLS").then(response => {
-					(sa.parseSheetValues(response));
-					arrayaa = sa.selectFromTableWhereConditions(response,"*",conditions,1);
-					studentInfo = sa.parseSheetValues(response);
-					//creating the table from the data parsed from the Google Sheet using the conditions array
-					//page body
-					var body = document.getElementsByTagName("body")[0];
-					//table element
-					var table = document.createElement("table");
-					//body of the table
-					var tbody = document.createElement("body");
-					for (var a =0; a < headers.length; a++){
-						//row creation
-						var row = document.createElement("tr");
-						//Headers of the sheets
-						var data = document.createElement("td");
-						//data from each column
-						var data2 = document.createElement("td");
-						var text1 = document.createTextNode(headers[a]);
-						var text2 = document.createTextNode(studentInfo[0][a]);
-						data.appendChild(text1);
-						data2.appendChild(text2);
-						//appending the row data to the Row itself
-						row.appendChild(data);
-						row.appendChild(data2);
-						tbody.appendChild(row);
-					}
-					table.appendChild(tbody);
-				  // put <table> in the <body>
-				  body.appendChild(table);
-				  table.setAttribute("border", "2");	
-				});
-			});		
-	}
+<head>
+<title>Page 1</title>
+<link href="styles.css" rel="stylesheet" type="text/css" media="all">
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+<script src="SheetsApi.js"></script>
+<script src="js/viewStudent.js"></script>
+<script>
+/*Just here for testing purposes*/
+let sa = SheetsApi("1n2w0s1lqSZ4kHX3zeNYT-UNRPEr1aextWaG_bsJisn8","AIzaSyDeampVGzzd8NvBiUtEsNVmNkAQU1TZ17I","21358841826-edt9rotek8r1rbivt91nabpn2sc2g6ts.apps.googleusercontent.com");
+sa.handleClientLoad();
+//real API call, with no information needed to create a sheet. must input
+//Google data for the UPLS Google Account being used
+/*let sa = SheetsApi();
+sa.setKeys(inputSheetId, inputApiKey,inputClientId);*/
 </script>
-<button onclick="getStudentInfo()">View Student Information</button><br>
-<button onclick="sa.handleSignInClick()">Sign In</button><br>
-<form action="edit_student.html" >
-<button type="submit" class="back_button">Edit Student</button>
-</form>
-  <body onload="mainMenu()">
-    <div class="main_menu" id="main_menu"></div>
-  </body>
+</head>
+<body class='body' onload="mainMenu()">
+	<div class="main_menu" id="main_menu"></div>
+	<script type="text/javascript">
+		window.onload=updateSignInStatus();
+	</script>
+	<script type="text/javascript">
+		getStudentInfo();
+	</script>
+<!-- <form action="index.html" >
+<button type="submit" class="back_button"></button>
+</form> -->
+</body>
 </html>
