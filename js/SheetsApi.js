@@ -372,7 +372,7 @@ function SheetsApi() {
      * This function takes an array of objects and corresponding headers and transfer it into a 2D array
      * This is a helper method for insertIntoTableColValues
      * @param headers  An array of the headers of the target sheet
-     * @param toInsert This is an array of objects with format [{header1:"value1", header2:"value2"}, {...},...,{...}]
+     * @param toInsert This is an object with format {header1:"value1", header2:"value2"}
      * @returns {Array}
      */
     function objectToArrayByHeaders(headers, toInsert) {
@@ -417,7 +417,6 @@ function SheetsApi() {
                 };
             }
         }
-        console.log(data);
         let requestBody = {
             valueInputOption: 'RAW',
             data: data
@@ -451,7 +450,6 @@ function SheetsApi() {
                 for (let j = 1; j < values.length; j++) {
                     if (values[j][i] === value) {
                         rowNumbers[rowNumbers.length] = j;
-                        console.log(rowNumbers);
                     }
                 }
             }
@@ -485,7 +483,6 @@ function SheetsApi() {
     function alterTableAddCol(sheetName, colNames, headersLength) {
         let startNotation = getCharFromNum(headersLength);
         let endNotation = getCharFromNum(headersLength + colNames.length - 1);
-        console.log(startNotation + ":" + endNotation);
         let params = {
             spreadsheetId: sheetId,
             range: sheetName + "!" + startNotation + "1:" + endNotation + "1",
@@ -514,8 +511,6 @@ function SheetsApi() {
     function parseDraftBySubject(response) {
         if (response.result.resultSizeEstimate > 0) {
             if (response.result.resultSizeEstimate > 1) {
-                console.log("There are more than one choice");
-                console.log(response.result.drafts);
                 return response.result.drafts;
             } else {
                 let draftId = response.result.drafts[0].id;
@@ -526,7 +521,6 @@ function SheetsApi() {
                 });
             }
         } else {
-            console.log("No draft found!");
             return null;
         }
     }
@@ -535,17 +529,11 @@ function SheetsApi() {
         return window.atob(str.replace(/-/g, "+").replace(/_/g, "/"));
     }
 
-    function sendEmails(message, addresses, variables) {
-        for (let i = 0; i < addresses.length; i++) {
-            let finalMessage = replaceVar(message, variables, i);
-            finalMessage = addAddress(finalMessage, addresses[i]);
-            console.log(finalMessage);
-            finalMessage = window.btoa(finalMessage).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-            gapi.client.gmail.users.messages.send({
-                'userId': 'me',
-                'resource': {'raw': finalMessage}
-            }).then(res => {console.log(res);});
-        }
+    function sendEmail(message) {
+        return gapi.client.gmail.users.messages.send({
+            'userId': 'me',
+            'resource': {'raw': message}
+        });
     }
 
     function replaceVar(message, variables, index) {
@@ -553,7 +541,6 @@ function SheetsApi() {
         let tempStr, endIndex;
         let loop = 0;
         while (startIndex >= 0 && loop < 5) {
-            console.log(startIndex);
             tempStr = message.substr(startIndex + 1);
             endIndex = tempStr.indexOf("$");
             if (endIndex < 0) {
@@ -562,7 +549,6 @@ function SheetsApi() {
             tempStr = tempStr.substr(0, endIndex);
             message = message.replace("$"+tempStr+"$", variables[tempStr][index]);
             startIndex = message.indexOf("$");
-            console.log(message);
             loop++;
         }
         return message;
@@ -602,6 +588,8 @@ function SheetsApi() {
         getDraftBySubject,
         parseDraftBySubject,
         decode,
-        sendEmails
+        sendEmail,
+        replaceVar,
+        addAddress
     });
 }

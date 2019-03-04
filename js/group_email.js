@@ -14,14 +14,13 @@ function updateSignInStatus(isSignedIn) {
             document.getElementById("criteria").classList.remove("invisible");
         });
     } else {
-        console.log("Need Log In!");
         sa.handleSignInClick();
     }
 }
 
 function backStep() {
     if (stepNumber === 1) {
-        window.location.href = "http://localhost:8000/main_page.html";
+        window.location.href = "main_page.html";
     } else if (stepNumber === 2) {
         document.getElementById("template").classList.add("invisible");
         document.getElementById("criteria").classList.remove("invisible");
@@ -94,24 +93,24 @@ function setVocabulary(values, index) {
     document.getElementById("select_values_" + index).innerHTML = options;
 }
 
-let emailAddresses = [], names = [];
+let emailAddresses = [], names = [], studentIds = [];
 function updatePopulation() {
     emailAddresses = [];
     names = [];
+    studentIds = [];
     let header, value, conditions = [];
     for (let i = 1; i < criteriaIndex; i++) {
         if (document.getElementById("criteria_" + i).innerHTML === "") continue;
         header = document.getElementById("select_criteria_" + i).value;
         value = document.getElementById("select_values_" + i).value;
-        console.log(header + ":" + value);
         conditions[conditions.length] = {"header":header, "value": value};
     }
-    console.log(conditions);
     sa.getSheet("UPLS").then(res => {
-        let result = sa.selectFromTableWhereConditions(res, ["FIRST_NAME","LAST_NAME","EMAIL"], conditions, 1).slice(1);
+        let result = sa.selectFromTableWhereConditions(res, ["STUDENT_ID","FIRST_NAME","LAST_NAME","EMAIL"], conditions, 1).slice(1);
         for (let i = 0; i < result.length; i++) {
-            names[names.length] = result[i][0] + " " + result[i][1];
-            emailAddresses[emailAddresses.length] = result[i][2];
+            studentIds[studentIds.length] = result[i][0];
+            names[names.length] = result[i][1] + " " + result[i][2];
+            emailAddresses[emailAddresses.length] = result[i][3];
         }
         document.getElementById("number_label").innerHTML = "This group currently contains " + (emailAddresses.length) + " people.";
     });
@@ -140,10 +139,10 @@ function loadDraft() {
     })
 }
 
+let draftSubject;
 function displayContent(msg) {
-    console.log(msg);
-    document.getElementById("email_subject").innerHTML =
-        msg.substr(msg.indexOf("Subject: ") + 9, msg.indexOf("From") - msg.indexOf("Subject: ") - 9);
+    draftSubject = msg.substr(msg.indexOf("Subject: ") + 9, msg.indexOf("From") - msg.indexOf("Subject: ") - 9);
+    document.getElementById("email_subject").innerHTML = draftSubject;
     let startIndex = msg.indexOf("UTF-8") + 10;
     let content = msg.substr(startIndex);
     let endIndex = content.indexOf("--");
@@ -151,7 +150,29 @@ function displayContent(msg) {
 }
 
 function sendEmails() {
-    sa.sendEmails(draftMessage, emailAddresses, {
-        "name": names
-    });
+    for (let i = 0; i < emailAddresses.length; i++) {
+        let finalMessage = sa.replaceVar(draftMessage, {"name":names}, i);
+        finalMessage = sa.addAddress(finalMessage, emailAddresses[i]);
+        finalMessage = window.btoa(finalMessage).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        sa.sendEmail(finalMessage).then(res => {
+            if (i === emailAddresses.length - 1) {
+                sa.getTableHeaders("INTERACTION_TRACKING").then(res => {
+                    let headers = sa.parseTableHeaders(res);
+                    let toInsert = [headers];
+                    for (let i = 0; i < studentIds.length; i++) {
+                        toInsert[toInsert.length] = [studentIds[i], "Email", "Subject: " + draftSubject];
+                    }
+                    sa.insertIntoTableColValues(headers, "INTERACTION_TRACKING", sa.arrayToObjects(toInsert)).then(res => {
+                        if (sa.parseInsert(res) !== studentIds.length) {
+                            console.log("Something is wrong!");
+                        }
+                    });
+                });
+                alert("Emails sent successfully!");
+                //window.location.href = "main_page.html";
+            }
+        }, reason => {
+            alert(reason.result.error.message);
+        });
+    }
 }
