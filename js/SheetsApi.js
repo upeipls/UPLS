@@ -32,13 +32,13 @@ function SheetsApi() {
      * This function calls the google api to initialize the gapi.client.
      */
     function initClient() {
-        let SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
+        let SCOPE = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/gmail.compose';
 
         gapi.client.init({
             'apiKey': API_KEY,
             'clientId': CLIENT_ID,
             'scope': SCOPE,
-            'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+            'discoveryDocs': ["https://sheets.googleapis.com/$discovery/rest?version=v4","https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"],
         }).then(function () {
             gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
             updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
@@ -504,6 +504,77 @@ function SheetsApi() {
         return response.result.updatedColumns;
     }
 
+    function getDraftBySubject(subject) {
+        return gapi.client.gmail.users.drafts.list({
+            'userId': 'me',
+            'q': "subject:" + subject
+        });
+    }
+
+    function parseDraftBySubject(response) {
+        if (response.result.resultSizeEstimate > 0) {
+            if (response.result.resultSizeEstimate > 1) {
+                console.log("There are more than one choice");
+                console.log(response.result.drafts);
+                return response.result.drafts;
+            } else {
+                let draftId = response.result.drafts[0].id;
+                return gapi.client.gmail.users.drafts.get({
+                    'userId': 'me',
+                    'id': draftId,
+                    'format': "raw"
+                });
+            }
+        } else {
+            console.log("No draft found!");
+            return null;
+        }
+    }
+
+    function decode(str) {
+        return window.atob(str.replace(/-/g, "+").replace(/_/g, "/"));
+    }
+
+    function sendEmails(message, addresses, variables) {
+        for (let i = 0; i < addresses.length; i++) {
+            let finalMessage = replaceVar(message, variables, i);
+            finalMessage = addAddress(finalMessage, addresses[i]);
+            console.log(finalMessage);
+            finalMessage = window.btoa(finalMessage).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+            gapi.client.gmail.users.messages.send({
+                'userId': 'me',
+                'resource': {'raw': finalMessage}
+            }).then(res => {console.log(res);});
+        }
+    }
+
+    function replaceVar(message, variables, index) {
+        let startIndex = message.indexOf("$");
+        let tempStr, endIndex;
+        let loop = 0;
+        while (startIndex >= 0 && loop < 5) {
+            console.log(startIndex);
+            tempStr = message.substr(startIndex + 1);
+            endIndex = tempStr.indexOf("$");
+            if (endIndex < 0) {
+                return message;
+            }
+            tempStr = tempStr.substr(0, endIndex);
+            message = message.replace("$"+tempStr+"$", variables[tempStr][index]);
+            startIndex = message.indexOf("$");
+            console.log(message);
+            loop++;
+        }
+        return message;
+    }
+
+    function addAddress(message, address) {
+        let startIndex = message.indexOf("From:");
+        let endIndex = message.indexOf("Content-Type:");
+        let tempStr = message.substr(startIndex, endIndex - startIndex);
+        return message.replace(tempStr, tempStr + "To: " + address + "\n");
+    }
+
     return Object.freeze({
         setKeys,
         handleClientLoad,
@@ -527,6 +598,10 @@ function SheetsApi() {
         batchUpdateTable,
         parseBatchUpdate,
         alterTableAddCol,
-        parseAlter
+        parseAlter,
+        getDraftBySubject,
+        parseDraftBySubject,
+        decode,
+        sendEmails
     });
 }

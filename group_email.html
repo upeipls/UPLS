@@ -8,21 +8,31 @@
 </head>
 <body onload="mainMenu()">
 <div class="main_menu" id="main_menu"></div>
-<form action="main_page.html" id="back" class="fl-lt">
-  <button class="back_button"></button>
-</form>
+<button class="back_button" onclick="backStep()"></button>
 
-<div id="operations" class="fl-rt">
-  <button class="small_btn">Continue</button>
-  <button class="small_btn" onclick="addCriteria()">Add Criteria</button>
-</div>
 
 <div id="content">
-  <h1 id="title">Group Email - Criteria</h1>
-  <div id="number_label">This group currently contains 2334566 people.</div>
 
-  <div id="criteria">
+  <h1 id="title" class="title">Group Email - Criteria</h1>
+  <div id="number_label">This group currently contains 0 people.</div>
 
+  <div id="criteria" class="invisible">
+    <div id="operations" class="fl-rt">
+      <button class="small_btn" onclick="nextStep()">Continue</button>
+      <button class="small_btn" onclick="addCriteria()">Add Criteria</button>
+    </div>
+  </div>
+  <div id="template" class="invisible">
+    <p>Please enter the subject line of the email you wish to use as a template (from your drafts folder)</p>
+    <div><label for="input_subject">Subject Line: </label><input id="input_subject" type="text"></div>
+    <button class="small_btn" onclick="nextStep()">Continue</button>
+  </div>
+  <div id="preview" class="invisible">
+    <p>The email with the following subject line has been selected:</p>
+    <p id="email_subject"></p>
+    <p>which contains the body text:</p>
+    <textarea class="preview_scroll_box" id="preview_content" disabled></textarea>
+    <button class="small_btn" onclick="sendEmails()">Send</button>
   </div>
 </div>
 
