@@ -109,13 +109,20 @@ console.log(studentID[0]);
 			  body.appendChild(table);
 			  table.setAttribute("border", "2");
 			  table.setAttribute("id","studentTable");
+			  var input = document.createElement("input"); 
+			  input.setAttribute('type', 'text');
+			  input.setAttribute("value","Add Notes Here");
+			  body.appendChild(input);
 			  var btn = document.createElement("BUTTON");
-				  var t = document.createTextNode("Return to Search");
-				  btn.onclick = function(){
-				  	window.location.href="index.html";
-				  };
-				  btn.appendChild(t);
+			  var t = document.createTextNode("Return to Search");
+			  btn.onclick = function(){
+			  	window.location.href="index.html";
+			  };
+			  btn.appendChild(t);
+			  btn.setAttribute("class","flow_button");
 			  body.appendChild(btn);
+			
+
 			});
 		});		
 }
