@@ -1,5 +1,5 @@
 # Intro
-The University Personal Librarian System (UPLS) is a CRM (Customer Relationship Management) like piece of software built for the University of Prince Edward Island. Robertson Library librarians will use this software to record student interactions as well as submit and update student information as needed.
+The University Personal Librarian System (UPLS) is a CRM (Customer Relationship Management) like piece of software built for the University of Prince Edward Island. Robertson Library librarians will use this software to record student interactions as well as submit and update student information as needed. See the [UPLS Wiki](/upeipls/UPLS/wiki) for more information.
 
 ---
 # Dependencies
@@ -17,7 +17,7 @@ Microsoft Edge: https://www.microsoft.com/en-ca/windows/microsoft-edge
 
 Mac Safari: https://support.apple.com/downloads/safari
 
-## Git 
+## Git (optional)
 Windows: https://git-scm.com/download/win
 
 ---
@@ -55,7 +55,7 @@ Windows: https://git-scm.com/download/win
 
 ## `UPLS`:
 
-#### `Via WebSite`:
+#### `Via GitHub`:
 1.  Navigate with your favourite(default) browser to https://github.com/upeipls/UPLS
 2.  Click the green "Clone or Download" button on the right side of the page
 3.  Click download zip
@@ -67,6 +67,11 @@ Windows: https://git-scm.com/download/win
 3.  Once complete, close the command line
 
 # Usage
+## To Start
+When all installation steps are complete, you must start a local server in the UPLS directory that was created in the UPLS installation.
+1. Open the command prompt (or terminal) and go to your local UPLS directory: `cd your/path/to/UPLS/`
+2. Start the a local server with python3: `python3 -m http.server` This command's default port is 8000. Later, when you wish to exit the program and stop the server, you can either close the window in which you entered this command, or press control+C in the window to send an interupt to stop the process.
+3. Now you can access the webpages in the UPLS directory by opening your web browser and going to http://localhost:8000/
 
 # Troubleshooting
 

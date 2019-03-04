@@ -1,0 +1,51 @@
+<!--
+This file will provide the backbone for the main page.
+-->
+<html>
+  <head>
+	<title>Main Page</title>
+	<link rel="stylesheet" type="text/css" href="css/upls_styles.css">
+	<script src="js/main_menu.js"></script>
+  </head>
+  
+  <body>
+	<center>
+		<img src="assets/placeholderlogo.png" alt="Logo for UPLP." class="main_logo">
+		
+		<form action="add_student.html" class="">
+			<button type="submit" class="nav_button">Add Student</button>
+		</form>
+		
+		<form action="group_email.html" class="">
+			<button type="submit" class="nav_button">Group Email</button>
+		</form>
+		
+		<form action="aggregation.html" class="">
+			<button type="submit" class="nav_button">Aggregate</button>
+		</form>
+		
+		<form action="view_student.html" class="">
+			<button type="submit" class="nav_button">View Student</button>
+		</form>
+		
+	   <button onclick="dropdown()" id="dropdown"  class="admin_nav_button">Admin Menu</button>
+	   
+	   <div id="dropdown_items" class="dropdown_items">
+			 <br>
+			 <form action="batch_ingest.html" class="">
+				<button type="submit" class="admin_nav_button">Batch Ingest</button>
+			</form>
+			
+			<form action="edit_interaction_categories.html" class="">
+				<button type="submit" class="admin_nav_button">Interaction Categories</button>
+			</form>
+			
+			<form action="edit_student_categories.html" >
+				<button type="submit" class="admin_nav_button">Student Categories</button>
+			</form>
+	
+		</div>
+	</center>
+  </body>
+  
+</html>
