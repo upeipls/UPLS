@@ -1,5 +1,4 @@
 let sa = new SheetsApi();
-sa.setKeys("1n2w0s1lqSZ4kHX3zeNYT-UNRPEr1aextWaG_bsJisn8", "AIzaSyDeampVGzzd8NvBiUtEsNVmNkAQU1TZ17I", "21358841826-edt9rotek8r1rbivt91nabpn2sc2g6ts.apps.googleusercontent.com");
 sa.handleClientLoad();
 
 let sheetHeaders;
@@ -169,7 +168,7 @@ function sendEmails() {
                     });
                 });
                 alert("Emails sent successfully!");
-                //window.location.href = "main_page.html";
+                window.location.href = "main_page.html";
             }
         }, reason => {
             alert(reason.result.error.message);
