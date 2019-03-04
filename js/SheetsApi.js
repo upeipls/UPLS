@@ -492,7 +492,7 @@ function SheetsApi() {
         return gapi.client.sheets.spreadsheets.values.append(params);
     }
 
-    /**
+    /** Public
      * This function will parse the response from alterTableAddCol and return the updated columns
      * @param response The response from alterTableAddCol
      * @returns {int}
@@ -501,6 +501,11 @@ function SheetsApi() {
         return response.result.updatedColumns;
     }
 
+    /** Public
+     * This function returns a promise to get the draft(s) by subject line
+     * @param subject the subject line
+     * @returns {Promise}
+     */
     function getDraftBySubject(subject) {
         return gapi.client.gmail.users.drafts.list({
             'userId': 'me',
@@ -508,6 +513,12 @@ function SheetsApi() {
         });
     }
 
+    /** Public
+     * This function parses the response from getDraftBySubject and returns
+     * a list of drafts, a promise to get the specific draft, or null if no drafts found
+     * @param response response from getDraftBySubject
+     * @returns {String[] | Promise | null}
+     */
     function parseDraftBySubject(response) {
         if (response.result.resultSizeEstimate > 0) {
             if (response.result.resultSizeEstimate > 1) {
@@ -525,10 +536,20 @@ function SheetsApi() {
         }
     }
 
+    /** Public
+     * This function decodes a base64URL encoded string and returns the result
+     * @param str the base64URL encoded string
+     * @returns {String}
+     */
     function decode(str) {
         return window.atob(str.replace(/-/g, "+").replace(/_/g, "/"));
     }
 
+    /** Public
+     * This function returns a promise to send a email
+     * @param message the base64URL encoded message of the email
+     * @returns {Promise}
+     */
     function sendEmail(message) {
         return gapi.client.gmail.users.messages.send({
             'userId': 'me',
@@ -536,6 +557,15 @@ function SheetsApi() {
         });
     }
 
+    /** Public
+     * This function replace the variables in the message with corresponding values
+     * and returns the final message
+     * @param message   the email message contains the variables
+     * @param variables an object of variables and corresponding values, in the format
+     *                  {variable: [value1, value2, ...], variable2: ...}
+     * @param index     the index of value to use
+     * @returns {String}
+     */
     function replaceVar(message, variables, index) {
         let startIndex = message.indexOf("$");
         let tempStr, endIndex;
@@ -554,6 +584,12 @@ function SheetsApi() {
         return message;
     }
 
+    /** Public
+     * This function adds the destination email address to the message
+     * @param message   the email message
+     * @param address   the destination email address
+     * @returns {String}
+     */
     function addAddress(message, address) {
         let startIndex = message.indexOf("From:");
         let endIndex = message.indexOf("Content-Type:");
