@@ -159,7 +159,7 @@ function sendEmails() {
                     let headers = sa.parseTableHeaders(res);
                     let toInsert = [headers];
                     for (let i = 0; i < studentIds.length; i++) {
-                        toInsert[toInsert.length] = [studentIds[i], "Email", "Subject: " + draftSubject];
+                        toInsert[toInsert.length] = [studentIds[i], "Email", "Subject: " + draftSubject, getCurrentDate(), "TRUE"];
                     }
                     sa.insertIntoTableColValues(headers, "INTERACTION_TRACKING", sa.arrayToObjects(toInsert)).then(res => {
                         if (sa.parseInsert(res) !== studentIds.length) {
@@ -174,4 +174,14 @@ function sendEmails() {
             alert(reason.result.error.message);
         });
     }
+}
+
+function getCurrentDate() {
+    let d = new Date();
+    let str = "" + d.getFullYear() + "-";
+    if (d.getMonth() > 9) str += (d.getMonth() + 1);
+    else str += "0" + (d.getMonth() + 1);
+    if (d.getDate() > 9) str += "-" + d.getDate();
+    else str += "-0" + d.getDate();
+    return str;
 }
