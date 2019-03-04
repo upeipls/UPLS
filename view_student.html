@@ -5,8 +5,88 @@ This file will provide the backbone for viewing student info.
   <head>
   <title>View Student</title>
   <link rel="stylesheet" type="text/css" href="cs/upls_styles.css">
-  <script src="js/main_menu.js"></script>
+  <script src="js/main_menu.js"></script> 
+  <script src="https://apis.google.com/js/api.js"></script>
+  <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+  <script src="functions.js"></script>
+  <script>
+    let sa = SheetsApi("1n2w0s1lqSZ4kHX3zeNYT-UNRPEr1aextWaG_bsJisn8","AIzaSyDeampVGzzd8NvBiUtEsNVmNkAQU1TZ17I","21358841826-edt9rotek8r1rbivt91nabpn2sc2g6ts.apps.googleusercontent.com");
+    sa.handleClientLoad();	
+  </script>
   </head>
+  <body class='body'>
+	<script type="text/javascript">
+	var condition = {
+		header : "test",
+		value : "0",
+	};
+	function getStudentInfo(){
+		var idValue = "100452";
+		condition = {
+			header : "STUDENT_ID",
+			value : idValue,
+		};
+		var headers = [];
+		var arrayaa = [];
+		var studentInfo = [];
+		var test = [];
+		var conditions = new Array();
+		conditions[0] = condition;
+			sa.getSheet("UPLS").then(response => {
+				(sa.getTableHeaders(response));
+				headers = sa.parseTableHeaders(response);
+					sa.getSheet("UPLS").then(response => {
+					(sa.parseSheetValues(response));
+					arrayaa = sa.selectFromTableWhereConditions(response,"*",conditions,1);
+					studentInfo = sa.parseSheetValues(response);
+					test = headers;
+					var body = document.getElementsByTagName("body")[0];
+				  	// create elements <table> and a <tbody>
+				 	var tbl = document.createElement("table");
+				  	var tblBody = document.createElement("tbody");
+				  	// cells creation
+				  
+				  	for (var j = 0; j < headers.length; j++) {
+				    	// table row creation
+				    	var row = document.createElement("tr");
+				    
+				    	for (var i = 0; i < 1; i++) {
+					      // create element <td> and text node 
+					      //Make text node the contents of <td> element
+					      // put <td> at end of the table row
+					      var cell = document.createElement("td");
+					      var cellText = document.createTextNode(headers[j] + " | | " + studentInfo[0][j]);
+
+					      cell.appendChild(cellText);
+					      row.appendChild(cell);
+				    	}
+				    //row added to end of table body
+				    tblBody.appendChild(row);
+				  	}
+				  // append the <tbody> inside the <table>
+				  tbl.appendChild(tblBody);
+				  // put <table> in the <body>
+				  body.appendChild(tbl);
+				  // tbl border attribute to 
+				  tbl.setAttribute("border", "2");
+				  tbl.setAttribute("class", "column_two_thirds");
+					/*for (var s in test) {
+					    var newElement = document.createElement('div');
+					    newElement.id = test[s]; newElement.className = "field";
+					    newElement.innerHTML = headers[s] + " 				" + studentInfo[0][s];
+					    document.body.appendChild(newElement);
+					}*/
+				});
+			});		
+	}
+	getStudentInfo();
+</script>
+
+<button onclick="getStudentInfo()">View Student Information</button><br>
+<button onclick="sa.handleSignInClick()">Sign In</button><br>
+<form action="index.html" >
+<button type="submit" class="back_button"></button>
+</form>
   <body onload="mainMenu()">
     <div class="main_menu" id="main_menu"></div>
   </body>
