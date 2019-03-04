@@ -41,45 +41,30 @@ This file will provide the backbone for viewing student info.
 					studentInfo = sa.parseSheetValues(response);
 					test = headers;
 					var body = document.getElementsByTagName("body")[0];
-				  	// create elements <table> and a <tbody>
-				 	var tbl = document.createElement("table");
-				  	var tblBody = document.createElement("tbody");
-				  	// cells creation
-				  
-				  	for (var j = 0; j < headers.length; j++) {
-				    	// table row creation
-				    	var row = document.createElement("tr");
-				    
-				    	for (var i = 0; i < 1; i++) {
-					      // create element <td> and text node 
-					      //Make text node the contents of <td> element
-					      // put <td> at end of the table row
-					      var cell = document.createElement("td");
-					      var cellText = document.createTextNode(headers[j] + " | | " + studentInfo[0][j]);
+					var table = document.createElement("table");
+					var tbody = document.createElement("body");
+					for (var a =0; a < headers.length; a++){
+						var row = document.createElement("tr");
+						var data = document.createElement("td");
+						var data2 = document.createElement("td");
+						var text1 = document.createTextNode(headers[a]);
+						var text2 = document.createTextNode(studentInfo[0][a]);
+						
+						data.appendChild(text1);
+						data2.appendChild(text2);
+						row.appendChild(data);
+						row.appendChild(data2);
+						tbody.appendChild(row);
 
-					      cell.appendChild(cellText);
-					      row.appendChild(cell);
-				    	}
-				    //row added to end of table body
-				    tblBody.appendChild(row);
-				  	}
-				  // append the <tbody> inside the <table>
-				  tbl.appendChild(tblBody);
+					}
+					table.appendChild(tbody);
 				  // put <table> in the <body>
-				  body.appendChild(tbl);
-				  // tbl border attribute to 
-				  tbl.setAttribute("border", "2");
-				  tbl.setAttribute("class", "column_two_thirds");
-					/*for (var s in test) {
-					    var newElement = document.createElement('div');
-					    newElement.id = test[s]; newElement.className = "field";
-					    newElement.innerHTML = headers[s] + " 				" + studentInfo[0][s];
-					    document.body.appendChild(newElement);
-					}*/
+				  body.appendChild(table);
+				  table.setAttribute("border", "2");
+					
 				});
 			});		
 	}
-	getStudentInfo();
 </script>
 
 <button onclick="getStudentInfo()">View Student Information</button><br>
