@@ -1,12 +1,4 @@
-function start(){
-/*Just here for testing purposes*/
-let sa = SheetsApi("1n2w0s1lqSZ4kHX3zeNYT-UNRPEr1aextWaG_bsJisn8","AIzaSyDeampVGzzd8NvBiUtEsNVmNkAQU1TZ17I","21358841826-edt9rotek8r1rbivt91nabpn2sc2g6ts.apps.googleusercontent.com");
-sa.handleClientLoad();
-//real API call, with no information needed to create a sheet. must input
-//Google data for the UPLS Google Account being used
-/*let sa = SheetsApi();
-sa.setKeys(inputSheetId, inputApiKey,inputClientId);*/
-}
+
 function mainMenu() {
 	var main_menu = "\
 	<form action=\"index.html\" class=\"menu_bar_form\">\
