@@ -74,7 +74,7 @@
 	background-image: url("images/xbuttoninvertedbg.png");
 }
 
-.flow_button {
+.small_button {
 	background-color: #789D4A;
 	border: none;
 	text-align: center;
@@ -84,7 +84,7 @@
 	min-width: 12.5em;
 }
 
-.flow_button:hover {
+.small_button:hover {
 	Background-color: #FFFFFF;
 	color: #000000;
 	border-style: solid;
@@ -92,17 +92,11 @@
 	border-color: #789D4A;
 }
 
-.admin_flow_button {
+.small_button.admin{
 	background-color: #F1B434;
-	border: none;
-	text-align: center;
-	color: #FFFFFF;
-	height: 1.5em;
-	width: fit-content;
-	min-width: 12.5em;
 }
 
-.admin_flow_button:hover {
+.small_button.admin:hover {
 	Background-color: #FFFFFF;
 	color: #000000;
 	border-style: solid;
@@ -110,7 +104,26 @@
 	border-color: #F1B434;
 }
 
-.nav_button {
+.medium_button {
+	background-color: #789D4A;
+	border: none;
+	text-align: center;
+	color: #FFFFFF;
+	width: fit-content;
+	min-width: 15em;
+	height: 3em;
+	padding: 3px;
+}
+
+.medium_button:hover {
+	Background-color: #FFFFFF;
+	color: #000000;
+	border-style: solid;
+	border-width: medium;
+	border-color: #789D4A;
+}
+
+.large_button {
 	background-color: #789D4A;
 	border: none;
 	text-align: center;
@@ -118,9 +131,10 @@
 	width: fit-content;
 	min-width: 25em;
 	height: 5em;
+	padding: 3px;
 }
 
-.nav_button:hover {
+.large_button:hover {
 	Background-color: #FFFFFF;
 	color: #000000;
 	border-style: solid;
@@ -128,16 +142,10 @@
 	border-color: #789D4A;
 }
 
-.admin_nav_button {
+.large_button.admin {
 	background-color: #F1B434;
-	border: none;
-	text-align: center;
-	color: #FFFFFF;
-	width: fit-content;
-	min-width: 25em;
-	height: 5em;
 }
-.admin_nav_button:hover {
+.large_button.admin:hover {
 	Background-color: #FFFFFF;
 	color: #000000;
 	border-style: solid;
@@ -145,10 +153,6 @@
 	border-color: #F1B434;
 }
 
-.nav_list {
-	padding: 0;
-	list-style-type: none;
-}
 
 .preview_scroll_box {
 	background: #FFFFFF;
@@ -164,30 +168,29 @@
 	display: inline;
 }
 
-.column_third {
+.column_30 {
+	width: 30%;
 	float: left;
-	width: 33.33%;
-	min-height: 200px;
-	padding-left: 30px;
-	background-color: #FFFFFF;
 }
 
-.column_two_thirds {
+.column_70 {
+	width: 70%;
 	float: left;
-	width: 66.67%;
+}
+.column_side {
+	float: left;
+	width: 15%;
 	min-height: 200px;
 }
 
-.top_half {
+.column_main {
+	float: left;
+	width: 70%;
+	min-height: 200px;
+}
+
+.row{
 	float: top;
-	height: 50%;
-	max-height: 500px;
-	min-height: 200px;
-}
-
-.bottom_half {
-	float: bottom;
-	height: 50%;
 	max-height: 500px;
 	min-height: 200px;
 }
