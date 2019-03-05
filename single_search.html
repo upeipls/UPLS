@@ -2,12 +2,110 @@
 This file will provide the backbone of the single search page.
 -->
 <html>
-  <head>
-  <title>Search</title>
-  <link rel="stylesheet" type="text/css" href="css/upls_styles.css">
-  <script src="js/main_menu.js"></script>
-  </head>
-  <body onload="mainMenu()">
-    <div class="main_menu" id="main_menu"></div>
-  </body>
+	<head>
+	<title>Known Item Search</title>
+  
+		<link rel="stylesheet" type="text/css" href="css/upls_styles.css">
+	
+		<script defer src="js/main_menu.js"></script>
+		<script defer src="js/single_search.js"></script>
+		<script defer src="js/SheetsApi.js"></script>
+	
+	</head>
+  
+	<body onload="dynamicLoad()">
+		<div class="main_menu" id="main_menu"></div>
+		
+		<h1 class="title">Known Item Search</h1>
+		
+		<div class="column_side">
+		
+		</div>
+		
+		<div class="column_main">
+			<div class="column_30">
+				<div class="row">
+					First Name:
+					<br>
+					<input id="firstNameField" type="text" placeholder="John" align="right"></input>
+					<br>
+					
+					Last Name:
+					<br>
+					<input id="lastNameField" type="text" placeholder="Smith"></input>
+					<br>
+					
+					Email: 
+					<br>
+					<input id="emailField" type="text" placeholder="jsmith@upei.ca"></input>
+					<br>
+					
+					Student ID#: 
+					<br>
+					<input id="idNumberField" type="number" placeholder="000000"></input>
+					<br><br>
+					
+					<button id="searchButton" class="flow_button">Search</button>
+				</div>
+				
+				<div class="row" id="functionButtons">
+					<button id="viewStudentButton" type="button" value="View Student" class="medium_button invisible">View Student</button>
+					<button id="editStudentButton" type="button" value="Edit Student" class="medium_button invisible">Edit Student</button>
+					<button id="viewInteractionButton" type="button" value="View Student Interaction" class="medium_button invisible">View Student Interaction</button>
+					<button id="editInteractionButton" type="button" value="Edit Student Interaction" class="medium_button invisible">Edit Student Interaction</button>
+					<button id="addInteractionButton" type="button" value="Add Student Interaction" class="medium_button invisible">Add Student Interaction</button>
+					</div>
+				
+			</div>
+			<div class="column_70">
+				<div id="resultTable">
+					<table style="width:100%" border="1" >
+						<tr>
+							<th>Select</th>
+							<th>Student ID</th>
+							<th>First Name</th>
+							<th>Last Name</th>
+							<th>Email</th>
+							<th>Year of Study</th>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		
+		<div class="column_side">
+		</div>
+		
+		<script>
+		
+		document.getElementById("searchButton").addEventListener("click", function() {
+		//API search functionality here
+		});
+		
+		document.getElementById("viewStudentButton").addEventListener("click", function() {
+		
+		});
+		document.getElementById("editStudentButton").addEventListener("click", function() {
+		
+		});
+		document.getElementById("viewInteractionButton").addEventListener("click", function() {
+		
+		});
+		document.getElementById("editInteractionButton").addEventListener("click", function() {
+		
+		});
+		document.getElementById("addInteractionButton").addEventListener("click", function() {
+		
+		});
+		
+		
+		function dynamicLoad()
+		{
+			mainMenu()
+			showFunctionButton(localStorage.getItem("functionCode"));
+			
+		}
+		</script>
+	</body>
+  
 </html>
