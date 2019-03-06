@@ -9,24 +9,28 @@ This file will provide the backbone for adding an interaction for a single stude
   </head>
   <body onload="mainMenu()">
     <div class="main_menu" id="main_menu"></div>
-    <form action="/main_page.html" onsubmit="interactionSubmit()">
-    Student: <input type="text" id="student_name" readonly> <input type="number" id="student_id" readonly>
-    Email: <input type="text" id="student_email" readonly> <br>
-    Interaction Type:
-    <select id="interaction_type" required>
-    </select> <br>
-    Interaction Date: <input type="date" id="interaction_date" required><br>
-    Librarian Initiated? <input type="radio" name="librarian_initiated" value="yes" id="librarian_initiated_yes" checked>Yes <input type="radio" name="librarian_initiated" value="no" id="librarian_initiated_no">No <br>
-    Follow-up Interaction? <input type="radio" name="follow_up" value="yes" id="follow_up_yes" checked>Yes <input type="radio" name="follow_up" value="no" id="follow_up_no">No<br>
-    Time Spent (minutes): <input type="number" min="1" id="time_spent" required><br>
-    Communication Channel:
-    <select id="communication_channel" required>
-    </select><br>
-    URL: <input type="url" id="url"><br>
-    Notes: <textarea id="notes"></textarea><br>
-    <input type="submit" value="Submit">
-    </form>
-    <a href="main_page.html"><button value="Cancel">Cancel</button></a>
+    <center>
+      <a href="single_search.html"><button value="back" class="back_button"></button></a>
+      <span class="title">Add Student Interaction</span>
+      <form action="/main_page.html" onsubmit="interactionSubmit()">
+        Student: <span id="student_name"></span>, <span id="student_id"></span><br>
+        Email: <span id="student_email"></span> <br>
+        Interaction Type:
+        <select id="interaction_type" required>
+        </select> <br>
+        Interaction Date: <input type="date" id="interaction_date" required><br>
+        Librarian Initiated? <input type="radio" name="librarian_initiated" value="yes" id="librarian_initiated_yes">Yes <input type="radio" name="librarian_initiated" value="no" id="librarian_initiated_no" checked>No <br>
+        Follow-up Interaction? <input type="radio" name="follow_up" value="yes" id="follow_up_yes">Yes <input type="radio" name="follow_up" value="no" id="follow_up_no" checked>No<br>
+        Time Spent (minutes): <input type="number" min="1" id="time_spent" required><br>
+        Communication Channel:
+        <select id="communication_channel" required>
+        </select><br>
+        URL: <input type="url" id="url"><br>
+        Notes: <textarea id="notes"></textarea><br>
+        <input type="submit" value="Submit" class="small_button">
+        <a href="main_page.html"><input type="button" value="Cancel" class="small_button" formnovalidate="formnovalidate"></a>
+      </form>
+    </center>
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="js/SheetsApi.js"></script>
     <script src="js/add_student_interaction.js"></script>

@@ -1,5 +1,6 @@
 sa = new SheetsApi();
 sa.handleClientLoad();
+var student_id = 0;
 function updateSignInStatus(isSignedIn) {
   if (isSignedIn) {
     fillStudentInfo();
@@ -16,20 +17,20 @@ function updateSignInStatus(isSignedIn) {
 function fillStudentInfo() {
   var url_string = window.location.href;
   var url = new URL(url_string);
-  var id = url.searchParams.get("id");
+  student_id = url.searchParams.get("id");
   // Get name and email.
   var col_names = ["FIRST_NAME", "LAST_NAME", "EMAIL"];
   var upls_condition = [{
-    "header": "STUDENT_ID", "value": id
+    "header": "STUDENT_ID", "value": student_id
   }];
   var upls_table = "UPLS";
   sa.getSheet(upls_table).then(response => {
     var student_info = sa.selectFromTableWhereConditions(response, col_names, upls_condition, 0);
     var student_name = student_info[0].FIRST_NAME + " " + student_info[0].LAST_NAME;
     var email = student_info[0].EMAIL;
-    document.getElementById("student_name").value = student_name;
-    document.getElementById("student_id").value = id;
-    document.getElementById("student_email").value = email;
+    document.getElementById("student_name").innerHTML = student_name;
+    document.getElementById("student_id").innerHTML = student_id;
+    document.getElementById("student_email").innerHTML = email;
   }, reason => {
     let msg = sa.parseErrorMessage(reason);
     console.log(msg);
@@ -85,27 +86,35 @@ function interactionSubmit() {
     "URL", //headers[8]
   ];
   // Collect data to submit.
+  var lib_init, follow_up;
+  if (document.getElementById("librarian_initiated_yes").checked) {
+    lib_init = "TRUE";
+  } else {
+    lib_init = "FALSE";
+  }
+  if (document.getElementById("follow_up_yes").checked) {
+    follow_up = "TRUE";
+  } else {
+    follow_up = "FALSE";
+  }
   var toSubmit = [{
-    STUDENT_ID : document.getElementById("student_id").value,
+    STUDENT_ID : student_id,
     INTERACTION_TYPE : document.getElementById("interaction_type").value,
     INTERACTION_NOTE : document.getElementById("notes").value,
     INTERACTION_DATE : document.getElementById("interaction_date").value,
-    LIBRARIAN_INITIATED : document.getElementById("librarian_initiated_yes").checked,
-    FOLLOW_UP : document.getElementById("follow_up_yes").checked,
+    LIBRARIAN_INITIATED : lib_init,
+    FOLLOW_UP : follow_up,
     MINUTES : document.getElementById("time_spent").value,
     COMMUNICATION_CHANNEL : document.getElementById("communication_channel").value,
     URL : document.getElementById("url").value,
   }];
   // Add data to database.
   sa.insertIntoTableColValues(headers, "INTERACTION_TRACKING", toSubmit).then(response => {
+alert("why");
     var answer = sa.parseInsert(response);
     alert(answer + " interaction has been successfully saved.");
   }, reason => {
     let msg = sa.parseErrorMessage(reason);
     console.log(msg);
   });
-}
-
-function interactionCancel() {
-
 }
