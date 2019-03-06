@@ -1,4 +1,5 @@
 let sa = new SheetsApi();
+sa.setKeys("1n2w0s1lqSZ4kHX3zeNYT-UNRPEr1aextWaG_bsJisn8", "AIzaSyDeampVGzzd8NvBiUtEsNVmNkAQU1TZ17I", "21358841826-edt9rotek8r1rbivt91nabpn2sc2g6ts.apps.googleusercontent.com");
 sa.handleClientLoad();
 
 let sheetHeaders;
@@ -10,6 +11,7 @@ function updateSignInStatus(isSignedIn) {
         sa.getTableHeaders("UPLS").then(res => {
             sheetHeaders = sa.parseTableHeaders(res);
             addCriteria();
+            updatePopulation();
             document.getElementById("criteria").classList.remove("invisible");
         });
     } else {
@@ -42,7 +44,7 @@ function nextStep() {
 }
 
 function addCriteria() {
-    let options = "";
+    let options = "<option>---</option>";
     for (let i = 0; i < sheetHeaders.length; i++) {
         options += "<option>" + sheetHeaders[i] + "</option>";
     }
@@ -68,9 +70,13 @@ function addCriteria() {
 
 function deleteCriteria(object) {
     object.parentElement.parentElement.parentElement.parentElement.outerHTML = "";
+    updatePopulation();
 }
 
 function getVocabulary(header, index) {
+    if (header === "---") {
+        return;
+    }
     let vocab = [];
     let notation = sa.getNotationFromColName(sheetHeaders, header);
     sa.getSheet("UPLS!" + notation + ":" + notation).then(res => {
@@ -85,7 +91,7 @@ function getVocabulary(header, index) {
 }
 
 function setVocabulary(values, index) {
-    let options = "";
+    let options = "<option>---</option>";
     for (let i = 0; i < values.length; i++) {
         options += "<option>" + values[i] + "</option>";
     }
@@ -102,6 +108,7 @@ function updatePopulation() {
         if (document.getElementById("criteria_" + i).innerHTML === "") continue;
         header = document.getElementById("select_criteria_" + i).value;
         value = document.getElementById("select_values_" + i).value;
+        if (header ==="---" || value === "---") continue;
         conditions[conditions.length] = {"header":header, "value": value};
     }
     sa.getSheet("UPLS").then(res => {
