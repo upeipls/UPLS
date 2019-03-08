@@ -1,30 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>View Student Information</title>
+<title>Displaying a Student</title>
 <link href="styles.css" rel="stylesheet" type="text/css" media="all">
+<script src="js/mainmenu.js"></script>
 <script src="https://apis.google.com/js/api.js"></script>
-<script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
 <script src="js/SheetsApi.js"></script>
 <script src="js/viewStudent.js"></script>
-<script>
-//real API call, with no information needed to create a sheet. must input
-//Google data for the UPLS Google Account being used
-let sa = SheetsApi();
-var inputSheetId = "";
-var inputApiKey = "";
-var inputClientId = "";
-sa.setKeys(inputSheetId, inputApiKey,inputClientId);
-</script>
 </head>
-<body class='body' onload="mainMenu()">
-	<div class="main_menu" id="main_menu"></div>
-	<script type="text/javascript">
-		window.onload=updateSignInStatus();
-	</script>
-	<script type="text/javascript">
-		getStudentInfo();
-	</script>
+<body onload="mainMenu()">
+<div class="main_menu" id="main_menu"></div>
 <!-- <form action="index.html" >
 <button type="submit" class="back_button"></button>
 </form> -->
