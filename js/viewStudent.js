@@ -36,16 +36,16 @@ function getStudentInfo(){
 			for (var a =0; a < headers.length; a++){
 				if (headers[a] != "GENERAL_COMMENT"){
 					var row = document.createElement("tr");
-					var data = document.createElement("td");
-					data.setAttribute("style","text-align: left");
-					var data2 = document.createElement("td");
-					data2.setAttribute("style","text-align: right");
-					var text1 = document.createTextNode(headers[a]);
-					var text2 = document.createTextNode(studentInfo[0][a]);
-					data.appendChild(text1);
-					data2.appendChild(text2);
-					row.appendChild(data);
-					row.appendChild(data2);
+					var header = document.createElement("td");
+					header.setAttribute("style","text-align: left");
+					var headerContent = document.createElement("td");
+					headerContent.setAttribute("style","text-align: right");
+					var headerText = document.createTextNode(headers[a]);
+					var contentText = document.createTextNode(studentInfo[0][a]);
+					header.appendChild(headerText);
+					headerContent.appendChild(contentText);
+					row.appendChild(header);
+					row.appendChild(headerContent);
 					tbody.appendChild(row);
 				}
 				if (headers[a] == "GENERAL_COMMENT"){
