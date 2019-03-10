@@ -98,8 +98,7 @@ function interactionSubmit() {
   }];
   // Add data to database.
   sa.insertIntoTableColValues(headers, "INTERACTION_TRACKING", toSubmit).then(response => {
-    var answer = sa.parseInsert(response);
-    alert(answer + " interaction has been successfully saved.");
+    alert("Interaction has been successfully saved.");
   }, reason => {
     let msg = sa.parseErrorMessage(reason);
     console.log(msg);
