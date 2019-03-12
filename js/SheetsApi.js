@@ -6,9 +6,9 @@
  * @constructor
  */
 function SheetsApi() {
-    let sheetId = "";
-    let API_KEY = "";
-    let CLIENT_ID = "";
+    let sheetId = "1CqFEWYmI9jR590HW4GjgTWwHGWJCsInP7XUv8a2I1cE";
+    let API_KEY = "AIzaSyDt0szfzIfDLMjxb2CLeNzJHyW9lFesGjQ";
+    let CLIENT_ID = "1026345574194-qtu5vpd6llf7b1u7sopjmsufnbf4vh34.apps.googleusercontent.com";
 
     /** Public
      * This function initialize the sheets api object created.
