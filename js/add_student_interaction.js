@@ -110,9 +110,8 @@ function interactionSubmit() {
   }];
   // Add data to database.
   sa.insertIntoTableColValues(headers, "INTERACTION_TRACKING", toSubmit).then(response => {
-alert("why");
-    var answer = sa.parseInsert(response);
-    alert(answer + " interaction has been successfully saved.");
+    alert("Interaction has been successfully saved.");
+    window.location.href = "main_page.html";
   }, reason => {
     let msg = sa.parseErrorMessage(reason);
     console.log(msg);
