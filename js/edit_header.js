@@ -11,15 +11,30 @@ function updateSignInStatus(isSignedIn) {
 
 let sheetHeaders;
 function loadHeaders() {
+    if (sheetName === "INTERACTIONS") {
+        sa.getSheet(sheetName).then(response => {
+            let values = sa.parseSheetValues(response);
+            sheetHeaders = [];
+            for (let i = 1; i < values.length; i++) {
+                if (values[i][0]) sheetHeaders[sheetHeaders.length] = values[i][0];
+            }
+            generateHeadersTable();
+        });
+    } else {
+        sa.getTableHeaders(sheetName).then(response => {
+            sheetHeaders = sa.parseTableHeaders(response);
+            generateHeadersTable();
+        });
+    }
+}
+
+function generateHeadersTable() {
     let str = "<tr><th>Column Name</th><th>Data Type</th><th>Vocabulary</th><th>Operation</th></tr>";
-    sa.getTableHeaders(sheetName).then(response => {
-        sheetHeaders = sa.parseTableHeaders(response);
-        for (let i = 0; i < sheetHeaders.length; i++) {
-           str += "<tr><td>" + sheetHeaders[i] + "</td><td>-</td><td>-</td><td><button class='borderless-btn' onclick='editHeaderCard(this)'><i class='fas fa-pen'></i></button></td></tr>";
-        }
-        str += "<tr><td>/</td><td>-</td><td>-</td><td><button class='borderless-btn' onclick='addNewHeader()'><i class='fas fa-plus'></i></button></td></tr>";
-        document.getElementById("headers_table").innerHTML = str;
-    });
+    for (let i = 0; i < sheetHeaders.length; i++) {
+        str += "<tr id=\"" + i + "\"><td>" + sheetHeaders[i] + "</td><td>-</td><td>-</td><td><button class='borderless-btn' onclick='editHeaderCard(this)'><i class='fas fa-pen'></i></button></td></tr>";
+    }
+    str += "<tr><td>/</td><td>-</td><td>-</td><td><button class='borderless-btn' onclick='addNewHeader()'><i class='fas fa-plus'></i></button></td></tr>";
+    document.getElementById("headers_table").innerHTML = str;
 }
 
 function addNewHeader() {
@@ -33,13 +48,25 @@ function addHeader() {
     let vocabulary = document.getElementById("new-vocabulary").value;
     console.log(headerName + ":" + headerType);
     console.log(vocabulary);
-    sa.getTableHeaders(sheetName).then(response => {
-        sa.alterTableAddCol(sheetName, [headerName], sa.parseTableHeaders(response).length).then(response => {
-            console.log(sa.parseAlter(response));
+    if (sheetName === "INTERACTIONS") {
+        sa.insertIntoTableColValues(["INTERACTIONS_LIST"], "INTERACTIONS", [{
+            "INTERACTIONS_LIST": headerName
+        }]).then(response => {
+            if (sa.parseInsert(response) === 1) {
+                console.log("Success");
+            }
             loadHeaders();
             closeCard();
+        })
+    } else {
+        sa.getTableHeaders(sheetName).then(response => {
+            sa.alterTableAddCol(sheetName, [headerName], sa.parseTableHeaders(response).length).then(response => {
+                console.log(sa.parseAlter(response));
+                loadHeaders();
+                closeCard();
+            });
         });
-    });
+    }
 }
 
 function closeCard() {
@@ -59,7 +86,12 @@ function editHeaderCard(object) {
     document.getElementById("vocabulary").value = "Some vocabulary";
     document.getElementById("edit-card").classList.remove("invisible");
     blurContent();
-    notation = sa.getNotationFromColName(sheetHeaders, columnName) + "1";
+    if (sheetName === "INTERACTIONS"){
+        let index = object.parentElement.parentElement.id + 2;
+        notation = "A" + index;
+    } else {
+        notation = sa.getNotationFromColName(sheetHeaders, columnName) + "1";
+    }
 }
 
 function editHeader() {

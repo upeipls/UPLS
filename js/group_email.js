@@ -1,5 +1,4 @@
 let sa = new SheetsApi();
-sa.setKeys("1n2w0s1lqSZ4kHX3zeNYT-UNRPEr1aextWaG_bsJisn8", "AIzaSyDeampVGzzd8NvBiUtEsNVmNkAQU1TZ17I", "21358841826-edt9rotek8r1rbivt91nabpn2sc2g6ts.apps.googleusercontent.com");
 sa.handleClientLoad();
 
 let sheetHeaders;
@@ -147,7 +146,7 @@ function loadDraft() {
 
 let draftSubject;
 function displayContent(msg) {
-    draftSubject = msg.substr(msg.indexOf("Subject: ") + 9, msg.indexOf("From") - msg.indexOf("Subject: ") - 9);
+    draftSubject = msg.substr(msg.indexOf("Subject: ") + 9, msg.indexOf("From") - msg.indexOf("Subject: ") - 9).trim();
     document.getElementById("email_subject").innerHTML = draftSubject;
     let startIndex = msg.indexOf("UTF-8") + 10;
     let content = msg.substr(startIndex);
@@ -166,16 +165,18 @@ function sendEmails() {
                     let headers = sa.parseTableHeaders(res);
                     let toInsert = [headers];
                     for (let i = 0; i < studentIds.length; i++) {
-                        toInsert[toInsert.length] = [studentIds[i], "Email", "Subject: " + draftSubject, getCurrentDate(), "TRUE"];
+                        toInsert[toInsert.length] = [studentIds[i], "Email", "Subject: " + draftSubject.trim(), getCurrentDate(), "TRUE"];
                     }
                     sa.insertIntoTableColValues(headers, "INTERACTION_TRACKING", sa.arrayToObjects(toInsert)).then(res => {
                         if (sa.parseInsert(res) !== studentIds.length) {
                             console.log("Something is wrong!");
+                        } else {
+                            alert("Emails sent successfully!");
+                            console.log(draftSubject);
+                            //window.location.href = "main_page.html";
                         }
                     });
                 });
-                alert("Emails sent successfully!");
-                window.location.href = "main_page.html";
             }
         }, reason => {
             alert(reason.result.error.message);
