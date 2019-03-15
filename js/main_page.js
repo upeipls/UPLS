@@ -4,16 +4,13 @@
   
 let sa = new SheetsApi();
 sa.handleClientLoad();
-
 function updateSignInStatus(isSignedIn) {
     if (isSignedIn) {
-        });
     } else {
-		console.log("Need sign in!");
+        console.log("Need Log In!");
         sa.handleSignInClick();
     }
 }
-
 
   //send function code to single search page
 function toSingleSearch(code)
@@ -30,7 +27,8 @@ function toPage(address)
 	window.location.href = address;
 }
 
-function loadBtns()
+//add button functionality
+function loadButtonListeners()
 {
 	//these are helpers to call js functions in main_page.js.
 	document.getElementById("addStudentButton").addEventListener("click", function() {
@@ -39,10 +37,6 @@ function loadBtns()
 	
 	document.getElementById("emailButton").addEventListener("click", function() {
 		toPage("group_email.html");
-	});
-	
-	document.getElementById("aggregateButton").addEventListener("click", function() {
-		toPage("aggregation.html");
 	});
 	
 	document.getElementById("viewStudentButton").addEventListener("click", function() {
