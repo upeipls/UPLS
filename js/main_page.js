@@ -30,7 +30,7 @@ function toPage(address)
 //add button functionality
 function loadButtonListeners()
 {
-	//these are helpers to call js functions in main_page.js.
+	//these are helpers to call js functions in main_page.html
 	document.getElementById("addStudentButton").addEventListener("click", function() {
 		toPage("add_student.html");
 	});

@@ -13,7 +13,7 @@ This file will provide the backbone of the single search page.
 		<script src="js/SheetsApi.js"></script>
 	</head>
   
-	<body onload="dynamicLoad()">
+	<body>
 		<div class="main_menu" id="main_menu"></div>
 		
 		<h1 class="title">Known Item Search</h1>
@@ -44,7 +44,7 @@ This file will provide the backbone of the single search page.
 					<br>
 					<input id="idNumberField" type="number" placeholder="000000"></input>
 					<br><br>
-					
+					<p id="feedBackMessage" class="invisible"></p>
 					<button id="searchButton" class="flow_button">Search</button>
 				</div>
 				
@@ -77,17 +77,9 @@ This file will provide the backbone of the single search page.
 		</div>
 		
 		<script>
-		
-		
-		
-		
-		function dynamicLoad()
-		{
 			mainMenu();
-			buttonLoad();
 			showFunctionButton(localStorage.getItem("functionCode"));
-			
-		}
+			loadButtonListeners();
 		</script>
 	</body>
   
