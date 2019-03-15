@@ -7,10 +7,10 @@ This file will provide the backbone of the single search page.
   
 		<link rel="stylesheet" type="text/css" href="css/upls_styles.css">
 	
-		<script defer src="js/main_menu.js"></script>
-		<script defer src="js/single_search.js"></script>
-		<script defer src="js/SheetsApi.js"></script>
-	
+		<script src="js/main_menu.js"></script>
+		<script src="js/single_search.js"></script>
+		<script src="https://apis.google.com/js/api.js"></script>
+		<script src="js/SheetsApi.js"></script>
 	</head>
   
 	<body onload="dynamicLoad()">
@@ -78,30 +78,13 @@ This file will provide the backbone of the single search page.
 		
 		<script>
 		
-		document.getElementById("searchButton").addEventListener("click", function() {
-		//API search functionality here
-		});
 		
-		document.getElementById("viewStudentButton").addEventListener("click", function() {
-		
-		});
-		document.getElementById("editStudentButton").addEventListener("click", function() {
-		
-		});
-		document.getElementById("viewInteractionButton").addEventListener("click", function() {
-		
-		});
-		document.getElementById("editInteractionButton").addEventListener("click", function() {
-		
-		});
-		document.getElementById("addInteractionButton").addEventListener("click", function() {
-		
-		});
 		
 		
 		function dynamicLoad()
 		{
-			mainMenu()
+			mainMenu();
+			buttonLoad();
 			showFunctionButton(localStorage.getItem("functionCode"));
 			
 		}

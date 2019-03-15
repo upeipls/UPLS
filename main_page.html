@@ -5,14 +5,16 @@ This file will provide the backbone for the main page.
   <head>
 	<title>Main Page</title>
 	<link rel="stylesheet" type="text/css" href="css/upls_styles.css">
-	<script defer src="js/main_menu.js"></script>
-	<script defer src="js/main_page.js"></script>
+	<script src="js/main_menu.js"></script>
+	<script src="js/main_page.js"></script>
+	<script src="https://apis.google.com/js/api.js"></script>
+	<script src="js/SheetsApi.js"></script>
 	
   </head>
   
-  <body>
+  <body onload="loadBtns()">
 	<center>
-		
+				
 		<div>
 		<img src="assets/placeholderlogo.png" alt="Logo for UPLP." class="main_logo">
 		<br>
@@ -59,50 +61,6 @@ This file will provide the backbone for the main page.
 	</center>
 	
 	<script>
-	//these are helpers to call js functions in main_page.js.
-	document.getElementById("addStudentButton").addEventListener("click", function() {
-		toPage("add_student.html");
-	});
-	
-	document.getElementById("emailButton").addEventListener("click", function() {
-		toPage("group_email.html");
-	});
-	
-	document.getElementById("aggregateButton").addEventListener("click", function() {
-		toPage("aggregation.html");
-	});
-	
-	document.getElementById("viewStudentButton").addEventListener("click", function() {
-		toSingleSearch(10);
-	});
-	
-	document.getElementById("editStudentButton").addEventListener("click", function() {
-		toSingleSearch(11);
-	});
-	
-	document.getElementById("viewInteractionButton").addEventListener("click", function() {
-		toSingleSearch(20);
-	});
-	
-	document.getElementById("editInteractionButton").addEventListener("click", function() {
-		toSingleSearch(21);
-	});
-	
-	document.getElementById("addInteractionButton").addEventListener("click", function() {
-		toSingleSearch(22);
-	});
-	
-	document.getElementById("ingestButton").addEventListener("click", function() {
-		toPage("batch_ingest.html");
-	});
-	
-	document.getElementById("intCategoryButton").addEventListener("click", function() {
-		toPage("edit_interaction_categories.html");
-	});
-	
-	document.getElementById("studentCategoryButton").addEventListener("click", function() {
-		toPage("edit_student_categories.html");
-	});
 	</script>
   </body>
   
