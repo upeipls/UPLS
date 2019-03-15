@@ -229,7 +229,7 @@ function SheetsApi() {
         let params = {
             spreadsheetId: sheetId,
             range: inputRange,
-            valueInputOption: "RAW",
+            valueInputOption: "USER_ENTERED",
             values: inputValues
         };
         return gapi.client.sheets.spreadsheets.values.update(params);
@@ -353,7 +353,7 @@ function SheetsApi() {
             spreadsheetId: sheetId,
             range: sheetName + "!A:A",
             majorDimension: "ROWS",
-            valueInputOption: "RAW",
+            valueInputOption: "USER_ENTERED",
             values: values
         };
         return gapi.client.sheets.spreadsheets.values.append(params);
@@ -418,7 +418,7 @@ function SheetsApi() {
             }
         }
         let requestBody = {
-            valueInputOption: 'RAW',
+            valueInputOption: 'USER_ENTERED',
             data: data
         };
         return gapi.client.sheets.spreadsheets.values.batchUpdate(params, requestBody);
@@ -486,7 +486,7 @@ function SheetsApi() {
         let params = {
             spreadsheetId: sheetId,
             range: sheetName + "!" + startNotation + "1:" + endNotation + "1",
-            valueInputOption: "RAW",
+            valueInputOption: "USER_ENTERED",
             values: [colNames]
         };
         return gapi.client.sheets.spreadsheets.values.append(params);
