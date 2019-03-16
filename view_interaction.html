@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>View Interaction</title>
+</head>
+<br>
+<style>
+    div.ex1{
+        background-color: white;
+        width: 500px;
+        height: 500px;
+        /*overflow: scroll;*/
+        /*display: table;*/
+        margin: 0 auto;
+        position: static;
+    }
+    div.ex2{
+        background-color: white;
+        width: 450px;
+        height: auto;
+    }
+    div.ex3{
+        background-color: white;
+        width: 250px;
+        height: 100px;
+        overflow: scroll;
+        float: right;
+        border-style: solid;
+        border-width: 1px;
+    }
+    div.ex4{
+        background-color: white;
+        width: auto;
+        height: auto;
+        float: left;
+        margin-top: 50px;
+        margin-left: 50px;
+        text-align: left;
+    }
+    div.ex5{
+        background-color: white;
+        width: auto;
+        height: auto;
+        float: right;
+        margin-top: 50px;
+        margin-right: 50px;
+        text-align: right;
+    }
+</style>
+
+<form action = select_interaction.html>
+    <input type = "submit" id = "back" value = "Back">
+</form>
+<h1 align="center">View Student Interaction</h1>
+<div id="main" align="center" class="ex1"></div>
+
+
+
+
+<script>
+
+    var receiveName = JSON.parse(window.localStorage.getItem("send")); // Retrieving
+    console.log("Received: " + receiveName);
+    var receiveInteraction = JSON.parse(window.localStorage.getItem("interactionInfo"));
+    console.log("Received: " + receiveInteraction);
+    var combine2 = receiveName.concat(receiveInteraction);
+    var intReturned = JSON.parse(window.localStorage.getItem("returned")); //rest of headers
+    console.log("Second Set of headers: " + intReturned);
+    var sInfo = ["First Name:", "Last Name:", "ID:", "Email:"];
+    var combine = sInfo.concat(intReturned);
+    console.log("Combined: " + combine);
+
+    let tagDiv = document.createElement("div");
+    tagDiv.className = "ex4";
+    let dataDiv = document.createElement("div");
+    dataDiv.className = "ex5";
+
+    for(let c = 0; c < combine.length; c++){
+        combine[c] = combine[c].toLowerCase().charAt(0).toUpperCase() + combine[c].slice(1).toLowerCase();
+        combine[c] = combine[c].replace(/_/g,' ');
+
+    }
+
+    for (var i = 0; i < combine.length-1; i++) {
+        if(combine != null) {
+            let tag = document.createTextNode(combine[i]);
+            tagDiv.appendChild(tag);
+            tagDiv.appendChild(document.createElement("br"));
+            tagDiv.appendChild(document.createElement("br"));
+
+            document.getElementById("main").appendChild(tagDiv);
+        }
+    }
+
+    for(var j = 0; j < combine2.length-1; j++){
+        if(combine2 != null){
+            let data = document.createTextNode(combine2[j]);
+            dataDiv.appendChild(data);
+            dataDiv.appendChild(document.createElement("br"));
+            dataDiv.appendChild(document.createElement("br"));
+
+            document.getElementById("main").appendChild(dataDiv);
+        }
+    }
+
+    let noteDiv = document.createElement("div");
+    let noteBox = document.createElement("div");
+    noteDiv.className = "ex2";
+    noteBox.className = "ex3";
+    let noteTag = document.createTextNode("Notes: ");
+    let notes = document.createTextNode(receiveInteraction[7]);
+    tagDiv.appendChild(noteTag);
+    noteBox.appendChild(notes);
+    noteDiv.appendChild(noteBox);
+    document.getElementById("main").appendChild(noteDiv);
+
+
+
+
+
+
+
+
+    /*var receiveName = JSON.parse(window.localStorage.getItem("send")); // Retrieving
+    console.log("Received: " + receiveName);
+    var receiveInteraction = JSON.parse(window.localStorage.getItem("interactionInfo"));
+    console.log("Received: " + receiveInteraction);
+
+    let nameDiv = document.createElement("div");
+    nameDiv.className = 'ex2';
+    let nameTag = document.createTextNode("Student: ");
+    let name = document.createTextNode(receiveName[0] + " " + receiveName[1] + ", " + receiveName[2]);
+    nameDiv.appendChild(nameTag);
+    nameDiv.style.whiteSpace = "pre";
+    nameDiv.appendChild(document.createTextNode("                   "));
+    nameDiv.appendChild(name);
+
+    let emailDiv = document.createElement("div");
+    emailDiv.className = "ex2";
+    let emailTag = document.createTextNode("Email: ");
+    let email = document.createTextNode(receiveName[3]);
+    emailDiv.appendChild(emailTag);
+    emailDiv.style.whiteSpace = "pre";
+    emailDiv.appendChild(document.createTextNode("                                 "));
+    emailDiv.appendChild(email);
+
+    let intTypeDiv = document.createElement("div");
+    intTypeDiv.className = "ex2";
+    let intTypeTag = document.createTextNode("Interaction Type: ");
+    let intType = document.createTextNode(receiveInteraction[1]);
+    intTypeDiv.appendChild(intTypeTag);
+    intTypeDiv.style.whiteSpace = "pre";
+    intTypeDiv.appendChild(document.createTextNode("                                   "));
+    intTypeDiv.appendChild(intType);
+
+    let intDateDiv = document.createElement("div");
+    intDateDiv.className = "ex2";
+    let intDateTag = document.createTextNode("Interaction Date: ");
+    let intDate = document.createTextNode(receiveInteraction[0]);
+    intDateDiv.appendChild(intDateTag);
+    intDateDiv.style.whiteSpace = "pre";
+    intDateDiv.appendChild(document.createTextNode("                          "));
+    intDateDiv.appendChild(intDate);
+
+    let libDiv = document.createElement("div");
+    libDiv.className = "ex2";
+    let libTag = document.createTextNode("Librarian Initiated: ");
+    let lib = document.createTextNode(receiveInteraction[2]);
+    libDiv.appendChild(libTag);
+    libDiv.style.whiteSpace = "pre";
+    libDiv.appendChild(document.createTextNode("                              "));
+    libDiv.appendChild(lib);
+
+    let followUpDiv = document.createElement("div");
+    followUpDiv.className = "ex2";
+    let followUpTag = document.createTextNode("Follow Up: ");
+    let followUp = document.createTextNode(receiveInteraction[4]);
+    followUpDiv.appendChild(followUpTag);
+    followUpDiv.style.whiteSpace = "pre";
+    followUpDiv.appendChild(document.createTextNode("                                           "));
+    followUpDiv.appendChild(followUp);
+
+    let timeDiv = document.createElement("div");
+    timeDiv.className = "ex2";
+    let timeTag = document.createTextNode("Time Spent (Minutes): ");
+    let timeSpent = document.createTextNode(receiveInteraction[3]);
+    timeDiv.appendChild(timeTag);
+    timeDiv.style.whiteSpace = "pre";
+    timeDiv.appendChild(document.createTextNode("                                 "));
+    timeDiv.appendChild(timeSpent);
+
+    let cChannelDiv = document.createElement("div");
+    cChannelDiv.className = "ex2";
+    let cChannelTag = document.createTextNode("Communication Channel: ");
+    let cChannel = document.createTextNode(receiveInteraction[5]);
+    cChannelDiv.appendChild(cChannelTag);
+    cChannelDiv.style.whiteSpace = "pre";
+    cChannelDiv.appendChild(document.createTextNode("                "));
+    cChannelDiv.appendChild(cChannel);
+
+    let urlDiv = document.createElement("div");
+    urlDiv.className = "ex2";
+    let urlTag = document.createTextNode("URL: ");
+    let URL = document.createTextNode(receiveInteraction[6]);
+    urlDiv.appendChild(urlTag);
+    urlDiv.style.whiteSpace = "pre";
+    urlDiv.appendChild(document.createTextNode("                                        "));
+    urlDiv.appendChild(URL);
+
+    let noteDiv = document.createElement("div");
+    let noteBox = document.createElement("div");
+    noteDiv.className = "ex2";
+    noteBox.className = "ex3";
+    let noteTag = document.createTextNode("Notes: ");
+    let notes = document.createTextNode(receiveInteraction[7]);
+    noteDiv.appendChild(noteTag);
+    noteBox.appendChild(notes);
+    noteDiv.appendChild(noteBox);
+
+    document.getElementById("main").appendChild(nameDiv);
+    document.getElementById("main").appendChild(document.createElement("br"));
+    document.getElementById("main").appendChild(emailDiv);
+    document.getElementById("main").appendChild(document.createElement("br"));
+    document.getElementById("main").appendChild(intTypeDiv);
+    document.getElementById("main").appendChild(document.createElement("br"));
+    document.getElementById("main").appendChild(intDateDiv);
+    document.getElementById("main").appendChild(document.createElement("br"));
+    document.getElementById("main").appendChild(libDiv);
+    document.getElementById("main").appendChild(document.createElement("br"));
+    document.getElementById("main").appendChild(followUpDiv);
+    document.getElementById("main").appendChild(document.createElement("br"));
+    document.getElementById("main").appendChild(timeDiv);
+    document.getElementById("main").appendChild(document.createElement("br"));
+    document.getElementById("main").appendChild(cChannelDiv);
+    document.getElementById("main").appendChild(document.createElement("br"));
+    document.getElementById("main").appendChild(urlDiv);
+    document.getElementById("main").appendChild(document.createElement("br"));
+    document.getElementById("main").appendChild(noteDiv);*/
+</script>
+
+</body>
+<form action = index.html>
+    <input type = "submit" align = "center" id = "whydoweneed2" value="Return">
+</form>
+</html>

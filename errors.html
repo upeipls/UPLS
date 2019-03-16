@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Batch Errors</title>
+    <script src="Api.js"></script>
+
+</head>
+<body>
+<h1 align = "center">Batch Errors</h1>
+<script language="JavaScript">
+    var errors = [];
+    errors = JSON.parse(window.localStorage.getItem("errors"));
+    console.log(errors);
+
+    function createTable(tableData) {
+        var table = document.createElement('table');
+        table.style.border = "solid";
+        var row = {};
+        var cell = {};
+
+        tableData.forEach(function(rowData) {
+            row = table.insertRow(-1);
+            rowData.forEach(function(cellData) {
+                cell = row.insertCell();
+                cell.textContent = cellData;
+                cell.style.border = "solid";
+            });
+        });
+        document.body.appendChild(table);
+    }
+
+    createTable(errors);
+</script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,13 +1,333 @@
-<!--
-This file will provide the backbone for batch ingesting student info.
--->
-<html>
-  <head>
-  <title>Batch Ingest</title>
-  <link rel="stylesheet" type="text/css" href="css/upls_styles.css">
-  <script src="js/main_menu.js"></script>
-  </head>
-  <body onload="mainMenu()">
-    <div class="main_menu" id="main_menu"></div>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Batch Ingest</title>
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <script src="https://d3js.org/d3-fetch.v1.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="Api.js"></script>
+
+    <style>
+    div.ex1 {
+        width: 350px;
+        height: auto;
+        border-style: solid;
+        border-width: 1px;
+        margin: 0 auto;
+
+    }
+        input.ex2{
+            float: left;
+            margin-left: 60px;
+        }
+        .ex3{
+            float: left;
+        }
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    </style>
+</head>
+<body>
+<h1 align = "center">Batch Ingest</h1>
+
+<form action="index.html">
+    <input type="submit" value="Back">
+</form>
+
+<!-- Trigger/Open The Modal -->
+
+<div align = "center" id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p align = "center">This file must be correctly formatted to enter data into the system. To review this format, please click Review</p>
+        <input type="button" id="Review" name="review" value="Review">
+        <input type="button" id="cancel" name="cancel" value="Cancel">
+    </div>
+</div>
+
+<div class="ex1" align = "center" id="message">
+    <button class="ex3" id="myBtn">Help</button>
+
+    <input type="file" id="picker" name="picker" accept="text/tab-separated-values" onchange="openFile(event)"><br><br>
+    <input class = "ex2" type="submit" onclick="sendToSheet()">
+    <form action="index.html">
+        <input class="ex2" type="submit" value="Return to Main">
+    </form>
+    <output id="output"></output>
+</div>
+
+<Script language="JavaScript">
+
+    var sa = new SheetsApi();
+    sa.setKeys("1SWI9vIs5OLg03q3pGzRNLXkvtpvyAUh5Qp3_NYv8jYM", "AIzaSyD5KpN_FCSGTRJGlDFN9CvXD3gyg-f8ZC4", "656316403501-g3io4mu5ibfebpls8jrnht04rg8g2mr1.apps.googleusercontent.com");
+    sa.handleClientLoad();
+
+    function updateSignInStatus(isSignedIn){
+        if(isSignedIn){
+            //add method
+            getID();
+            console.log("You are Signed In!")
+        } else {
+            console.log("Need Log In!");
+            sa.handleSignInClick();
+        }
+    }
+
+
+
+    //Global Variables
+    let sheetHeaders;
+    let objectArray;
+    var data = [];
+    var validatedData = [];
+    var invalidData = [];
+    var validCount = 1;
+    var invalidCount = 1;
+    var idArray = [];
+    var idInfo = [];
+
+
+
+    //DATE
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    var currentDate = year + "-" + month + "-" + day;
+    console.log(currentDate);
+
+
+
+    //function to get data from TSV file
+function openFile(event) {
+    var input = event.target;
+    var reader = new FileReader();
+    //reader returns result, split data by newline and by tab
+    //results are stored in 2D array of [row][column]
+    reader.onload=function(){
+        var text = reader.result;
+        data = text.split('\n');
+
+        for(var i = 0; i < data.length; i++) {
+            let temp = data[i].split('\t');
+            data[i] = temp;
+        }
+
+        for(let i = 1; i < idInfo.length; i++){
+            idArray[i] = idInfo[i][0];
+        }
+        console.log(idArray);
+
+        validatedData[0] = data[0];
+        invalidData[0] = data[0];
+
+        //run through data for validation
+        for(var j = 1; j < data.length; j++){
+            console.log("Loop: " + j);
+
+
+            if(validateEmail(data, j) && checkDupe(data, j)){ //ADD REST OF VALIDATION FUNCTIONS WHEN DB FULL
+                validatedData[validCount] = data[j];
+                validCount = validCount + 1;
+                console.log("Is valid");
+                console.log(validatedData);
+
+            } else {
+                console.log("not valid");
+                invalidData[invalidCount] = data[j];
+                invalidCount++;
+            }
+        }
+        for(let i = 1; i < validatedData.length; i++) {
+            validatedData[i][15] = currentDate;
+        }
+        console.log(data);
+        console.log(validatedData);
+        console.log(invalidData);
+        window.localStorage.setItem("errors",JSON.stringify(invalidData));
+
+    };
+    console.log(input);
+    reader.readAsText(input.files[0]);
+}
+
+    //function to send data to sheet
+    function sendToSheet() {
+        let actualRows = validatedData.length - 1;
+        var rowNum = confirm("Are you sure you want to send " + data.length + " rows?");
+        if (rowNum) {
+            objectArray = arrayToObjects(validatedData);
+            sa.getTableHeaders("UPLS").then(response => {
+                sheetHeaders = sa.parseTableHeaders(response);
+                sa.insertIntoTableColValues(sheetHeaders, "UPLS", objectArray).then(response => {
+                    console.log(sa.parseInsert(response));
+                });
+            });
+        } else {}
+        var errors = confirm("Only " + actualRows + " uploaded. To see errors, click OK");
+        if(errors) {
+            window.open("errors.html", "_blank");
+        }
+    }
+
+    //validate email cells
+    function validateEmail(data,x){
+        //validate email address
+        if(!data[x][3].includes("@upei.ca")){
+            return false;
+        } else{
+            return true;
+        }
+    }
+    //validate ID
+    function validateID(data,x){
+        //validate student ID
+        if(!data[x][0].match(/^[0-9]+$/)){
+            return false;
+        } else{
+            return true;
+        }
+    }
+    //validate any column with text(alpha only)
+    function validateText(data,x,y) {
+        //validate any text
+        if(!data[x][y].match(/^[A-Z]/)){
+            return false;
+        } else{
+            return true;
+        }
+    }
+    //validate Catalog year
+    function validateCatYear(data,x){
+        //validate catalog year
+        if(!data[x][11].match(/[0-9]+-/)){
+            return false;
+        } else{
+            return true;
+        }
+    }
+    //validate ingest date, probably not necessary
+    function validateDate(data, x){
+        //validate the ingest date just to be sure
+        if(!data[x][15].match(/^\d{4}-\d{2}-\d{2}$/)){
+            return false;
+        } else{
+            return true;
+        }
+    }
+    //check for duplicate ID's
+    function checkDupe(data,x){
+
+            if(idArray.includes(data[x][0])){
+                return false;
+            } else { return true; }
+
+
+    }
+
+    //function for 2D array to object array
+    function arrayToObjects(array) {
+        let headers = array[0];
+        let result = [];
+        let tempStr = "";
+        for (let i = 1; i < array.length; i++) {
+            tempStr = "{";
+            for (let j = 0; j< array[i].length; j++) {
+                tempStr += "\"" + headers[j] + "\":\"" + array[i][j] + "\"";
+                if (j < array[i].length - 1) {
+                    tempStr += ",";
+                }
+            }
+            tempStr += "}";
+            console.log(tempStr);
+            result[i-1] = JSON.parse(tempStr.replace(/\n/g, "\\n")
+                .replace(/\r/g, "\\r")
+                .replace(/\t/g, "\\t")
+                .replace(/\f/g, "\\f"));
+        }
+        return result;
+    }
+
+    //MODAL CREATION
+    // Get the modal
+    var modal = document.getElementById('myModal');
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
+    var cancel = document.getElementById("cancel");
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks the button, open the modal
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    cancel.onclick = function() {
+        modal.style.display = "none";
+    }
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    //GET STUDENT IDS
+    function getID() {
+
+        sa.getSheet("UPLS").then(response => {
+            idInfo = sa.parseSheetValues(response);
+            console.log(idInfo);
+
+        });
+
+    }
+</Script>
+
+</body>
 </html>
