@@ -1,0 +1,202 @@
+/*
+ * This file will contain all css for this system.
+ * Colours: #7C2529 is Rust
+ * 		#789D4A is Green
+ * 		#F1B434 is Gold
+ *		#F3E7D3 is Warm-White
+ *		first 3 colours are UPEI-specific, taken from UPEI's style guide. 
+ */
+ 
+@font-face {
+    font-family: simplifica;
+    src: url("fonts/simplifica_typeface-webfont.ttf");
+}
+
+.title{
+	color: #7C2529;
+	text-align: center;
+	font-size: 5em;
+	font-family: simplifica, arial, sans-serif;
+}
+
+.main_logo{
+	padding: 35px;
+	max-width: 50%;
+}
+ 
+.dropdown_items {
+  display: none;
+  padding-top: 2px;
+}
+
+.show {
+	display: block;
+	}
+
+.fl-lt {
+  float: left;
+}
+
+.fl-rt {
+  float: right;
+}
+
+
+.invisible {
+  display: none;
+}
+
+.back_button {
+	border: none;
+	background-color: F3E7D3;
+	background-image: url("images/backbuttonbg.png");
+	background-size:cover;
+	height: 3em;
+	width: 3em;
+	padding: 0.5em;
+}
+
+.back_button:hover {
+	background-image: url("images/backbuttoninvertedbg.png");
+}
+
+.close_button {
+	border: none;
+	background-color: F3E7D3;
+	background-image: url("images/xbuttonbg.png");
+	background-size:cover;
+	height: 1.5em;
+	width: 1.5em;
+	padding: 0.2em;
+}
+
+.close_button:hover {
+	background-image: url("images/xbuttoninvertedbg.png");
+}
+
+.flow_button {
+	background-color: #789D4A;
+	border: none;
+	text-align: center;
+	color: #FFFFFF;
+	height: 1.5em;
+	width: fit-content;
+	min-width: 12.5em;
+}
+
+.flow_button:hover {
+	Background-color: #FFFFFF;
+	color: #000000;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #789D4A;
+}
+
+.admin_flow_button {
+	background-color: #F1B434;
+	border: none;
+	text-align: center;
+	color: #FFFFFF;
+	height: 1.5em;
+	width: fit-content;
+	min-width: 12.5em;
+}
+
+.admin_flow_button:hover {
+	Background-color: #FFFFFF;
+	color: #000000;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #F1B434;
+}
+
+.nav_button {
+	background-color: #789D4A;
+	border: none;
+	text-align: center;
+	color: #FFFFFF;
+	width: fit-content;
+	min-width: 25em;
+	height: 5em;
+}
+
+.nav_button:hover {
+	Background-color: #FFFFFF;
+	color: #000000;
+	border-style: solid;
+	border-width: medium;
+	border-color: #789D4A;
+}
+
+.admin_nav_button {
+	background-color: #F1B434;
+	border: none;
+	text-align: center;
+	color: #FFFFFF;
+	width: fit-content;
+	min-width: 25em;
+	height: 5em;
+}
+.admin_nav_button:hover {
+	Background-color: #FFFFFF;
+	color: #000000;
+	border-style: solid;
+	border-width: medium;
+	border-color: #F1B434;
+}
+
+.nav_list {
+	padding: 0;
+	list-style-type: none;
+}
+
+.preview_scroll_box {
+	background: #FFFFFF;
+    border-style: solid;
+	border-width: medium;
+	border-color: #789D4A;
+    height: 300px;
+    width: 900px;
+    overflow-y: scroll;
+}
+
+.menu_bar_form {
+	display: inline;
+}
+
+.column_third {
+	float: left;
+	width: 33.33%;
+	min-height: 200px;
+	padding-left: 30px;
+	background-color: #FFFFFF;
+}
+
+.column_two_thirds {
+	float: left;
+	width: 66.67%;
+	min-height: 200px;
+}
+
+.top_half {
+	float: top;
+	height: 50%;
+	max-height: 500px;
+	min-height: 200px;
+}
+
+.bottom_half {
+	float: bottom;
+	height: 50%;
+	max-height: 500px;
+	min-height: 200px;
+}
+
+body {
+	background-color: #F3E7D3;}
+
+p {
+	font-size: 1.25em;
+	font-family: serif;
+}
+
