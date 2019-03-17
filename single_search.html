@@ -3,14 +3,14 @@ This file will provide the backbone of the single search page.
 -->
 <html>
 	<head>
-	<title>Known Item Search</title>
-  
-		<link rel="stylesheet" type="text/css" href="css/upls_styles.css">
-	
+		<title>Known Item Search</title>
+		
+  		<link rel="stylesheet" type="text/css" href="css/upls_styles.css">	
+		
 		<script src="js/main_menu.js"></script>
-		<script src="js/single_search.js"></script>
 		<script src="https://apis.google.com/js/api.js"></script>
 		<script src="js/SheetsApi.js"></script>
+		<script src="js/single_search.js"></script>
 	</head>
   
 	<body>
@@ -44,8 +44,12 @@ This file will provide the backbone of the single search page.
 					<br>
 					<input id="idNumberField" type="number" placeholder="000000"></input>
 					<br><br>
-					<p id="feedBackMessage" class="invisible"></p>
 					<button id="searchButton" class="flow_button">Search</button>
+				</div>
+				
+				<div class="row" style="min-height:100px" id="feedback">
+				
+					<p id="feedBackMessage" class="err_msg invisible"></p>
 				</div>
 				
 				<div class="row" id="functionButtons">
@@ -58,25 +62,24 @@ This file will provide the backbone of the single search page.
 				
 			</div>
 			<div class="column_70">
-				<div id="resultTable">
-					<table style="width:100%" border="1" >
-						<tr>
-							<th>Select</th>
-							<th>Student ID</th>
-							<th>First Name</th>
-							<th>Last Name</th>
-							<th>Email</th>
-							<th>Year of Study</th>
-						</tr>
-					</table>
-				</div>
+				<table width="550px" border="1" id="studentTable">
+					<thead>
+						<th>Select</th>
+						<th>Student ID</th>
+						<th>First Name</th>
+						<th>Last Name</th>
+						<th>Email</th>
+						<th>Year of Study</th>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
 			</div>
 		</div>
 		
 		<div class="column_side">
 		</div>
-		
-		<script>
+		<script>		
 			mainMenu();
 			showFunctionButton(localStorage.getItem("functionCode"));
 			loadButtonListeners();
