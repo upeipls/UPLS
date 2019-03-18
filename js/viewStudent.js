@@ -1,3 +1,5 @@
+let sa = SheetsApi();
+sa.handleClientLoad();
 function updateSignInStatus(isSignedIn) {
     if (isSignedIn) {
         getStudentInfo();
@@ -8,77 +10,76 @@ function updateSignInStatus(isSignedIn) {
 }
 
 function getStudentInfo(){
-	var studentID = new Array();
-	function getParams(){
-		var idx = document.URL.indexOf('?');
-		var params = new Array();
-		if (idx != -1) {
-			var pairs = document.URL.substring(idx+1, document.URL.length).split('&');
-			for (var i=0; i<pairs.length; i++){
-				nameVal = pairs[i].split('=');
-				params[nameVal[0]] = nameVal[1];
-			}
-		}
-		return params;
-	}
-params = getParams();
-studentID[0] = unescape(params["studentID"]);
-console.log(studentID[0]);
-	var idValue = "100452";
-	var condition = {
-		header : "STUDENT_ID",
-		value : studentID[0],
-	};
-	var headers = [];
-	var arrayaa = [];
-	var studentInfo = [];
-	var test = [];
-	var conditions = new Array();
-	conditions[0] = condition;
-		sa.getSheet("UPLS").then(response => {
-			(sa.getTableHeaders(response));
-			headers = sa.parseTableHeaders(response);
-				sa.getSheet("UPLS").then(response => {
-				(sa.parseSheetValues(response));
-				arrayaa = sa.selectFromTableWhereConditions(response,"*",conditions,1);
-				studentInfo = sa.parseSheetValues(response);
-				test = headers;
-				var body = document.getElementsByTagName("body")[0];
-				var table = document.createElement("table");
-				var tbody = document.createElement("body");
-				for (var a =0; a < headers.length; a++){
+  var url_string = window.location.href;
+  var url = new URL(url_string);
+  var id = url.searchParams.get("studentID");
+  var condition = {header : "STUDENT_ID",value : id,};
+  var headers = [];
+  var arrayaa = [];
+  var studentInfo = [];
+  var conditions = new Array();
+  conditions[0] = condition;
+  sa.getSheet("UPLS").then(response => {
+  (sa.getTableHeaders(response));
+	headers = sa.parseTableHeaders(response);
+	sa.getSheet("UPLS").then(response => {
+		(sa.parseSheetValues(response));
+			arrayaa = sa.selectFromTableWhereConditions(response,"*",conditions,1);
+			studentInfo = sa.parseSheetValues(response);
+		  	var commentsDiv = document.createElement('div');
+		  	var body = document.getElementsByTagName("body")[0];
+			var table = document.createElement("table");
+			var tbody = document.createElement("body");
+			var commentsRow = document.createElement("tr");
+			var commentsHeader = document.createElement("td");
+			var commentsContent = document.createElement("td");
+			for (var a =0; a < headers.length; a++){
+				if (headers[a] != "GENERAL_COMMENT"){
 					var row = document.createElement("tr");
-					var data = document.createElement("td");
-					var data2 = document.createElement("td");
-					var text1 = document.createTextNode(headers[a]);
-					var text2 = document.createTextNode(studentInfo[0][a]);
-					
-					data.appendChild(text1);
-					data2.appendChild(text2);
-					row.appendChild(data);
-					row.appendChild(data2);
+					var header = document.createElement("td");
+					header.setAttribute("style","text-align: left");
+					var headerContent = document.createElement("td");
+					headerContent.setAttribute("style","text-align: right");
+					var headerText = document.createTextNode(headers[a]);
+					var contentText = document.createTextNode(studentInfo[0][a]);
+					header.appendChild(headerText);
+					headerContent.appendChild(contentText);
+					row.appendChild(header);
+					row.appendChild(headerContent);
 					tbody.appendChild(row);
-
 				}
-				table.appendChild(tbody);
-			  // put <table> in the <body>
-			  body.appendChild(table);
-			  table.setAttribute("border", "2");
-			  table.setAttribute("id","studentTable");
-			  var input = document.createElement("input"); 
-			  input.setAttribute('type', 'text');
-			  input.setAttribute("value","Add Notes Here");
-			  body.appendChild(input);
-			  var btn = document.createElement("BUTTON");
-			  var t = document.createTextNode("Return to Search");
-			  btn.onclick = function(){
-			  	window.location.href="index.html";
-			  };
-			  btn.appendChild(t);
-			  btn.setAttribute("class","flow_button");
-			  body.appendChild(btn);
-			
-
-			});
-		});		
+				if (headers[a] == "GENERAL_COMMENT"){
+					var generalCommentHeader = document.createTextNode(headers[a]);
+					var scrollableDiv = document.createElement('div');
+					scrollableDiv.setAttribute("style","float: right;height:40px;width:120px;border:1px solid #ccc;overflow:auto;");
+					var commentsString = document.createTextNode(studentInfo[0][a]);
+					scrollableDiv.appendChild(commentsString);
+					commentsHeader.appendChild(generalCommentHeader);
+					commentsContent.appendChild(scrollableDiv);
+					commentsRow.appendChild(commentsHeader);
+					commentsRow.appendChild(commentsContent);
+				}
+			}
+			tbody.appendChild(commentsRow);
+			table.appendChild(tbody);
+		  	body.appendChild(table);
+		  	document.getElementsByTagName('body')[0].appendChild(commentsDiv);
+		  	var editBtn = document.createElement("BUTTON");
+		  	var t = document.createTextNode("Go to edit student");
+		  	editBtn.onclick = function(){
+		  		window.location.href="edit_student.html";
+		  	};
+		  	editBtn.appendChild(t);
+		  	editBtn.setAttribute("class","flow_button");
+		  	var backBtn = document.createElement("BUTTON");
+		  	var t = document.createTextNode("Main Menu");
+		  	backBtn.onclick = function(){
+		  		window.location.href="index.html";
+		  	};
+		  	backBtn.appendChild(t);
+		  	backBtn.setAttribute("class","flow_button");
+		  	document.getElementsByTagName('body')[0].appendChild(backBtn);
+		  	document.getElementsByTagName('body')[0].appendChild(editBtn);
+		});
+	});		
 }
