@@ -10,8 +10,6 @@ function updateSignInStatus(isSignedIn) {
 }
 
 function getStudentInfo(){
-  var url_string = window.location.href;
-  var url = new URL(url_string);
   var id = window.localStorage.getItem("studentID");
   var condition = {header : "STUDENT_ID",value : id,};
   var headers = [];
