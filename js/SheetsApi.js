@@ -124,19 +124,28 @@ function SheetsApi() {
      * @param response    The response of getSheet(inputRange)
      * @param returnCols  An array of the names of columns need to return. Pass "*" will return all columns.
      * @param conditions  An array of conditions. Each condition is an object with format:
-     *                    {header:"the name of a header", value:"the value to check for"}.
+     *                     {header:"the name of a header", value:"the value to check for"}.
+     *                     For or between conditions, put them into an array.
+     *                     A complete example would be
+     *                     [{header:"h1", value:"v1"},[{header:"h2",value:"v2"}, {header:"h3", value:"v3"}]}
      * @param returnType  0 for an array of objects. 1 for a 2D array including headers
      * @returns {*}       Either an array of objects or a 2D array including headers
      */
     function selectFromTableWhereConditions(response, returnCols, conditions, returnType) {
-        let values = response.result.values;
+        let values = response.result.values.slice();
         let headers = values[0].slice();
         let colIndex = [];
-        for (let i = 0; i < returnCols.length; i++) {
-            for (let j = 0; j < headers.length; j++) {
-                if (returnCols === "*" || headers[j] === returnCols[i]) {
-                    colIndex[colIndex.length] = j;
-                    break;
+        if (returnCols === "*") {
+            for (let i = 0; i < headers.length; i++) {
+                colIndex[colIndex.length] = i;
+            }
+        } else {
+            for (let i = 0; i < returnCols.length; i++) {
+                for (let j = 0; j < headers.length; j++) {
+                    if (headers[j] === returnCols[i]) {
+                        colIndex[colIndex.length] = j;
+                        break;
+                    }
                 }
             }
         }
@@ -170,18 +179,71 @@ function SheetsApi() {
      */
     function filterByConditions(values, conditions) {
         for (let i = 0; i < conditions.length; i++) {
-            let conditionHeader = conditions[i].header;
-            let conditionValue = conditions[i].value;
-            let headerIndex = -1;
-            for (let j = 0; j < values[0].length; j++) {
-                if (conditionHeader === values[0][j]) {
-                    headerIndex = j;
-                    break;
+            if (conditions[i].length) {
+                let headerIndexes = [conditions[i].length];
+                let conditionValues = [conditions[i].length];
+                for (let j = 0; j < conditions[i].length; j++) {
+                    conditionValues[j] = conditions[i][j].value;
+                    for (let k = 0; k < values[0].length; k++) {
+                        if (conditions[i][j].header === values[0][k]) {
+                            headerIndexes[j] = k;
+                            break;
+                        }
+                    }
                 }
+                values = filterByKeywords(values, conditionValues, headerIndexes);
+            } else {
+                let conditionHeader = conditions[i].header;
+                let conditionValue = conditions[i].value;
+                let headerIndex = -1;
+                for (let j = 0; j < values[0].length; j++) {
+                    if (conditionHeader === values[0][j]) {
+                        headerIndex = j;
+                        break;
+                    }
+                }
+                values = filterByKeyword(values, conditionValue, headerIndex);
             }
-            values = filterByKeyword(values, conditionValue, headerIndex);
         }
         return values;
+    }
+
+    /** Private
+     * Returns the 2D array after filtering the input array.
+     * @param values        The input 2D array
+     * @param keywords      An array of searching keywords
+     * @param columnIndexes An array of the specific indexes of columns to be filtered
+     *                    if less than 0, then any column includes the keyword
+     *                    will add the row to the result.
+     * @returns {array}   A 2D array
+     */
+    function filterByKeywords(values, keywords, columnIndexes) {
+        let result = [];
+        result[0] = values[0];
+        let shouldStay = false;
+        let rows = values.length;
+        for (let i = 1; i < rows; i++) {
+            shouldStay = false;
+            for (let j = 0; j < keywords.length; j++) {
+                if (columnIndexes[j] < 0) {
+                    for (let k = 0; k < values[i].length; k++) {
+                        if (values[i][k] && values[i][k].toLowerCase().includes(keywords[j].toLowerCase())) {
+                            shouldStay = true;
+                            break;
+                        }
+                    }
+                } else {
+                    if (values[i][columnIndexes[j]].toLowerCase().includes(keywords[j].toLowerCase())) {
+                        shouldStay = true;
+                    }
+                }
+                if (shouldStay) break;
+            }
+            if (shouldStay) {
+                result[result.length] = values[i].slice();
+            }
+        }
+        return result;
     }
 
     /** Private
@@ -194,29 +256,30 @@ function SheetsApi() {
      * @returns {array}   A 2D array
      */
     function filterByKeyword(values, keyword, columnIndex) {
+        let result = [];
+        keyword = keyword.toLowerCase();
         let shouldStay = false;
         let rows = values.length;
-        for (let i = 0; i < rows; i++) {
+        result[0] = values[0].slice();
+        for (let i = 1; i < rows; i++) {
             shouldStay = false;
             if (columnIndex < 0) {
                 for (let j = 0; j < values[i].length; j++) {
-                    if (values[i][j] !== undefined && values[i][j].includes(keyword)) {
+                    if (values[i][j] !== undefined && values[i][j].toLowerCase().includes(keyword)) {
                         shouldStay = true;
                         break;
                     }
                 }
             } else {
-                if (values[i][columnIndex].includes(keyword)) {
+                if (values[i][columnIndex].toLowerCase().includes(keyword)) {
                     shouldStay = true;
                 }
             }
-            if (!shouldStay) {
-                values.splice(i, 1);
-                rows--;
-                i--;
+            if (shouldStay) {
+                result[result.length] = values[i].slice();
             }
         }
-        return values;
+        return result;
     }
 
     /** Public

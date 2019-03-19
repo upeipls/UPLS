@@ -1,4 +1,5 @@
 let sa = new SheetsApi();
+sa.setKeys("1n2w0s1lqSZ4kHX3zeNYT-UNRPEr1aextWaG_bsJisn8", "AIzaSyDeampVGzzd8NvBiUtEsNVmNkAQU1TZ17I", "21358841826-edt9rotek8r1rbivt91nabpn2sc2g6ts.apps.googleusercontent.com");
 sa.handleClientLoad();
 
 let sheetHeaders;
@@ -57,7 +58,7 @@ function addCriteria() {
         "<tr>" +
         "<td></td>" +
         "<td><label for=\"select_values_" + criteriaIndex + "\">Values:</label></td>" +
-        "<td><select id=\"select_values_" + criteriaIndex + "\" onchange=\"updatePopulation()\"></select></td>" +
+        "<td><select multiple id=\"select_values_" + criteriaIndex + "\" onchange=\"updatePopulation()\"></select></td>" +
         "</tr>" +
         "</table>" +
         "</div>";
@@ -90,29 +91,43 @@ function getVocabulary(header, index) {
 }
 
 function setVocabulary(values, index) {
-    let options = "<option>---</option>";
+    let options = "";
     for (let i = 0; i < values.length; i++) {
         options += "<option>" + values[i] + "</option>";
     }
     document.getElementById("select_values_" + index).innerHTML = options;
 }
 
+function getSelectedValues(id) {
+    let values = document.querySelectorAll("#" + id + " option:checked");
+    let result = [values.length];
+    for (let i = 0; i < values.length; i++) {
+        result[i] = values[i].innerHTML;
+    }
+    return result;
+}
+
 let emailAddresses = [], names = [], studentIds = [];
 function updatePopulation() {
+    console.log("Update population");
     emailAddresses = [];
     names = [];
     studentIds = [];
-    let header, value, conditions = [];
+    let header, values, conditions = [];
     for (let i = 1; i < criteriaIndex; i++) {
         if (document.getElementById("criteria_" + i).innerHTML === "") continue;
         header = document.getElementById("select_criteria_" + i).value;
-        value = document.getElementById("select_values_" + i).value;
-        if (header ==="---" || value === "---") continue;
-        conditions[conditions.length] = {"header":header, "value": value};
+        values = getSelectedValues("select_values_" + i);
+        if (header ==="---" || values.length === 0) continue;
+        let tempConditions = [values.length];
+        for (let j = 0; j < values.length; j++) {
+            tempConditions[j] = {"header": header, "value": values[j]};
+        }
+        conditions[conditions.length] = tempConditions;
     }
     sa.getSheet("UPLS").then(res => {
         let result = sa.selectFromTableWhereConditions(res, ["STUDENT_ID","FIRST_NAME","LAST_NAME","EMAIL"], conditions, 1).slice(1);
-        for (let i = 0; i < result.length; i++) {
+        for (let i = 1; i < result.length; i++) {
             studentIds[studentIds.length] = result[i][0];
             names[names.length] = result[i][1] + " " + result[i][2];
             emailAddresses[emailAddresses.length] = result[i][3];
@@ -172,8 +187,7 @@ function sendEmails() {
                             console.log("Something is wrong!");
                         } else {
                             alert("Emails sent successfully!");
-                            console.log(draftSubject);
-                            //window.location.href = "main_page.html";
+                            window.location.href = "main_page.html";
                         }
                     });
                 });
