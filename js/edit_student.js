@@ -20,6 +20,15 @@ var condition = {
 };
 conditions = [];
 conditions[0] = condition;
+var main = document.createElement("div");
+    main.className = "ex0";
+    var headers = document.createElement("div");
+    headers.className="ex1";
+    var info = document.createElement("div");
+    info.className="ex2";
+    main.appendChild(headers);
+    main.appendChild(info);
+    document.getElementById("main").appendChild()
 
 
 function disp() {
@@ -31,28 +40,13 @@ function disp() {
             studentInfo = sa.selectFromTableWhereConditions(response, sheetHeaders, conditions, 1);
             console.log(studentInfo);
             for(let i = 0; i < sheetHeaders.length; i++){
-                document.write(sheetHeaders[i]);
+                document.writeln(sheetHeaders[i]);
+
             }
         });
     });
-    /*var main = document.createElement("div");
-    main.className = "ex0";
-    var headers = document.createElement("div");
-    headers.className="ex1";
-    var info = document.createElement("div");
-    info.className="ex2";
-    main.appendChild(headers);
-    main.appendChild(info);
-
-    for(var i = 0; i < sheetHeaders.length; i++){
-        var tag = document.createTextNode(sheetHeaders[0]);
-        headers.appendChild(tag);
-        headers.appendChild(document.createElement("br"));
 
 
-    }
-    document.getElementById("main").appendChild(main);
-*/
 
 
 
