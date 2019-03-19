@@ -6,10 +6,6 @@
  
 let sa = new SheetsApi();
 //!!set key!!-- remove this in final product (at least remove keys in pull requests)	
-var sheetID = "";
-var apiKey = "";
-var clientID = "";
-sa.setKeys(sheetID, apiKey, clientID);
 //!!set key!!
 sa.handleClientLoad();
 
