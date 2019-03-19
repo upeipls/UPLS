@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Batch Ingest</title>
-    <script src="https://d3js.org/d3.v5.js"></script>
-    <script src="https://d3js.org/d3-fetch.v1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/upls_styles.css">
+    <script src="js/main_menu.js"></script>
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="js/SheetsApi.js"></script>
     <script src="js/batch_ingest.js"></script>
@@ -66,7 +66,8 @@
     }
     </style>
 </head>
-<body>
+<body onload="mainMenu()">
+<div class="main_menu" id="main_menu"></div>
 <h1 align = "center">Batch Ingest</h1>
 
 <form action="main_page.html">

@@ -44,8 +44,8 @@ function getName() {
         window.localStorage.setItem("send",JSON.stringify(send));
         window.localStorage.setItem("returned", JSON.stringify(interactionReturned));
         console.log("Sending: " + send);
-        nameDiv.style.textAlign = "left";
-        nameDiv.style.marginLeft = "200px";
+        // nameDiv.style.textAlign = "center";
+        //nameDiv.style.marginLeft = "400px";
         let br = document.createElement("br");
         let txt3 = document.createTextNode(" Student ID: " + condition.value);
         nameDiv.appendChild(txt);

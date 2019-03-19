@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Add Student</title>
+    <link rel="stylesheet" type="text/css" href="css/upls_styles.css">
+    <script src="js/main_menu.js"></script>
     <script type="text/javascript"></script>
     <script src="https://apis.google.com/js/api.js"></script>
-    <script src="Api.js"></script>
+    <script src="js/SheetsApi.js"></script>
+    <script src="js/view_interaction.js"></script>
 </head>
-<body>
-<!--<script language="javascript">
-    let sheetID = "1gNQpWqetXTtiyZIa9RiAiwpnJWNa6nTeQGZDcGAHWS0";
-    let sa = new SheetsApi("1gNQpWqetXTtiyZIa9RiAiwpnJWNa6nTeQGZDcGAHWS0", "AIzaSyD5KpN_FCSGTRJGlDFN9CvXD3gyg-f8ZC4", "656316403501-g3io4mu5ibfebpls8jrnht04rg8g2mr1.apps.googleusercontent.com");
-    sa.handleClientLoad();
-</script>-->
+
+<body onload="mainMenu()">
+<div class="main_menu" id="main_menu"></div>
+
 <!-- THIS SENDS TO STUDENT PAGE-->
     <form action="student.html" name="addStudent">
         Student ID:<br>

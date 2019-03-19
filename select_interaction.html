@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Select Interaction</title>
     <script src="https://apis.google.com/js/api.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/upls_styles.css">
+    <script src="js/main_menu.js"></script>
     <script src="js/SheetsApi.js"></script>
     <script src="js/select_interaction.js"></script>
 
@@ -39,9 +41,14 @@
     div.ex3{
     alignment: center;
     }
+    div.ex4{
+        float:left;
+        margin: 300px;
+    }
 </style>
 </head>
-<body>
+<body onload="mainMenu()">
+<div class="main_menu" id="main_menu"></div>
 
 
 <form action = main_page.html>

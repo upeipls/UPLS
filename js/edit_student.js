@@ -26,9 +26,10 @@ var main = document.createElement("div");
     headers.className="ex1";
     var info = document.createElement("div");
     info.className="ex2";
-    main.appendChild(headers);
-    main.appendChild(info);
-    document.getElementById("main").appendChild()
+   /* main.appendChild(headers);
+    main.appendChild(info);*/
+    document.getElementById("main").appendChild("headers");
+    document.getElementById("main").appendChild("info");
 
 
 function disp() {
