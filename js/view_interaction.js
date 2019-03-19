@@ -4,7 +4,7 @@ sa.handleClientLoad();
 
 function updateSignInStatus(isSignedIn){
     if(isSignedIn){
-    disp();
+        disp();
     } else {
         console.log("Need Log In!");
         sa.handleSignInClick();
