@@ -1,5 +1,4 @@
 var sa = new SheetsApi();
-sa.setKeys("1SWI9vIs5OLg03q3pGzRNLXkvtpvyAUh5Qp3_NYv8jYM", "AIzaSyD5KpN_FCSGTRJGlDFN9CvXD3gyg-f8ZC4", "656316403501-g3io4mu5ibfebpls8jrnht04rg8g2mr1.apps.googleusercontent.com");
 sa.handleClientLoad();
 
 function updateSignInStatus(isSignedIn){
