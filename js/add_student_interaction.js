@@ -15,9 +15,7 @@ function updateSignInStatus(isSignedIn) {
  * form.
  */
 function fillStudentInfo() {
-  var url_string = window.location.href;
-  var url = new URL(url_string);
-  student_id = url.searchParams.get("id");
+  student_id = window.localStorage.getItem("studentID");
   // Get name and email.
   var col_names = ["FIRST_NAME", "LAST_NAME", "EMAIL"];
   var upls_condition = [{
