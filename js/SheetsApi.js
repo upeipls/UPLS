@@ -408,13 +408,17 @@ function SheetsApi() {
      * @returns {Promise}
      */
     function insertIntoTableColValues(headers, sheetName, toInsert) {
+        if (!sheetName.includes("!")) {
+            sheetName = sheetName + "!A:A";
+        }
         let values = [];
         for (let i = 0; i < toInsert.length; i++) {
             values[i] = objectToArrayByHeaders(headers, toInsert[i]);
         }
+        console.log(values);
         let params = {
             spreadsheetId: sheetId,
-            range: sheetName + "!A:A",
+            range: sheetName,
             majorDimension: "ROWS",
             valueInputOption: "USER_ENTERED",
             values: values

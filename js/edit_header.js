@@ -1,5 +1,5 @@
 let sa = new SheetsApi();
-sa.setKeys("1n2w0s1lqSZ4kHX3zeNYT-UNRPEr1aextWaG_bsJisn8", "AIzaSyDeampVGzzd8NvBiUtEsNVmNkAQU1TZ17I", "21358841826-edt9rotek8r1rbivt91nabpn2sc2g6ts.apps.googleusercontent.com");
+
 sa.handleClientLoad();
 function updateSignInStatus(isSignedIn) {
     if (isSignedIn) {
@@ -21,9 +21,18 @@ function loadHeaders() {
             }
             generateHeadersTable();
         });
-    } else {
+    } else if (sheetName === "UPLS") {
         sa.getTableHeaders(sheetName).then(response => {
             sheetHeaders = sa.parseTableHeaders(response);
+            generateHeadersTable();
+        });
+    } else {
+        sa.getSheet("INTERACTIONS").then(response => {
+            let values = sa.parseSheetValues(response);
+            sheetHeaders = [];
+            for (let i = 1; i < values.length; i++) {
+                if (values[i][1]) sheetHeaders[sheetHeaders.length] = values[i][1];
+            }
             generateHeadersTable();
         });
     }
@@ -58,14 +67,25 @@ function addHeader() {
             }
             loadHeaders();
             closeCard();
-        })
-    } else {
+        });
+    } else if (sheetName === "UPLS") {
         sa.getTableHeaders(sheetName).then(response => {
             sa.alterTableAddCol(sheetName, [headerName], sa.parseTableHeaders(response).length).then(response => {
                 console.log(sa.parseAlter(response));
                 loadHeaders();
                 closeCard();
             });
+        });
+    } else {
+        let index = sheetHeaders.length + 2;
+        sa.insertIntoTableColValues(["COMMUNICATION_CHANNEL"], "INTERACTIONS!B"+index+":B" + index, [{
+            "COMMUNICATION_CHANNEL": headerName
+        }]).then(response => {
+            if (sa.parseInsert(response) === 1) {
+                console.log("Success");
+            }
+            loadHeaders();
+            closeCard();
         });
     }
 }
@@ -90,8 +110,11 @@ function editHeaderCard(object) {
     if (sheetName === "INTERACTIONS"){
         let index = object.parentElement.parentElement.id + 2;
         notation = "A" + index;
-    } else {
+    } else if (sheetName === "UPLS") {
         notation = sa.getNotationFromColName(sheetHeaders, columnName) + "1";
+    } else {
+        let index = object.parentElement.parentElement.id + 2;
+        notation = "B" + index;
     }
 }
 
