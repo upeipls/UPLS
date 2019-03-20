@@ -1,11 +1,13 @@
 
 var sa = new SheetsApi();
+sa.setKeys("1SWI9vIs5OLg03q3pGzRNLXkvtpvyAUh5Qp3_NYv8jYM", "AIzaSyD5KpN_FCSGTRJGlDFN9CvXD3gyg-f8ZC4", "656316403501-g3io4mu5ibfebpls8jrnht04rg8g2mr1.apps.googleusercontent.com");
 sa.handleClientLoad();
 
 function updateSignInStatus(isSignedIn){
     if(isSignedIn){
         //add method
         getID();
+        getProgs();
         console.log("You are Signed In!")
     } else {
         console.log("Need Log In!");
@@ -25,9 +27,18 @@ var validCount = 1;
 var invalidCount = 1;
 var idArray = [];
 var idInfo = [];
+var progArray = [];
+var progInfo = [];
+var nameReturned = ["PROGRAMS"];
 
+var condition = {
+    header: "PROGRAMS",
+    value: "BA, Major in Applied Communication, Leadership and Culture",
+};
+conditions = [];
+conditions[0] = condition;
 
-
+validateProg();
 //DATE
 var date = new Date();
 var year = date.getFullYear();
@@ -57,6 +68,11 @@ function openFile(event) {
             idArray[i] = idInfo[i][0];
         }
         console.log(idArray);
+
+        for(let i = 1; i < progInfo.length; i++){
+            progArray[i] = progInfo[i][0];
+            console.log(progArray[i]);
+        }
 
         validatedData[0] = data[0];
         invalidData[0] = data[0];
@@ -113,7 +129,7 @@ function sendToSheet() {
 //validate email cells
 function validateEmail(data,x){
     //validate email address
-    if(!data[x][3].includes("@upei.ca")){
+    if(!data[x][3].includes("@")){
         return false;
     } else{
         return true;
@@ -161,6 +177,14 @@ function checkDupe(data,x){
     if(idArray.includes(data[x][0])){
         return false;
     } else { return true; }
+
+}
+
+function validateProg(data, x){
+    //check programs_and_librarians to see if data[x][13] is it, if not open a new window to add the program desc in programs_and_libs
+    if(progArray.includes(data[x][13])){
+        return true;
+    } else {return false;}
 
 
 }
@@ -227,4 +251,10 @@ function getID() {
 
     });
 
+}
+
+function getProgs() {
+    sa.getSheet("PROGRAMS_AND_LIBRARIANS").then(response => {
+        progInfo = sa.parseSheetValues(response);
+    });
 }
