@@ -9,6 +9,7 @@ function SheetsApi() {
     let sheetId = "";
     let API_KEY = "";
     let CLIENT_ID = "";
+    let librarian = "";
 
     /** Public
      * This function initialize the sheets api object created.
@@ -20,6 +21,10 @@ function SheetsApi() {
         sheetId = inputSheetId;
         API_KEY = inputApiKey;
         CLIENT_ID = inputClientId;
+    }
+
+    function getLibrarian() {
+        return librarian;
     }
 
     /**
@@ -42,6 +47,13 @@ function SheetsApi() {
         }).then(function () {
             gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
             updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+            if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+                gapi.client.gmail.users.getProfile({userId:"me"}).then(res => {
+                    librarian = res.result.emailAddress;
+                });
+            } else {
+                librarian = "";
+            }
         });
     }
 
@@ -114,7 +126,53 @@ function SheetsApi() {
      * @returns {array} A 2D array of all values of target sheet
      */
     function parseSheetValues(response) {
-        return response.result.values;
+        let range = response.result.range;
+        let values = response.result.values;
+        return filterByLibrarian(range, values);
+    }
+
+    /** Private
+     * This method filter the values by the current login account
+     * @param range    The search range sent that got the values
+     * @param values   The 2D array of values
+     * @return {array} A 2D array of all values of target sheet
+     */
+    function filterByLibrarian(range, values) {
+        values = removeFrozen(values);
+        if (librarian === "upei.personal.librarian@gmail.com") {
+            return values;
+        }
+        if (range.includes("UPLS")) {
+            return filterByConditions(values, [{"header":"LIBRARIAN", "value":librarian}]);
+        } else {
+            return values;
+        }
+    }
+
+    /**
+     * This method removes the frozen account in the values
+     * @param values   The 2D array of values
+     * @return {array} A 2D array of all values of target sheet
+     */
+    function removeFrozen(values) {
+        let result = values.slice();
+        let headers = result[0];
+        let frozenIndex = -1;
+        for (let i = 0; i < headers.length; i++) {
+            if (headers[i] === "FROZEN_UPLS_ACCOUNT") {
+                frozenIndex = i;
+                break;
+            }
+        }
+        if (frozenIndex >= 0) {
+            for (let i = 1; i < result.length; i++) {
+                if (result[i][frozenIndex] === "TRUE") {
+                    result.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+        return result;
     }
 
     /** Public
@@ -133,6 +191,7 @@ function SheetsApi() {
      */
     function selectFromTableWhereConditions(response, returnCols, conditions, returnType) {
         let values = response.result.values.slice();
+        let range = response.result.range;
         let headers = values[0].slice();
         let colIndex = [];
         if (returnCols === "*") {
@@ -149,6 +208,7 @@ function SheetsApi() {
                 }
             }
         }
+        values = filterByLibrarian(range, values);
         values = filterByConditions(values, conditions);
         let result = [];
         let row = [];
@@ -662,6 +722,7 @@ function SheetsApi() {
 
     return Object.freeze({
         setKeys,
+        getLibrarian,
         handleClientLoad,
         handleSignInClick,
         handleSignOutClick,
