@@ -94,8 +94,8 @@ function addStudent(){
         sheetHeaders = sa.parseTableHeaders(response);
         sa.insertIntoTableColValues(sheetHeaders, "UPLS", objectArray).then(response => {
             console.log(sa.parseInsert(response));
+            window.alert("You've added a student");
         });
     });
-    window.alert("You've added a student");
 
 }

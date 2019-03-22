@@ -37,19 +37,19 @@ var submitID;
 	document.getElementById("viewInteractionButton").addEventListener("click", function()
 	{
 		//select interaction page
-		//submitStudent("");
+		submitStudent("select_interaction.html");
 	});
 	
 	document.getElementById("editInteractionButton").addEventListener("click", function() 
 	{
 		//edit interaction page
-		//submitStudent("");
+		submitStudent("edit_interaction.html");
 	});
 	
 	document.getElementById("addInteractionButton").addEventListener("click", function() 
 	{
-		//edit interaction page
-		//submitStudent("");
+		//add interaction page
+		submitStudent("add_student_interaction.html");
 	});
 	
 	document.getElementById("searchButton").addEventListener("click", function() 
@@ -163,8 +163,7 @@ var submitID;
 		 */
 		sa.getSheet("UPLS").then(res =>
 		{
-			let result = sa.selectFromTableWhereConditions(res, ["STUDENT_ID","FIRST_NAME","LAST_NAME","EMAIL", "YOS"], conditions, 1).slice(1);
-			
+			let result = sa.selectFromTableWhereConditions(res, ["STUDENT_ID","FIRST_NAME","LAST_NAME","EMAIL", "CLASS_LEVEL"], conditions, 1).slice(1);
 			//if no results, tell user
 			if(result.length < 1)
 			{
@@ -182,7 +181,7 @@ var submitID;
 			var emailCell;
 			var yearCell;
 			
-			for (let i = 0; i < result.length; i++) 
+			for (let i = 0; i < result.length; i++)
 			{
 				//format received data into table here
 				//table format is:

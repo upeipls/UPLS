@@ -152,10 +152,6 @@ function SheetsApi() {
         values = filterByConditions(values, conditions);
         let result = [];
         let row = [];
-        for (let j = 0; j < colIndex.length; j++) {
-            row[row.length] = headers[colIndex[j]];
-        }
-        result[result.length] = row.slice();
         for (let i = 0; i < values.length; i++) {
             row = [];
             for (let j = 0; j < colIndex.length; j++) {
