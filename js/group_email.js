@@ -126,7 +126,7 @@ function updatePopulation() {
         conditions[conditions.length] = tempConditions;
     }
     sa.getSheet("UPLS").then(res => {
-        let result = sa.selectFromTableWhereConditions(res, ["STUDENT_ID","FIRST_NAME","LAST_NAME","EMAIL"], conditions, 1).slice(1);
+        let result = sa.selectFromTableWhereConditions(res, ["STUDENT_ID","FIRST_NAME","LAST_NAME","EMAIL"], conditions, 1);
         for (let i = 1; i < result.length; i++) {
             studentIds[studentIds.length] = result[i][0];
             names[names.length] = result[i][1] + " " + result[i][2];
