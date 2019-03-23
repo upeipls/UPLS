@@ -23,6 +23,10 @@ function SheetsApi() {
         CLIENT_ID = inputClientId;
     }
 
+    /** Public
+     * This function returns the current account's email address
+     * @return {string}
+     */
     function getLibrarian() {
         return librarian;
     }
@@ -107,6 +111,34 @@ function SheetsApi() {
         };
     }
 
+    function getDataType(range) {
+        let params = {
+            spreadsheetId: sheetId,
+            ranges: range,
+            includeGridData: true
+        };
+        return gapi.client.sheets.spreadsheets.get(params);
+    }
+
+    function parseDataType(response, headersLength) {
+        let data = response.result.sheets[0].data[0].rowData[0].values;
+        let result = [data.length];
+        for (let i = 0; i < headersLength; i++) {
+            console.log(i);
+            console.log(data[i]);
+            if (data[i].effectiveValue && data[i].effectiveValue.stringValue) {
+                result[i] = "Text";
+            } else if (data[i].userEnteredFormat.numberFormat && data[i].userEnteredFormat.numberFormat.type && data[i].userEnteredFormat.numberFormat.type === "DATE") {
+                result[i] = "Date";
+            } else if (data[i].effectiveValue && data[i].effectiveValue.numberValue) {
+                result[i] = "Number";
+            } else {
+                result[i] = "CheckBox";
+            }
+        }
+        return result;
+    }
+
     /** Public
      * This method returns a promise for getting the target sheet
      * @param sheetName   The name of the target sheet
@@ -149,7 +181,7 @@ function SheetsApi() {
         }
     }
 
-    /**
+    /** Private
      * This method removes the frozen account in the values
      * @param values   The 2D array of values
      * @return {array} A 2D array of all values of target sheet
@@ -728,6 +760,8 @@ function SheetsApi() {
         handleSignOutClick,
         getSpreadsheetInfo,
         parseSpreadsheetInfo,
+        getDataType,
+        parseDataType,
         getSheet,
         parseSheetValues,
         selectFromTableWhereConditions,

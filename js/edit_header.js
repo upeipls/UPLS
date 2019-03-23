@@ -39,12 +39,30 @@ function loadHeaders() {
 }
 
 function generateHeadersTable() {
-    let str = "<tr><th>Column Name</th><th>Data Type</th><th>Vocabulary</th><th>Operation</th></tr>";
-    for (let i = 0; i < sheetHeaders.length; i++) {
-        str += "<tr id=\"" + i + "\"><td>" + sheetHeaders[i] + "</td><td>-</td><td>-</td><td><button class='borderless-btn' onclick='editHeaderCard(this)'><i class='fas fa-pen'></i></button></td></tr>";
+    if (sheetName === "UPLS") {
+        sa.getDataType(sheetName + "!2:2").then(res=> {
+            let types = sa.parseDataType(res, sheetHeaders.length);
+            if (types.length !== sheetHeaders.length) {
+                console.log("Error in getDataType!");
+                console.log(types);
+                console.log(sheetHeaders);
+            } else {
+                let str = "<tr><th>Column Name</th><th>Data Type</th><th>Vocabulary</th><th>Operation</th></tr>";
+                for (let i = 0; i < sheetHeaders.length; i++) {
+                    str += "<tr id=\"" + i + "\"><td>" + sheetHeaders[i] + "</td><td>" + types[i] + "</td><td>-</td><td><button class='borderless-btn' onclick='editHeaderCard(this)'><i class='fas fa-pen'></i></button></td></tr>";
+                }
+                str += "<tr><td>/</td><td>/</td><td>/</td><td><button class='borderless-btn' onclick='addNewHeader()'><i class='fas fa-plus'></i></button></td></tr>";
+                document.getElementById("headers_table").innerHTML = str;
+            }
+        });
+    } else {
+        let str = "<tr><th>" + (sheetName==="INTERACTIONS"?"Interaction Type":"Communication Channel") + "</th><th>Operation</th></tr>";
+        for (let i = 0; i < sheetHeaders.length; i++) {
+            str += "<tr id=\"" + i + "\"><td>" + sheetHeaders[i] + "</td><td>/</td></tr>";
+        }
+        str += "<tr><td>/</td><td><button class='borderless-btn' onclick='addNewHeader()'><i class='fas fa-plus'></i></button></td></tr>";
+        document.getElementById("headers_table").innerHTML = str;
     }
-    str += "<tr><td>/</td><td>-</td><td>-</td><td><button class='borderless-btn' onclick='addNewHeader()'><i class='fas fa-plus'></i></button></td></tr>";
-    document.getElementById("headers_table").innerHTML = str;
 }
 
 function addNewHeader() {
@@ -54,10 +72,8 @@ function addNewHeader() {
 
 function addHeader() {
     let headerName = document.getElementById("new-header-name").value;
-    let headerType = document.getElementById("new-header-type").value;
-    let vocabulary = document.getElementById("new-vocabulary").value;
-    console.log(headerName + ":" + headerType);
-    console.log(vocabulary);
+    //let headerType = document.getElementById("new-header-type")?document.getElementById("new-header-type").value:undefined;
+    let vocabulary = document.getElementById("new-vocabulary")?document.getElementById("new-vocabulary").value:undefined;
     if (sheetName === "INTERACTIONS") {
         sa.insertIntoTableColValues(["INTERACTIONS_LIST"], "INTERACTIONS", [{
             "INTERACTIONS_LIST": headerName
@@ -91,10 +107,12 @@ function addHeader() {
 }
 
 function closeCard() {
+    if (sheetName === "UPLS") {
+        document.getElementById("new-vocabulary").value = "";
+        document.getElementById("edit-card").classList.add("invisible");
+    }
     document.getElementById("new-header-name").value = "";
-    document.getElementById("new-vocabulary").value = "";
     document.getElementById("add-card").classList.add("invisible");
-    document.getElementById("edit-card").classList.add("invisible");
     document.getElementById("disable-canvas").classList.add("invisible");
     document.getElementById("content").classList.remove("blur");
     document.getElementById("content").classList.add("remove-blur");
@@ -132,6 +150,7 @@ function editHeader() {
 }
 
 function blurContent() {
+    document.getElementById("disable-canvas").classList.remove("invisible");
     document.getElementById("content").classList.remove("remove-blur");
     document.getElementById("content").classList.add("blur");
 }

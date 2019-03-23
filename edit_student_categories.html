@@ -8,10 +8,12 @@
     <script src="js/main_menu.js"></script>
   </head>
   <body onload="mainMenu()">
-  <div class="main_menu" id="main_menu"></div>
   <div id="content">
+    <div class="main_menu" id="main_menu"></div>
     <h1 class="title">UPLS Column List</h1>
-    <table id="headers_table"></table>
+    <div id="table">
+      <table id="headers_table"></table>
+    </div>
   </div>
 
   <div id="add-card" class="card invisible">
@@ -19,17 +21,17 @@
     <h1>Add Student Category</h1>
     <div class="fl-lt">
       <p class="input-label">Category Name: </p>
-      <p class="input-label">Category Data Type: </p>
+      <!--<p class="input-label">Category Data Type: </p>-->
     </div>
     <div class="fl-rt">
       <div><input id="new-header-name" type="text" class="input-box"></div>
-      <div>
+      <!--<div>
         <select id="new-header-type" class="input-box" style="width:218px;">
           <option>Number</option>
           <option>Text</option>
           <option>Date</option>
         </select>
-      </div>
+      </div>-->
     </div>
     <div class="fl-lt">
       <p>Vocabulary: </p>
@@ -58,7 +60,7 @@
       </div>
     </div>
     <div class="fl-lt">
-      <p>Vocabulary: </p>
+      <p>Vocabulary: (Separate by comma)</p>
       <textarea id="vocabulary" class="vocabulary" placeholder="Enter list of acceptable values, separate by comma"></textarea><br>
       <br>
       <button onclick="editHeader()" class="button fl-lt">Submit</button>
