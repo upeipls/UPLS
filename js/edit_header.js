@@ -38,10 +38,12 @@ function loadHeaders() {
     }
 }
 
+let sheetVocabs;
 function generateHeadersTable() {
     if (sheetName === "UPLS") {
         sa.getDataType().then(res=> {
             let types = sa.parseDataType(res, sheetHeaders);
+            sheetVocabs = sa.parseVocab(res, sheetHeaders);
             if (types.length !== sheetHeaders.length) {
                 console.log("Error in getDataType!");
                 console.log(types);
@@ -49,7 +51,7 @@ function generateHeadersTable() {
             } else {
                 let str = "<tr><th>Column Name</th><th>Data Type</th><th>Vocabulary</th><th>Operation</th></tr>";
                 for (let i = 0; i < sheetHeaders.length; i++) {
-                    str += "<tr id=\"" + i + "\"><td>" + sheetHeaders[i] + "</td><td>" + types[i] + "</td><td>-</td><td><button class='borderless-btn' onclick='editHeaderCard(this)'><i class='fas fa-pen'></i></button></td></tr>";
+                    str += "<tr id=\"" + i + "\"><td>" + sheetHeaders[i] + "</td><td>" + types[i] + "</td><td>" + (sheetVocabs[i]!==undefined?"Yes":"No") + "</td><td><button class='borderless-btn' onclick='editHeaderCard(this)'><i class='fas fa-pen'></i></button></td></tr>";
                 }
                 str += "<tr><td>/</td><td>/</td><td>/</td><td><button class='borderless-btn' onclick='addNewHeader()'><i class='fas fa-plus'></i></button></td></tr>";
                 document.getElementById("headers_table").innerHTML = str;
@@ -119,19 +121,21 @@ function closeCard() {
 }
 
 let notation = "";
+let columnName;
 function editHeaderCard(object) {
-    let columnName = object.parentElement.parentElement.children[0].innerHTML;
+    columnName = object.parentElement.parentElement.children[0].innerHTML;
+    let columnId = object.parentElement.parentElement.id;
     document.getElementById("header-name").value = columnName;
-    document.getElementById("vocabulary").value = "Some vocabulary";
+    document.getElementById("vocabulary").value = sheetVocabs[columnId];
     document.getElementById("edit-card").classList.remove("invisible");
     blurContent();
     if (sheetName === "INTERACTIONS"){
-        let index = object.parentElement.parentElement.id + 2;
+        let index = columnId + 2;
         notation = "A" + index;
     } else if (sheetName === "UPLS") {
         notation = sa.getNotationFromColName(sheetHeaders, columnName) + "1";
     } else {
-        let index = object.parentElement.parentElement.id + 2;
+        let index = columnId + 2;
         notation = "B" + index;
     }
 }
@@ -147,6 +151,20 @@ function editHeader() {
         }
         closeCard();
     });
+    if (sheetName === "UPLS") {
+        sa.getTableHeaders("HEADER_VOCAB_TYPE").then(res => {
+            let headers = sa.parseTableHeaders(res);
+            let vocabNotation = sa.getNotationFromColName(headers, columnName);
+            let vocabValues = [];
+            let tempStrings = document.getElementById("vocabulary").value.split(",");
+            for (let i = 0; i < tempStrings.length; i++) {
+                vocabValues[i] = [tempStrings[i]];
+            }
+            sa.update("HEADER_VOCAB_TYPE!" + vocabNotation + "3:" + vocabNotation + (vocabValues.length + 3), vocabValues).then(res => {
+                console.log(res);
+            });
+        });
+    }
 }
 
 function blurContent() {

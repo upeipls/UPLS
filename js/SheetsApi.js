@@ -111,6 +111,10 @@ function SheetsApi() {
         };
     }
 
+    /** Public
+     * This function returns the promise to get the values in HEADER_VOCAB_TYPE
+     * @return {Promise}
+     */
     function getDataType() {
         let params = {
             spreadsheetId: sheetId,
@@ -119,6 +123,12 @@ function SheetsApi() {
         return gapi.client.sheets.spreadsheets.values.get(params);
     }
 
+    /** Public
+     * This function parse the response from getDataType and returns the data type for input headers
+     * @param response  The response from getDataType
+     * @param headers   The headers that need to get the data type
+     * @return {String[]}
+     */
     function parseDataType(response, headers) {
         let data = response.result.values;
         let result = [headers.length];
@@ -133,18 +143,27 @@ function SheetsApi() {
         return result;
     }
 
+    /** Public
+     * This function parse the response from getDataType and return the vocab of input headers.
+     * Header that has no vocabulary will have an undefined in the return array.
+     * @param response    Response from getDataType
+     * @param headers     The headers that need to get the vocabulary
+     * @return {String[]}
+     */
     function parseVocab(response, headers) {
         let data = response.result.values;
         let result = [headers.length];
         for (let i = 0; i < headers.length; i++) {
+            let headerFound = false;
             for (let j = 0; j < data[0].length; j++) {
                 if (headers[i] === data[0][j]) {
+                    headerFound = true;
                     let k = 2;
                     if (data[k][j] === undefined || data[k][j] === "") {
                         result[i] = undefined;
                     } else {
                         let vocab = [];
-                        while (data[k][j] && data[k][j] !== "") {
+                        while (data[k] && data[k][j] && data[k][j] !== "") {
                             vocab[vocab.length] = data[k][j];
                             k++;
                         }
@@ -152,6 +171,9 @@ function SheetsApi() {
                     }
                     break;
                 }
+            }
+            if (!headerFound) {
+                result[i] = undefined;
             }
         }
         return result;
