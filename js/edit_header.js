@@ -40,8 +40,8 @@ function loadHeaders() {
 
 function generateHeadersTable() {
     if (sheetName === "UPLS") {
-        sa.getDataType(sheetName + "!2:2").then(res=> {
-            let types = sa.parseDataType(res, sheetHeaders.length);
+        sa.getDataType().then(res=> {
+            let types = sa.parseDataType(res, sheetHeaders);
             if (types.length !== sheetHeaders.length) {
                 console.log("Error in getDataType!");
                 console.log(types);

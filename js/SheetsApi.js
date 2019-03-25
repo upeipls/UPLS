@@ -111,29 +111,47 @@ function SheetsApi() {
         };
     }
 
-    function getDataType(range) {
+    function getDataType() {
         let params = {
             spreadsheetId: sheetId,
-            ranges: range,
-            includeGridData: true
+            range: "HEADER_VOCAB_TYPE"
         };
-        return gapi.client.sheets.spreadsheets.get(params);
+        return gapi.client.sheets.spreadsheets.values.get(params);
     }
 
-    function parseDataType(response, headersLength) {
-        let data = response.result.sheets[0].data[0].rowData[0].values;
-        let result = [data.length];
-        for (let i = 0; i < headersLength; i++) {
-            console.log(i);
-            console.log(data[i]);
-            if (data[i].effectiveValue && data[i].effectiveValue.stringValue) {
-                result[i] = "Text";
-            } else if (data[i].userEnteredFormat.numberFormat && data[i].userEnteredFormat.numberFormat.type && data[i].userEnteredFormat.numberFormat.type === "DATE") {
-                result[i] = "Date";
-            } else if (data[i].effectiveValue && data[i].effectiveValue.numberValue) {
-                result[i] = "Number";
-            } else {
-                result[i] = "CheckBox";
+    function parseDataType(response, headers) {
+        let data = response.result.values;
+        let result = [headers.length];
+        for (let i = 0; i < headers.length; i++) {
+            for (let j = 0; j < data[0].length; j++) {
+                if (headers[i] === data[0][j]) {
+                    result[i] = data[1][j];
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    function parseVocab(response, headers) {
+        let data = response.result.values;
+        let result = [headers.length];
+        for (let i = 0; i < headers.length; i++) {
+            for (let j = 0; j < data[0].length; j++) {
+                if (headers[i] === data[0][j]) {
+                    let k = 2;
+                    if (data[k][j] === undefined || data[k][j] === "") {
+                        result[i] = undefined;
+                    } else {
+                        let vocab = [];
+                        while (data[k][j] && data[k][j] !== "") {
+                            vocab[vocab.length] = data[k][j];
+                            k++;
+                        }
+                        result[i] = vocab.slice();
+                    }
+                    break;
+                }
             }
         }
         return result;
@@ -762,6 +780,7 @@ function SheetsApi() {
         parseSpreadsheetInfo,
         getDataType,
         parseDataType,
+        parseVocab,
         getSheet,
         parseSheetValues,
         selectFromTableWhereConditions,
