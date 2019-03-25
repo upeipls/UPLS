@@ -1,101 +1,105 @@
-var columns = [];
-var array = [];
 let sa = new SheetsApi();
 sa.handleClientLoad();
+
 
 function updateSignInStatus(isSignedIn){
     if(isSignedIn){
         //add method
-
+        getHeaders();
+        // dispHeaders();
+        getLibs();
         console.log("You are Signed In!")
     } else {
         console.log("Need Log In!");
         sa.handleSignInClick();
     }
 }
-
-let sheetHeaders;
-let objectArray;
-
-function getParams(){
-    var idx = document.URL.indexOf('?');
-    var params = [];
-    if (idx != -1) {
-        var pairs = document.URL.substring(idx+1, document.URL.length).split('&');
-        for (var i=0; i<pairs.length; i++){
-            nameVal = pairs[i].split('=');
-            params[nameVal[0]] = nameVal[1];
-        }
-    }
-    return params;
-}
-params = getParams();
-//studentIDString = unescape(params["studentID"]);
-//studentIDInt = parseInt(studentIDString);
-columns[0] = unescape(params["studentID"])
-columns[1] = unescape(params["firstName"]);
-columns[2] = unescape(params["lastName"]);
-columns[3] = unescape(params["email"]);
-columns[4] = unescape(params["progStatus"]);
-columns[5] = unescape(params["progCode"]);
-columns[6] = unescape(params["progDesc"]);
-columns[7] = unescape(params["deptName"]);
-columns[8] = unescape(params["deptCode"]);
-columns[9] = unescape(params["divCode"]);
-columns[10] = unescape(params["divName"]);
-columns[11] = unescape(params["honCode"]);
-columns[12] = unescape(params["classLvl"]);
-columns[13] = unescape(params["cataYear"]);
-columns[14] = unescape(params["majors"]);
-columns[15] = unescape(params["main_major"]);
-columns[16] = unescape(params["minors"]);
-columns[17] = unescape(params["frozen"]);
-console.log(columns);
-array[0] = ["STUDENT_ID", "FIRST_NAME", "LAST_NAME", "EMAIL", "PROG_STATUS", "PROG_CODE", "PROG_DESC", "DEPT_NAME", "DEPT_CODE", "DIV_CODE", "DIV_NAME", "HON_CODE", "CLASS_LVL", "CATA_YEAR", "MAJORS", "MAIN_MAJOR", "MINORS", "FROZEN"];
-array[1] = columns;
-sheetHeaders = array[0];
-objectArray = arrayToObjects(array);
+var sheetHeaders;
+var fields = [];
+var objectArray = [];
+var librarians = [];
 
 
-function arrayToObjects(array) {
-    let headers = array[0];
-    let result = [];
-    let tempStr = "";
-    for (let i = 1; i < array.length; i++) {
-        tempStr = "{";
-        for (let j = 0; j< array[i].length; j++) {
-            tempStr += "\"" + headers[j] + "\":\"" + array[i][j] + "\"";
-            if (j < array[i].length - 1) {
-                tempStr += ",";
-            }
-        }
-        tempStr += "}";
-        console.log(tempStr);
-        result[i-1] = JSON.parse(tempStr.replace(/\n/g, "\\n")
-            .replace(/\r/g, "\\r")
-            .replace(/\t/g, "\\t")
-            .replace(/\f/g, "\\f"));
-    }
-    return result;
-
-
-}//Function to display student information for review
-function dispStudent(){
-    for (let i = 0; i < array[0].length; i++) {
-        document.writeln("<pre>");
-        document.write(sheetHeaders[i] + ": ");
-        document.write(columns[i]);
-    }
-}
-
-//Function to add a student using API.js functions
-function addStudent(){
+function getHeaders(){
     sa.getTableHeaders("UPLS").then(response => {
         sheetHeaders = sa.parseTableHeaders(response);
-        sa.insertIntoTableColValues(sheetHeaders, "UPLS", objectArray).then(response => {
-            console.log(sa.parseInsert(response));
-        });
+        objectArray[0] = sheetHeaders;
+        console.log(sheetHeaders);
+        dispHeaders()
     });
-    window.alert("You've added a student");
+}
 
+function dispHeaders() {
+    let textField;
+    for(let i = 0; i < sheetHeaders.length; i++){
+        let headerDiv = document.createElement("div");
+        headerDiv.className = "ex1";
+        headerDiv.setAttribute("id", "div"+i);
+        let txt = document.createTextNode(sheetHeaders[i]);
+        headerDiv.appendChild(txt);
+        if(sheetHeaders[i] == "LIBRARIAN"){
+            textField = document.createElement("select");
+            for(let i = 0; i < librarians.length; i++) {
+                var option = document.createElement("option");
+                option.value = librarians[i];
+                option.text = librarians[i];
+                textField.appendChild(option);
+            }
+        }
+        else if(sheetHeaders[i] == "DATE_ADDED_TO_SYSTEM"){
+            textField = document.createElement("input");
+            textField.type = "date";
+        }
+        else if(sheetHeaders[i] == "STUDENT_ID"){
+            textField = document.createElement("input");
+            textField.type = "number";
+        }
+        else if(sheetHeaders[i]  == "EMAIL"){
+            textField = document.createElement("input");
+            textField.type = "email";
+        }
+        else {
+            textField = document.createElement("input");
+        }
+        /****ADD SOME VALIDATION TO THIS FOR OTHER FIELDS*/
+        textField.setAttribute("id", "field"+i);
+        textField.style.cssFloat = "right";
+
+        headerDiv.appendChild(textField);
+        document.getElementById("main").appendChild(document.createElement("br"));
+        document.getElementById("main").appendChild(document.createElement("br"));
+
+        document.getElementById("main").appendChild(headerDiv);
+
+    }
+
+}
+
+function getData() {
+    for(let i = 0; i < sheetHeaders.length; i++) {
+        var data = document.getElementById("field"+i).value;
+        fields[i] = data;
+    }
+    objectArray[1] = fields;
+    console.log(fields);
+    var student = confirm("Are you sure you want to add this student?");
+    if(student) {
+        sendData();
+    } else {}
+}
+
+function sendData() {
+    objectArray = sa.arrayToObjects(objectArray);
+    sa.insertIntoTableColValues(sheetHeaders, "UPLS", objectArray).then(response => {
+        console.log(sa.parseInsert(response));
+    });
+
+}
+
+function getLibs(){
+    sa.getSheet("LIBRARIANS").then(response => {
+        console.log(response);
+        librarians = sa.parseSheetValues(response);
+        console.log(librarians);
+    });
 }

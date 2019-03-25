@@ -6,6 +6,7 @@
     <script src="js/SheetsApi.js"></script>
     <script src="js/main_menu.js"></script>
     <link rel="stylesheet" type="text/css" href="css/upls_styles.css">
+    <script src="js/errors.js"></script>
 
 
 
@@ -13,31 +14,18 @@
 <body onload="mainMenu()">
 <div class="main_menu" id="main_menu"></div>
 <h1 align = "center">Batch Errors</h1>
-<script language="JavaScript">
-    var errors = [];
-    errors = JSON.parse(window.localStorage.getItem("errors"));
-    console.log(errors);
-
-    function createTable(tableData) {
-        var table = document.createElement('table');
-        table.style.border = "solid";
-        var row = {};
-        var cell = {};
-
-        tableData.forEach(function(rowData) {
-            row = table.insertRow(-1);
-            rowData.forEach(function(cellData) {
-                cell = row.insertCell();
-                cell.textContent = cellData;
-                cell.style.border = "solid";
-            });
-        });
-        document.body.appendChild(table);
-    }
-
-    createTable(errors);
-</script>
-
+<h3 align = "center">Email Errors</h3>
+<script>createTable(emailErrors)</script>
+<h3 align = "center">ID Errors</h3>
+<script>createTable(idErrors)</script>
+<h3 align = "center">Program Description Errors</h3>
+<script>createProgTable(progErrors)</script>
+<h3 align = "center">Date Errors</h3>
+<script>createTable(dateErrors)</script>
+<h3 align = "center">Catalog Year Errors</h3>
+<script>createTable(cataErrors)</script>
+<h3 align = "center">Duplicate ID Errors</h3>
+<script>createTable(dupeIdErrors)</script>
 
 
 

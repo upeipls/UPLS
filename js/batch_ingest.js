@@ -22,12 +22,31 @@ let objectArray;
 var data = [];
 var validatedData = [];
 var invalidData = [];
-var validCount = 1;
-var invalidCount = 1;
 var idArray = [];
 var idInfo = [];
 var progArray = [];
 var progInfo = [];
+
+/*INVALID DATA ARRAYS*/
+var invalidID = [];
+var invalidEmail = [];
+var dupeID = [];
+var invalidText = [];
+var invalidProg = [];
+var invalidDate = [];
+var invalidCataYear = [];
+
+var validCount = 1;
+
+/*INVALID DATA COUNTERS*/
+var invalidEmailCount = 1;
+var invalidIDCount = 1;
+var duplicateIDCount = 1;
+var invalidCYCount = 1;
+var invalidProgCount = 1;
+var invalidDateCount = 1;
+
+
 var nameReturned = ["PROGRAMS"];
 
 var condition = {
@@ -37,7 +56,7 @@ var condition = {
 conditions = [];
 conditions[0] = condition;
 
-validateProg();
+
 //DATE
 var date = new Date();
 var year = date.getFullYear();
@@ -76,12 +95,20 @@ function openFile(event) {
         validatedData[0] = data[0];
         invalidData[0] = data[0];
 
-        //run through data for validation
+        invalidID[0] = data[0];
+        invalidEmail[0] = data[0];
+        dupeID[0] = data[0];
+        invalidText[0] = data[0];
+        invalidProg[0] = data[0];
+        invalidDate[0] = data[0];
+        invalidCataYear[0] = data[0];
+
+        /*VALIDATE DATA*/
         for(var j = 1; j < data.length; j++){
             console.log("Loop: " + j);
 
 
-            if(validateEmail(data, j) && checkDupe(data, j)){ //ADD REST OF VALIDATION FUNCTIONS WHEN DB FULL
+           /* if(validateEmail(data, j) && checkDupe(data, j)){ //ADD REST OF VALIDATION FUNCTIONS WHEN DB FULL
                 validatedData[validCount] = data[j];
                 validCount = validCount + 1;
                 console.log("Is valid");
@@ -92,14 +119,53 @@ function openFile(event) {
                 invalidData[invalidCount] = data[j];
                 invalidCount++;
             }
+        }*/
+
+           if(!validateEmail(data, j)) {
+                invalidEmail[invalidEmailCount] = data[j];
+                invalidEmailCount++;
+           }
+           if(!validateID(data, j)) {
+                invalidID[invalidIDCount] = data[j];
+                invalidIDCount++;
+           }
+           if(!validateDate(data, j)) {
+               invalidDate[invalidDateCount] = data[j];
+               invalidDateCount++;
+           }
+           if(!validateCatYear(data, j)) {
+               invalidCataYear[invalidCYCount] = data[j];
+               invalidCYCount++;
+           }
+           if(!validateProg(data, j)) {
+               invalidProg[invalidProgCount] = data[j];
+               invalidProgCount++;
+           }
+           if(!validateDuplicate(data, j)) {
+               dupeID[duplicateIDCount] = data[j];
+               duplicateIDCount++;
+           } else {
+               validatedData[validCount] = data[j];
+               validCount++;
+           }
         }
+
+        /*ADD CURRENT DATE TO VALIDATED DATA*/
         for(let i = 1; i < validatedData.length; i++) {
             validatedData[i][15] = currentDate;
         }
         console.log(data);
         console.log(validatedData);
         console.log(invalidData);
-        window.localStorage.setItem("errors",JSON.stringify(invalidData));
+        /*SEND ERRORS TO ERROR PAGE*/
+        window.localStorage.setItem("emailErrors",JSON.stringify(invalidEmail));
+        window.localStorage.setItem("idErrors",JSON.stringify(invalidID));
+        window.localStorage.setItem("progErrors",JSON.stringify(invalidProg));
+        window.localStorage.setItem("dateErrors",JSON.stringify(invalidDate));
+        window.localStorage.setItem("cataErrors",JSON.stringify(invalidCataYear));
+        window.localStorage.setItem("dupeIdErrors",JSON.stringify(dupeID));
+
+
 
     };
     console.log(input);
@@ -171,14 +237,14 @@ function validateDate(data, x){
     }
 }
 //check for duplicate ID's
-function checkDupe(data,x){
+function validateDuplicate(data,x){
 
     if(idArray.includes(data[x][0])){
         return false;
     } else { return true; }
 
 }
-
+//Check if program exists in sheet
 function validateProg(data, x){
     //check programs_and_librarians to see if data[x][13] is it, if not open a new window to add the program desc in programs_and_libs
     if(progArray.includes(data[x][13])){
@@ -210,6 +276,8 @@ function arrayToObjects(array) {
     }
     return result;
 }
+
+//Create Modal Box --  TO BE REMOVED
 function getModal() {
 //MODAL CREATION
 // Get the modal
@@ -251,7 +319,7 @@ function getID() {
     });
 
 }
-
+//GET LIST OF PROGRAMS
 function getProgs() {
     sa.getSheet("PROGRAMS_AND_LIBRARIANS").then(response => {
         progInfo = sa.parseSheetValues(response);
