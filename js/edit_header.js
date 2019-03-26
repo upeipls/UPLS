@@ -74,7 +74,7 @@ function addNewHeader() {
 
 function addHeader() {
     let headerName = document.getElementById("new-header-name").value;
-    //let headerType = document.getElementById("new-header-type")?document.getElementById("new-header-type").value:undefined;
+    let headerType = document.getElementById("new-header-type")?document.getElementById("new-header-type").value:undefined;
     let vocabulary = document.getElementById("new-vocabulary")?document.getElementById("new-vocabulary").value:undefined;
     if (sheetName === "INTERACTIONS") {
         sa.insertIntoTableColValues(["INTERACTIONS_LIST"], "INTERACTIONS", [{
@@ -90,8 +90,19 @@ function addHeader() {
         sa.getTableHeaders(sheetName).then(response => {
             sa.alterTableAddCol(sheetName, [headerName], sa.parseTableHeaders(response).length).then(response => {
                 console.log(sa.parseAlter(response));
-                loadHeaders();
-                closeCard();
+                sa.getTableHeaders("HEADER_VOCAB_TYPE").then(response => {
+                    let notation = sa.getCharFromNum(sa.parseTableHeaders(response).length);
+                    let vocabs = vocabulary.split(",");
+                    let inputValues = [[headerName],[headerType]];
+                    for (let i = 0; i < vocabs; i++) {
+                        inputValues[inputValues.length] = [vocabs[i]];
+                    }
+                    sa.update("HEADER_VOCAB_TYPE!" + notation + "1:" + notation + inputValues.length).then(res=> {
+                        console.log(res);
+                        loadHeaders();
+                        closeCard();
+                    })
+                });
             });
         });
     } else {
