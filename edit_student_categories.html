@@ -2,14 +2,14 @@
 <html>
   <head>
     <title>Edit Student Categories</title>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/fontawesome/css/all.css">
     <link rel="stylesheet" type="text/css" href="css/upls_styles.css">
     <link rel="stylesheet" type="text/css" href="css/edit_header.css">
     <script src="js/main_menu.js"></script>
   </head>
   <body onload="mainMenu()">
+  <div class="main_menu" id="main_menu"></div>
   <div id="content">
-    <div class="main_menu" id="main_menu"></div>
     <h1 class="title">UPLS Column List</h1>
     <div id="table">
       <table id="headers_table"></table>
@@ -18,24 +18,26 @@
 
   <div id="add-card" class="card invisible">
     <div class="fl-rt"><button class="borderless-btn" onclick="closeCard()"><i class="fas fa-times"></i></button></div>
-    <h1>Add Student Category</h1>
-    <div class="fl-lt">
-      <p class="input-label">Category Name: </p>
-      <!--<p class="input-label">Category Data Type: </p>-->
-    </div>
-    <div class="fl-rt">
-      <div><input id="new-header-name" type="text" class="input-box"></div>
-      <div>
-        <select id="new-header-type" class="input-box" style="width:218px;">
-          <option>Number</option>
-          <option>Text</option>
-          <option>Date</option>
-          <option>CheckBox</option>
-        </select>
-      </div>
-    </div>
-    <div class="fl-lt">
-      <p>Vocabulary: </p>
+    <h1 class="card-title">Add Student Category</h1>
+    <table class="card-table">
+      <tr>
+        <td class="input-label">Category Name:</td>
+        <td><input id="new-header-name" type="text" class="input-box"></td>
+      </tr>
+      <tr>
+        <td class="input-label">Category Data Type:</td>
+        <td>
+          <select id="new-header-type" class="input-box" style="width:218px;">
+            <option>Text</option>
+            <option>Number</option>
+            <option>Date</option>
+            <option>CheckBox</option>
+          </select>
+        </td>
+      </tr>
+    </table>
+    <div class="vocabulary-div">
+      Vocabulary: (Separate by comma. If no vocabulary specified, leave it blank or "undefined")
       <textarea id="new-vocabulary" class="vocabulary" placeholder="Enter list of acceptable values, separate by comma"></textarea><br>
       <br>
       <button onclick="addHeader()" class="button fl-lt">Add</button>
@@ -45,24 +47,26 @@
 
   <div id="edit-card" class="card invisible">
     <div class="fl-rt"><button class="borderless-btn" onclick="closeCard()"><i class="fas fa-times"></i></button></div>
-    <h1>Edit Student Category</h1>
-    <div class="fl-lt">
-      <p class="input-label">Category Name: </p>
-      <p class="input-label">Category Data Type: </p>
-    </div>
-    <div class="fl-rt">
-      <div><input id="header-name" type="text" class="input-box" disabled></div>
-      <div>
-        <select id="header-type" class="input-box" style="width:218px;" disabled>
-          <option>Number</option>
-          <option>Text</option>
-          <option>Date</option>
-        </select>
-      </div>
-    </div>
-    <div class="fl-lt">
-      <p>Vocabulary: (Separate by comma)</p>
-      <p>If no vocabulary specified, leave it blank or "undefined"</p>
+    <h1 class="card-title">Edit Student Category</h1>
+    <table class="card-table">
+      <tr>
+        <td class="input-label">Category Name:</td>
+        <td><input id="header-name" type="text" class="input-box" disabled></td>
+      </tr>
+      <tr>
+        <td class="input-label">Category Data Type:</td>
+        <td>
+          <select id="header-type" class="input-box" style="width:218px;" disabled>
+            <option>Text</option>
+            <option>Number</option>
+            <option>Date</option>
+            <option>CheckBox</option>
+          </select>
+        </td>
+      </tr>
+    </table>
+    <div class="vocabulary-div">
+      Vocabulary: (Separate by comma. If no vocabulary specified, leave it blank or "undefined")
       <textarea id="vocabulary" class="vocabulary" placeholder="Enter list of acceptable values, separate by comma"></textarea><br>
       <br>
       <button onclick="editHeader()" class="button fl-lt">Submit</button>

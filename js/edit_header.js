@@ -73,9 +73,9 @@ function addNewHeader() {
 }
 
 function addHeader() {
-    let headerName = document.getElementById("new-header-name").value;
+    let headerName = document.getElementById("new-header-name").value.trim();
     let headerType = document.getElementById("new-header-type")?document.getElementById("new-header-type").value:undefined;
-    let vocabulary = document.getElementById("new-vocabulary")?document.getElementById("new-vocabulary").value:undefined;
+    let vocabulary = document.getElementById("new-vocabulary")?document.getElementById("new-vocabulary").value.trim():undefined;
     if (sheetName === "INTERACTIONS") {
         sa.insertIntoTableColValues(["INTERACTIONS_LIST"], "INTERACTIONS", [{
             "INTERACTIONS_LIST": headerName
@@ -89,16 +89,16 @@ function addHeader() {
     } else if (sheetName === "UPLS") {
         sa.getTableHeaders(sheetName).then(response => {
             sa.alterTableAddCol(sheetName, [headerName], sa.parseTableHeaders(response).length).then(response => {
-                console.log(sa.parseAlter(response));
                 sa.getTableHeaders("HEADER_VOCAB_TYPE").then(response => {
                     let notation = sa.getCharFromNum(sa.parseTableHeaders(response).length);
-                    let vocabs = vocabulary.split(",");
                     let inputValues = [[headerName],[headerType]];
-                    for (let i = 0; i < vocabs; i++) {
-                        inputValues[inputValues.length] = [vocabs[i]];
+                    if (vocabulary !== "undefined") {
+                        let vocabs = vocabulary.split(",");
+                        for (let i = 0; i < vocabs.length; i++) {
+                            inputValues[inputValues.length] = [vocabs[i]];
+                        }
                     }
-                    sa.update("HEADER_VOCAB_TYPE!" + notation + "1:" + notation + inputValues.length).then(res=> {
-                        console.log(res);
+                    sa.update("HEADER_VOCAB_TYPE!" + notation + "1:" + notation + "" + inputValues.length, inputValues).then(res=> {
                         loadHeaders();
                         closeCard();
                     })
@@ -129,6 +129,8 @@ function closeCard() {
     document.getElementById("disable-canvas").classList.add("invisible");
     document.getElementById("content").classList.remove("blur");
     document.getElementById("content").classList.add("remove-blur");
+    //document.getElementById("main_menu").classList.remove("blur");
+    //document.getElementById("main_menu").classList.add("remove-blur");
 }
 
 let notation = "";
@@ -137,49 +139,44 @@ function editHeaderCard(object) {
     columnName = object.parentElement.parentElement.children[0].innerHTML;
     let columnId = object.parentElement.parentElement.id;
     document.getElementById("header-name").value = columnName;
+    document.getElementById("header-type").value = object.parentElement.parentElement.children[1].innerHTML;
     document.getElementById("vocabulary").value = sheetVocabs[columnId];
     document.getElementById("edit-card").classList.remove("invisible");
     blurContent();
-    if (sheetName === "INTERACTIONS"){
-        let index = columnId + 2;
-        notation = "A" + index;
-    } else if (sheetName === "UPLS") {
-        notation = sa.getNotationFromColName(sheetHeaders, columnName) + "1";
-    } else {
-        let index = columnId + 2;
-        notation = "B" + index;
-    }
+    notation = sa.getNotationFromColName(sheetHeaders, columnName) + "1";
 }
 
 function editHeader() {
     let inputRange = sheetName + "!" + notation + ":" + notation;
+    if (document.getElementById("vocabulary").value === "undefined" || document.getElementById("vocabulary").value === "") {
+        closeCard();
+        return;
+    }
     sa.update(inputRange, [[document.getElementById("header-name").value]]).then(response => {
         if (sa.parseUpdate(response) === 1) {
-            console.log("Successfully update the header.");
-            loadHeaders();
+            sa.getTableHeaders("HEADER_VOCAB_TYPE").then(res => {
+                let headers = sa.parseTableHeaders(res);
+                let vocabNotation = sa.getNotationFromColName(headers, columnName);
+                let vocabValues = [];
+                let tempStrings = document.getElementById("vocabulary").value.split(",");
+                for (let i = 0; i < tempStrings.length; i++) {
+                    vocabValues[i] = [tempStrings[i]];
+                }
+                sa.update("HEADER_VOCAB_TYPE!" + vocabNotation + "3:" + vocabNotation + (vocabValues.length + 3), vocabValues).then(res => {
+                    loadHeaders();
+                });
+            });
         } else {
             alert("Something is wrong.");
         }
         closeCard();
     });
-    if (sheetName === "UPLS") {
-        sa.getTableHeaders("HEADER_VOCAB_TYPE").then(res => {
-            let headers = sa.parseTableHeaders(res);
-            let vocabNotation = sa.getNotationFromColName(headers, columnName);
-            let vocabValues = [];
-            let tempStrings = document.getElementById("vocabulary").value.split(",");
-            for (let i = 0; i < tempStrings.length; i++) {
-                vocabValues[i] = [tempStrings[i]];
-            }
-            sa.update("HEADER_VOCAB_TYPE!" + vocabNotation + "3:" + vocabNotation + (vocabValues.length + 3), vocabValues).then(res => {
-                console.log(res);
-            });
-        });
-    }
 }
 
 function blurContent() {
     document.getElementById("disable-canvas").classList.remove("invisible");
     document.getElementById("content").classList.remove("remove-blur");
     document.getElementById("content").classList.add("blur");
+    //document.getElementById("main_menu").classList.remove("remove-blur");
+    //document.getElementById("main_menu").classList.add("blur");
 }
