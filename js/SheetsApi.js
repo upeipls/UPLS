@@ -253,11 +253,11 @@ function SheetsApi() {
      * This will return either an array of objects or a 2D array including headers
      * @param response    The response of getSheet(inputRange)
      * @param returnCols  An array of the names of columns need to return. Pass "*" will return all columns.
-     * @param conditions  An array of conditions. Each condition is an object with format:
+     * @param conditions  An array of conditions in AND logic. Each condition is an object with format:
      *                     {header:"the name of a header", value:"the value to check for"}.
-     *                     For or between conditions, put them into an array.
+     *                     For OR logic between conditions, put them into an array.
      *                     A complete example would be
-     *                     [{header:"h1", value:"v1"},[{header:"h2",value:"v2"}, {header:"h3", value:"v3"}]}
+     *                     [{header:"h1", value:"v1"},[{header:"h2",value:"v2"}, {header:"h3", value:"v3"}]}]
      * @param returnType  0 for an array of objects. 1 for a 2D array including headers
      * @returns {*}       Either an array of objects or a 2D array including headers
      */
@@ -427,7 +427,50 @@ function SheetsApi() {
     }
 
     /** Public
-     * This method returns the cells updated of batchAdd
+     * Following the sql format `update sheetName set colVal where conditions`
+     * This function will return a promise to update the first row that matches the conditions. If no match found, it will return -1.
+     * @param sheetValues This is the whole set of values including the headers in the target sheet
+     * @param sheetName   The target sheet name
+     * @param colVal      An object of values to be updated with format {header:"value"}
+     * @param conditions  An array of input conditions with format {header:"the name of a header", value:"the value to check for"}
+     * @returns {Promise | int}
+     */
+    function rowUpdate(sheetValues, sheetName, colVal, conditions) {
+        let values = filterByConditions(sheetValues.slice(), conditions);
+        let headers = sheetValues[0];
+        console.log(sheetValues);
+        console.log(values);
+        let row = values[1].slice();
+        let index = 0;
+        for (let i = 0; i < sheetValues.length; i++) {
+            if (arrayEquals(sheetValues[i], row)) {
+                index = i;
+                break;
+            }
+        }
+        if (index === 0) {
+            console.log("rowUpdate no match found!");
+            return -1;
+        }
+        return update(sheetName + "!" + index + ":" + index, [fillRowValues(objectToArrayByHeaders(headers, colVal), sheetValues)]);
+    }
+
+    /** Private
+     * This function returns true if two array have the same items
+     * @param array1
+     * @param array2
+     * @returns {boolean}
+     */
+    function arrayEquals(array1, array2) {
+        if (array1.length !== array2.length) return false;
+        for (let i = 0; i < array1.length; i++) {
+            if (array1[i] !== array2[i]) return false;
+        }
+        return true;
+    }
+
+    /** Public
+     * This method returns the cells updated of update or rowUpdate
      * @param response The response of update(inputRange, inputValues)
      * @returns {int}  Number of rows updated
      */
@@ -581,14 +624,16 @@ function SheetsApi() {
         return values;
     }
 
-    //Function for update
+
+
     /** Public
      * Following the sql format `update sheetName set colVal where conditions`
      * This function will return a promise to send the gapi batchUpdate request
      * @param sheetValues This is the whole set of values including the headers in the target sheet
      * @param sheetName   The target sheet name
      * @param colVal      An object of values to be updated with format {header:"value"}
-     * @param conditions  An array of input conditions with format {header:"the name of a header", value:"the value to check for"}
+     * @param conditions  An array of conditions in OR logic, each with format {header:"the name of a header", value:"the value to check for"}
+     *                    For AND logic, use rowUpdate multiple times.
      * @returns {Promise}
      */
     function batchUpdateTable(sheetValues, sheetName, colVal, conditions) {
@@ -816,6 +861,7 @@ function SheetsApi() {
         arrayToObjects,
         insertIntoTableColValues,
         parseInsert,
+        rowUpdate,
         batchUpdateTable,
         parseBatchUpdate,
         alterTableAddCol,
