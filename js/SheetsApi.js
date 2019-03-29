@@ -438,8 +438,10 @@ function SheetsApi() {
     function rowUpdate(sheetValues, sheetName, colVal, conditions) {
         let values = filterByConditions(sheetValues.slice(), conditions);
         let headers = sheetValues[0];
-        console.log(sheetValues);
-        console.log(values);
+        if (values.length < 2) {
+            console.log("rowUpdate no match found!");
+            return -1;
+        }
         let row = values[1].slice();
         let index = 0;
         for (let i = 0; i < sheetValues.length; i++) {
@@ -447,10 +449,6 @@ function SheetsApi() {
                 index = i;
                 break;
             }
-        }
-        if (index === 0) {
-            console.log("rowUpdate no match found!");
-            return -1;
         }
         return update(sheetName + "!" + index + ":" + index, [fillRowValues(objectToArrayByHeaders(headers, colVal), sheetValues)]);
     }
