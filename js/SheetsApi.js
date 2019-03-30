@@ -9,6 +9,7 @@ function SheetsApi() {
     let sheetId = "";
     let API_KEY = "";
     let CLIENT_ID = "";
+    let librarian = "";
 
     /** Public
      * This function initialize the sheets api object created.
@@ -20,6 +21,14 @@ function SheetsApi() {
         sheetId = inputSheetId;
         API_KEY = inputApiKey;
         CLIENT_ID = inputClientId;
+    }
+
+    /** Public
+     * This function returns the current account's email address
+     * @return {string}
+     */
+    function getLibrarian() {
+        return librarian;
     }
 
     /**
@@ -42,6 +51,13 @@ function SheetsApi() {
         }).then(function () {
             gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
             updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+            if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+                gapi.client.gmail.users.getProfile({userId:"me"}).then(res => {
+                    librarian = res.result.emailAddress;
+                });
+            } else {
+                librarian = "";
+            }
         });
     }
 
@@ -96,6 +112,74 @@ function SheetsApi() {
     }
 
     /** Public
+     * This function returns the promise to get the values in HEADER_VOCAB_TYPE
+     * @return {Promise}
+     */
+    function getDataType() {
+        let params = {
+            spreadsheetId: sheetId,
+            range: "HEADER_VOCAB_TYPE"
+        };
+        return gapi.client.sheets.spreadsheets.values.get(params);
+    }
+
+    /** Public
+     * This function parse the response from getDataType and returns the data type for input headers
+     * @param response  The response from getDataType
+     * @param headers   The headers that need to get the data type
+     * @return {String[]}
+     */
+    function parseDataType(response, headers) {
+        let data = response.result.values;
+        let result = [headers.length];
+        for (let i = 0; i < headers.length; i++) {
+            for (let j = 0; j < data[0].length; j++) {
+                if (headers[i] === data[0][j]) {
+                    result[i] = data[1][j];
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    /** Public
+     * This function parse the response from getDataType and return the vocab of input headers.
+     * Header that has no vocabulary will have an undefined in the return array.
+     * @param response    Response from getDataType
+     * @param headers     The headers that need to get the vocabulary
+     * @return {String[]}
+     */
+    function parseVocab(response, headers) {
+        let data = response.result.values;
+        let result = [headers.length];
+        for (let i = 0; i < headers.length; i++) {
+            let headerFound = false;
+            for (let j = 0; j < data[0].length; j++) {
+                if (headers[i] === data[0][j]) {
+                    headerFound = true;
+                    let k = 2;
+                    if (data[k][j] === undefined || data[k][j] === "") {
+                        result[i] = undefined;
+                    } else {
+                        let vocab = [];
+                        while (data[k] && data[k][j] && data[k][j] !== "") {
+                            vocab[vocab.length] = data[k][j];
+                            k++;
+                        }
+                        result[i] = vocab.slice();
+                    }
+                    break;
+                }
+            }
+            if (!headerFound) {
+                result[i] = undefined;
+            }
+        }
+        return result;
+    }
+
+    /** Public
      * This method returns a promise for getting the target sheet
      * @param sheetName   The name of the target sheet
      * @returns {Promise}
@@ -114,7 +198,53 @@ function SheetsApi() {
      * @returns {array} A 2D array of all values of target sheet
      */
     function parseSheetValues(response) {
-        return response.result.values;
+        let range = response.result.range;
+        let values = response.result.values;
+        return filterByLibrarian(range, values);
+    }
+
+    /** Private
+     * This method filter the values by the current login account
+     * @param range    The search range sent that got the values
+     * @param values   The 2D array of values
+     * @return {array} A 2D array of all values of target sheet
+     */
+    function filterByLibrarian(range, values) {
+        values = removeFrozen(values);
+        if (librarian === "upei.personal.librarian@gmail.com") {
+            return values;
+        }
+        if (range.includes("UPLS")) {
+            return filterByConditions(values, [{"header":"LIBRARIAN", "value":librarian}]);
+        } else {
+            return values;
+        }
+    }
+
+    /** Private
+     * This method removes the frozen account in the values
+     * @param values   The 2D array of values
+     * @return {array} A 2D array of all values of target sheet
+     */
+    function removeFrozen(values) {
+        let result = values.slice();
+        let headers = result[0];
+        let frozenIndex = -1;
+        for (let i = 0; i < headers.length; i++) {
+            if (headers[i] === "FROZEN_UPLS_ACCOUNT") {
+                frozenIndex = i;
+                break;
+            }
+        }
+        if (frozenIndex >= 0) {
+            for (let i = 1; i < result.length; i++) {
+                if (result[i][frozenIndex] === "TRUE") {
+                    result.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+        return result;
     }
 
     /** Public
@@ -123,16 +253,17 @@ function SheetsApi() {
      * This will return either an array of objects or a 2D array including headers
      * @param response    The response of getSheet(inputRange)
      * @param returnCols  An array of the names of columns need to return. Pass "*" will return all columns.
-     * @param conditions  An array of conditions. Each condition is an object with format:
+     * @param conditions  An array of conditions in AND logic. Each condition is an object with format:
      *                     {header:"the name of a header", value:"the value to check for"}.
-     *                     For or between conditions, put them into an array.
+     *                     For OR logic between conditions, put them into an array.
      *                     A complete example would be
-     *                     [{header:"h1", value:"v1"},[{header:"h2",value:"v2"}, {header:"h3", value:"v3"}]}
+     *                     [{header:"h1", value:"v1"},[{header:"h2",value:"v2"}, {header:"h3", value:"v3"}]}]
      * @param returnType  0 for an array of objects. 1 for a 2D array including headers
      * @returns {*}       Either an array of objects or a 2D array including headers
      */
     function selectFromTableWhereConditions(response, returnCols, conditions, returnType) {
         let values = response.result.values.slice();
+        let range = response.result.range;
         let headers = values[0].slice();
         let colIndex = [];
         if (returnCols === "*") {
@@ -149,6 +280,7 @@ function SheetsApi() {
                 }
             }
         }
+        values = filterByLibrarian(range, values);
         values = filterByConditions(values, conditions);
         let result = [];
         let row = [];
@@ -295,7 +427,48 @@ function SheetsApi() {
     }
 
     /** Public
-     * This method returns the cells updated of batchAdd
+     * Following the sql format `update sheetName set colVal where conditions`
+     * This function will return a promise to update the first row that matches the conditions. If no match found, it will return -1.
+     * @param sheetValues This is the whole set of values including the headers in the target sheet
+     * @param sheetName   The target sheet name
+     * @param colVal      An object of values to be updated with format {header:"value"}
+     * @param conditions  An array of input conditions with format {header:"the name of a header", value:"the value to check for"}
+     * @returns {Promise | int}
+     */
+    function rowUpdate(sheetValues, sheetName, colVal, conditions) {
+        let values = filterByConditions(sheetValues.slice(), conditions);
+        let headers = sheetValues[0];
+        if (values.length < 2) {
+            console.log("rowUpdate no match found!");
+            return -1;
+        }
+        let row = values[1].slice();
+        let index = 0;
+        for (let i = 0; i < sheetValues.length; i++) {
+            if (arrayEquals(sheetValues[i], row)) {
+                index = i;
+                break;
+            }
+        }
+        return update(sheetName + "!" + index + ":" + index, [fillRowValues(objectToArrayByHeaders(headers, colVal), sheetValues)]);
+    }
+
+    /** Private
+     * This function returns true if two array have the same items
+     * @param array1
+     * @param array2
+     * @returns {boolean}
+     */
+    function arrayEquals(array1, array2) {
+        if (array1.length !== array2.length) return false;
+        for (let i = 0; i < array1.length; i++) {
+            if (array1[i] !== array2[i]) return false;
+        }
+        return true;
+    }
+
+    /** Public
+     * This method returns the cells updated of update or rowUpdate
      * @param response The response of update(inputRange, inputValues)
      * @returns {int}  Number of rows updated
      */
@@ -449,14 +622,16 @@ function SheetsApi() {
         return values;
     }
 
-    //Function for update
+
+
     /** Public
      * Following the sql format `update sheetName set colVal where conditions`
      * This function will return a promise to send the gapi batchUpdate request
      * @param sheetValues This is the whole set of values including the headers in the target sheet
      * @param sheetName   The target sheet name
      * @param colVal      An object of values to be updated with format {header:"value"}
-     * @param conditions  An array of input conditions with format {header:"the name of a header", value:"the value to check for"}
+     * @param conditions  An array of conditions in OR logic, each with format {header:"the name of a header", value:"the value to check for"}
+     *                    For AND logic, use rowUpdate multiple times.
      * @returns {Promise}
      */
     function batchUpdateTable(sheetValues, sheetName, colVal, conditions) {
@@ -662,11 +837,15 @@ function SheetsApi() {
 
     return Object.freeze({
         setKeys,
+        getLibrarian,
         handleClientLoad,
         handleSignInClick,
         handleSignOutClick,
         getSpreadsheetInfo,
         parseSpreadsheetInfo,
+        getDataType,
+        parseDataType,
+        parseVocab,
         getSheet,
         parseSheetValues,
         selectFromTableWhereConditions,
@@ -680,6 +859,7 @@ function SheetsApi() {
         arrayToObjects,
         insertIntoTableColValues,
         parseInsert,
+        rowUpdate,
         batchUpdateTable,
         parseBatchUpdate,
         alterTableAddCol,
