@@ -43,7 +43,7 @@ var submitID;
 	document.getElementById("editInteractionButton").addEventListener("click", function() 
 	{
 		//edit interaction page
-		submitStudent("edit_interaction.html");
+		submitStudent("select_interaction.html");
 	});
 	
 	document.getElementById("addInteractionButton").addEventListener("click", function() 
