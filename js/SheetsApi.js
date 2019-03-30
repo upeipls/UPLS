@@ -31,6 +31,14 @@ function SheetsApi() {
         return librarian;
     }
 
+    /** Public
+     * This function returns true if the current librarian is the administrator.
+     * @returns {boolean}
+     */
+    function isAdmin() {
+        return (librarian === "upei.personal.librarian@gmail.com");
+    }
+
     /**
      * Below 4 functions are used for client initialization of the google sheet api
      * Need to configure the sheetId, API_KEY, and CLIENT_ID when creating the SheetsApi
@@ -211,7 +219,7 @@ function SheetsApi() {
      */
     function filterByLibrarian(range, values) {
         values = removeFrozen(values);
-        if (librarian === "upei.personal.librarian@gmail.com") {
+        if (isAdmin()) {
             return values;
         }
         if (range.includes("UPLS")) {
@@ -838,6 +846,7 @@ function SheetsApi() {
     return Object.freeze({
         setKeys,
         getLibrarian,
+        isAdmin,
         handleClientLoad,
         handleSignInClick,
         handleSignOutClick,
