@@ -74,6 +74,13 @@ When all installation steps are complete, you must start a local server in the U
 3. Now you can access the webpages in the UPLS directory by opening your web browser and going to http://localhost:8000/
 
 # Troubleshooting
+Please ensure the following when using the Personal Librarian Project:
+1. Be signed into any Gmail account.
+2. Ensure that the GMAIL account has an API key for the Google sheets enabled.
+3. Make sure that the input sheet ID used in the sheets.api file is the sheet ID that contains the database of student information.
+4. As the program relies on making Google API calls via an internet connection, it is advised that this be used on a stable high speed connection.
+5. Enable Javacript console to see any error messages related to the Google API calls. (Ex: No Google login information logs an error message in the console asking for user to log into a Google Account.)
+
 
 # Maintenance
 
