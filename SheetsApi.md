@@ -31,6 +31,7 @@ After successfully created the OAuth 2.0 client ID, please get into the client I
 |setKeys(inputSheetId, inputApiKey, inputClientId)|void|inputSheetId: the target sheet id<br>inputApiKey: The ApiKey of the application<br>inputClientId: The Client Id of the application|This function initialize the sheets api object created.|
 |getLibrarian()|String|N/A.|This function returns the current account's email address.|
 |isAdmin()|Boolean|N/A.|This function returns true if the current librarian is the administrator.|
+|setAdmin(adminEmail)|void|adminEmail: the administrator's email address.|This function sets the administrator email address.|
 |handleClientLoad()	           |void       |N/A.	                                            |This is the function to load the gapi. Should be called after created the SheetsApi instance.|
 |handleSignInClick(event)	     |void	     |event (can be ignored).	                        |This is the function to handle the user’s sign in operation.|
 |handleSignOutClick(event)	   |void	     |event (can be ignored).	                        |This is the function to handle the user’s sign out operation.|

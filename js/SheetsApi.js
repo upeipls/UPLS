@@ -10,6 +10,7 @@ function SheetsApi() {
     let API_KEY = "";
     let CLIENT_ID = "";
     let librarian = "";
+    let admin = "Unknown";
 
     /** Public
      * This function initialize the sheets api object created.
@@ -36,7 +37,15 @@ function SheetsApi() {
      * @returns {boolean}
      */
     function isAdmin() {
-        return (librarian === "upei.personal.librarian@gmail.com");
+        return (librarian === admin);
+    }
+
+    /** Public
+     * This function sets the administrator email address.
+     * @param adminEmail the administrator's email address.
+     */
+    function setAdmin(adminEmail) {
+        admin = adminEmail;
     }
 
     /**
@@ -847,6 +856,7 @@ function SheetsApi() {
         setKeys,
         getLibrarian,
         isAdmin,
+        setAdmin,
         handleClientLoad,
         handleSignInClick,
         handleSignOutClick,
