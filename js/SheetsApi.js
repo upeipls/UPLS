@@ -200,6 +200,13 @@ function SheetsApi() {
     function parseSheetValues(response) {
         let range = response.result.range;
         let values = response.result.values;
+        // Ensure undefined cells show up as empty, so they don't break loops
+        // with undefined array indices.
+        for (var i = 0; i < values.length; i++) {
+          while (values[i].length < values[0].length) {
+            values[i].push("");
+          }
+        }
         return filterByLibrarian(range, values);
     }
 
@@ -446,7 +453,7 @@ function SheetsApi() {
         let index = 0;
         for (let i = 0; i < sheetValues.length; i++) {
             if (arrayEquals(sheetValues[i], row)) {
-                index = i;
+                index = i+1; // Sheet index starts at 1, not 0.
                 break;
             }
         }

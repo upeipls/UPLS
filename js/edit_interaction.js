@@ -178,37 +178,40 @@ function interactionSubmit() {
   if (toSubmit.URL == null) {
     toSubmit.URL = old_url;
   }
+  for (var i in toSubmit) {
+    if (i == null) {
+      toSubmit[i] = "";
+    }
+  }
   var updateConditions = [
-    {header: headers[0], value: old_student_id},
-    {header: headers[1], value: old_interaction_type},
-    {header: headers[2], value: old_note},
-    {header: headers[3], value: old_date},
-    {header: headers[4], value: old_lib_init},
-    {header: headers[5], value: old_follow_up},
-    {header: headers[6], value: old_time},
-    {header: headers[7], value: old_comm_chan},
-    {header: headers[8], value: old_url},
+    {header: headers[0], value: (old_student_id == null) ? "" : old_student_id},
+    {header: headers[1], value: (old_interaction_type == null) ? "" : old_interaction_type},
+    {header: headers[2], value: (old_note == null) ? "" : old_note},
+    {header: headers[3], value: (old_date == null) ? "" : old_date},
+    {header: headers[4], value: (old_lib_init == null) ? "" : old_lib_init},
+    {header: headers[5], value: (old_follow_up == null) ? "" : old_follow_up},
+    {header: headers[6], value: (old_time == null) ? "" : old_time},
+    {header: headers[7], value: (old_comm_chan == null) ? "" : old_comm_chan},
+    {header: headers[8], value: (old_url == null) ? "" : old_url},
   ];
+
   console.log("row to be replaced:");
-  console.log(headers[0] +":"+old_student_id);
-  console.log(headers[1] +":"+old_interaction_type);
-  console.log(headers[2] +":"+old_note);
-  console.log(headers[3] +":"+old_date);
-  console.log(headers[4] +":"+old_lib_init);
-  console.log(headers[5] +":"+old_follow_up);
-  console.log(headers[6] +":"+old_time);
-  console.log(headers[7] +":"+old_comm_chan);
-  console.log(headers[8] +":"+old_url);
+  console.log(updateConditions);
   console.log("new row info:");
   console.log(toSubmit);
   // Replace data in database.
   sa.getSheet("INTERACTION_TRACKING").then(response => {
     var sheetVals = sa.parseSheetValues(response);
-    sa.batchUpdateTable(sheetVals, "INTERACTION_TRACKING", toSubmit, updateConditions).then(res => {
+    sa.rowUpdate(sheetVals, "INTERACTION_TRACKING", toSubmit, updateConditions).then(res => {
       console.log(res);
-      var row = sa.parseBatchUpdate(res);
-      console.log("Row " + row + " has been updated in the INTERACTION_TRACKING sheet.");
-      alert("Interaction has been updated.");
+      var row = sa.parseUpdate(res);
+      if (row == -1) {
+        console.log("No rows matched the selected interaction in INTERACTION_TRACKING.");
+        alert("Could not update the selected interaction. Could not find the old row to update.");
+      } else {
+        console.log("Row " + row + " has been updated in the INTERACTION_TRACKING sheet.");
+        alert("Interaction has been updated.");
+      }
       window.location.href = "main_page.html";
     }, reason => {
       let msg = sa.parseErrorMessage(reason);
