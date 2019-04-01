@@ -378,7 +378,7 @@ function SheetsApi() {
                         }
                     }
                 } else {
-                    if (values[i][columnIndexes[j]].toLowerCase().includes(keywords[j].toLowerCase())) {
+                    if (values[i][columnIndexes[j]] && values[i][columnIndexes[j]].toLowerCase().includes(keywords[j].toLowerCase())) {
                         shouldStay = true;
                     }
                 }
