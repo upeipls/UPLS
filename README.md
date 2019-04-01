@@ -74,7 +74,8 @@ When all installation steps are complete, you must start a local server in the U
 3. Now you can access the webpages in the UPLS directory by opening your web browser and going to http://localhost:8000/
 ### Notes: 
 1. When starting the script for the first time, you may receive a dialog window asking for allowance to run the script. You may select yes here, you may or may not need to select yes each time you run the script.
-2. It may also be useful to add the script to your desktop as a shortcut. To do this, follow the documentation below for your operating system.
+2. It may also be useful to add the script to your desktop as a shortcut. To do this, follow the documentation below for your operating system.  
+
 ***Windows:*** https://windowstechies.com/the-complete-guide-for-creating-shortcuts-in-windows-10/  
 
 ***Mac:*** https://www.laptopmag.com/articles/macos-desktop-shortcuts
