@@ -92,7 +92,9 @@ function SheetsApi() {
      * @param event
      */
     function handleSignInClick(event) {
-        gapi.auth2.getAuthInstance().signIn();
+        gapi.auth2.getAuthInstance().signIn().then(response => {
+            librarian = response.w3.U3;
+        });
     }
 
     /** Public
@@ -416,7 +418,7 @@ function SheetsApi() {
                     }
                 }
             } else {
-                if (values[i][columnIndex].toLowerCase().includes(keyword)) {
+                if (values[i][columnIndex] && values[i][columnIndex].toLowerCase().includes(keyword)) {
                     shouldStay = true;
                 }
             }
