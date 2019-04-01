@@ -78,9 +78,9 @@ function getVocabulary(header, index) {
         return;
     }
     let vocab = [];
-    let notation = sa.getNotationFromColName(sheetHeaders, header);
-    sa.getSheet("UPLS!" + notation + ":" + notation).then(res => {
-        let values = sa.parseSheetValues(res);
+    sa.getSheet("UPLS").then(res => {
+        let values = sa.selectFromTableWhereConditions(res, [header], [], 1);
+        console.log(values);
         for (let i = 1; i < values.length; i++) {
             if (!vocab.includes(values[i][0])) {
                 vocab[vocab.length] = values[i][0];
@@ -180,7 +180,7 @@ function sendEmails() {
                     let headers = sa.parseTableHeaders(res);
                     let toInsert = [headers];
                     for (let i = 0; i < studentIds.length; i++) {
-                        toInsert[toInsert.length] = [studentIds[i], "Email", "Subject: " + draftSubject.trim(), getCurrentDate(), "TRUE"];
+                        toInsert[toInsert.length] = [studentIds[i], "", "Subject: " + draftSubject.trim(), getCurrentDate(), "TRUE", "", "", "Email"];
                     }
                     sa.insertIntoTableColValues(headers, "INTERACTION_TRACKING", sa.arrayToObjects(toInsert)).then(res => {
                         if (sa.parseInsert(res) !== studentIds.length) {
