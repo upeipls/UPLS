@@ -10,6 +10,7 @@ function SheetsApi() {
     let API_KEY = "";
     let CLIENT_ID = "";
     let librarian = "";
+    let admin = "Unknown";
 
     /** Public
      * This function initialize the sheets api object created.
@@ -29,6 +30,22 @@ function SheetsApi() {
      */
     function getLibrarian() {
         return librarian;
+    }
+
+    /** Public
+     * This function returns true if the current librarian is the administrator.
+     * @returns {boolean}
+     */
+    function isAdmin() {
+        return (librarian === admin);
+    }
+
+    /** Public
+     * This function sets the administrator email address.
+     * @param adminEmail the administrator's email address.
+     */
+    function setAdmin(adminEmail) {
+        admin = adminEmail;
     }
 
     /**
@@ -75,7 +92,9 @@ function SheetsApi() {
      * @param event
      */
     function handleSignInClick(event) {
-        gapi.auth2.getAuthInstance().signIn();
+        gapi.auth2.getAuthInstance().signIn().then(response => {
+            librarian = response.w3.U3;
+        });
     }
 
     /** Public
@@ -218,7 +237,7 @@ function SheetsApi() {
      */
     function filterByLibrarian(range, values) {
         values = removeFrozen(values);
-        if (librarian === "upei.personal.librarian@gmail.com") {
+        if (isAdmin()) {
             return values;
         }
         if (range.includes("UPLS")) {
@@ -368,7 +387,7 @@ function SheetsApi() {
                         }
                     }
                 } else {
-                    if (values[i][columnIndexes[j]].toLowerCase().includes(keywords[j].toLowerCase())) {
+                    if (values[i][columnIndexes[j]] && values[i][columnIndexes[j]].toLowerCase().includes(keywords[j].toLowerCase())) {
                         shouldStay = true;
                     }
                 }
@@ -406,7 +425,7 @@ function SheetsApi() {
                     }
                 }
             } else {
-                if (values[i][columnIndex].toLowerCase().includes(keyword)) {
+                if (values[i][columnIndex] && values[i][columnIndex].toLowerCase().includes(keyword)) {
                     shouldStay = true;
                 }
             }
@@ -845,6 +864,8 @@ function SheetsApi() {
     return Object.freeze({
         setKeys,
         getLibrarian,
+        isAdmin,
+        setAdmin,
         handleClientLoad,
         handleSignInClick,
         handleSignOutClick,
