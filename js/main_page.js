@@ -85,6 +85,7 @@ function adminAvailability()
 
 function showMainAdminButtons()
 {
+	adminAvailability();
 	document.getElementById("ingestButton").classList.toggle("hide");
 	document.getElementById("intTypeButton").classList.toggle("hide");
 	document.getElementById("comChannelButton").classList.toggle("hide");

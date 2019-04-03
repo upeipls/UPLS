@@ -84,24 +84,6 @@ function mainMenu()
   adminDiv.appendChild(editIntTypesBtn);
   adminDiv.appendChild(editComChannelBtn);
   
-  //check availability of admin functions - disable buttons if regular user
-  //if the user is not an admin, these buttons should be semi-transparent and un-clickable.
-	if(sa.isAdmin())
-	{
-		//user is admin, so buttons available
-	}
-	else 
-	{
-		//buttons unavailable
-		ingestBtn.classList.add("unavailable");
-		editIntTypesBtn.classList.add("unavailable");
-		editComChannelBtn.classList.add("unavailable");
-		studentCategoryBtn.classList.add("unavailable");
-		ingestBtn.disabled = true;
-		editIntTypesBtn.disabled = true;
-		editComChannelBtn.disabled = true;
-		studentCategoryBtn.disabled = true;
-	}
 	
   
   //add event listeners
@@ -176,6 +158,24 @@ function toPage(address)
 
 function showAdminButtons()
 {
+  //check availability of admin functions - disable buttons if regular user
+  //if the user is not an admin, these buttons should be semi-transparent and un-clickable.
+	if(sa.isAdmin())
+	{
+		//user is admin, so buttons available
+	}
+	else 
+	{
+		//buttons unavailable
+		ingestBtn.classList.add("unavailable");
+		editIntTypesBtn.classList.add("unavailable");
+		editComChannelBtn.classList.add("unavailable");
+		studentCategoryBtn.classList.add("unavailable");
+		ingestBtn.disabled = true;
+		editIntTypesBtn.disabled = true;
+		editComChannelBtn.disabled = true;
+		studentCategoryBtn.disabled = true;
+	}
 	ingestBtn.classList.toggle("hide");
 	editIntTypesBtn.classList.toggle("hide");
 	editComChannelBtn.classList.toggle("hide");
