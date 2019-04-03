@@ -8,7 +8,43 @@
  *
  *  Last edit 2019/19/03 by Connor Mayhew
  */
- 
+      body, html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+}
+
+.leftpane {
+    width: 25%;
+    height: 100%;
+    float: left;
+    border-collapse: collapse;
+}
+
+.middlepane {
+    width: 50%;
+    height: 100%;
+    float: left;
+    border-collapse: collapse;
+}
+
+.rightpane {
+  width: 25%;
+  height: 100%;
+  position: relative;
+  float: right;
+  border-collapse: collapse;
+}
+
+.toppane {
+  width: 100%;
+  height: 25px;
+}
 @font-face {
     font-family: simplifica;
     src: url("fonts/simplifica_typeface-webfont.ttf");
