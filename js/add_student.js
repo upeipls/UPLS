@@ -33,7 +33,8 @@ var month = date.getMonth() + 1;
 var day = date.getDate();
 var currentDate = year + "-" + month + "-" + day;
 console.log(currentDate);
-
+fields[12] = lib;
+fields[14] = currentDate;
 function getHeaders(){
     sa.getTableHeaders("UPLS").then(response => {
         uplsHeaders = sa.parseTableHeaders(response);
@@ -55,9 +56,23 @@ function dispHeaders() {
         headerDiv.appendChild(txt);
 
         if(uplsHeaders[i] == "LIBRARIAN"){
-            textField = document.createElement("div");
+            /*textField = document.createElement("div");
             let insertLib = document.createTextNode(lib);
-            textField.appendChild(insertLib);
+            textField.appendChild(insertLib);*/
+            textField = document.createElement("input");
+            textField.value = lib;
+        }
+        else if(uplsHeaders[i] == "STATUS_IN_PROGRAM"){
+            textField = document.createElement("select");
+            textField.style.width = "auto";
+            console.log(vocabsArray[i]);
+            for(let j = 0; j < vocabsArray[i].length; j++) {
+                let option = document.createElement("option");
+                option.value = vocabsArray[4][j];
+                option.text = vocabsArray[4][j];
+                textField.appendChild(option);
+
+            }
         }
         else if(uplsHeaders[i] == "PROGRAM_DESCRIPTION") {
             textField = document.createElement("select");
@@ -78,9 +93,11 @@ function dispHeaders() {
             textField.type = "number";
         }
         else if(uplsHeaders[i] == "DATE_ADDED_TO_SYSTEM"){
-            textField = document.createElement("div");
+            /*textField = document.createElement("div");
             let insertDate = document.createTextNode(currentDate);
-            textField.appendChild(insertDate);
+            textField.appendChild(insertDate);*/
+            textField = document.createElement("input");
+            textField.value = currentDate;
 
         }
         else if(uplsHeaders[i] == "STUDENT_ID"){
@@ -103,7 +120,7 @@ function dispHeaders() {
             textField = document.createElement("input");
             textField.type = "number";
         }
-        else if(i>15 && typeArray[i] == "Text" && vocabsArray[i] !== undefined){
+        else if(i>15 &&  vocabsArray[i] !== undefined){
             textField = document.createElement("select");
             textField.style.width = "auto";
             console.log(vocabsArray[i]);
@@ -135,8 +152,10 @@ function dispHeaders() {
 
 function getData() {
     for(let i = 0; i < uplsHeaders.length; i++) {
-        var data = document.getElementById("field"+i).value;
-        fields[i] = data;
+        if(i === 13) {continue;}
+        fields[i] = document.getElementById("field" + i).value;
+
+        console.log(document.getElementById("field"+i).value);
     }
     objectArray[1] = fields;
     console.log(fields);

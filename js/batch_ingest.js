@@ -101,10 +101,7 @@ function openFile(event) {
                 invalidID[invalidIDCount] = data[j];
                 invalidIDCount++;
            }
-           if(!validateDate(data, j)) {
-               invalidDate[invalidDateCount] = data[j];
-               invalidDateCount++;
-           }
+
            if(!validateCatYear(data, j)) {
                invalidCataYear[invalidCYCount] = data[j];
                invalidCYCount++;
@@ -117,7 +114,7 @@ function openFile(event) {
                dupeID[duplicateIDCount] = data[j];
                duplicateIDCount++;
            }
-           if (validateEmail(data, j) && validateID(data, j) && validateDate(data, j) && validateCatYear(data, j) && validateProg(data, j) && validateDuplicate(data, j)) {
+           if (validateEmail(data, j) && validateID(data, j) && validateCatYear(data, j) && validateProg(data, j) && validateDuplicate(data, j)) {
                validatedData[validCount] = data[j];
                validCount++;
            }
@@ -134,7 +131,6 @@ function openFile(event) {
         window.localStorage.setItem("emailErrors",JSON.stringify(invalidEmail));
         window.localStorage.setItem("idErrors",JSON.stringify(invalidID));
         window.localStorage.setItem("progErrors",JSON.stringify(invalidProg));
-        window.localStorage.setItem("dateErrors",JSON.stringify(invalidDate));
         window.localStorage.setItem("cataErrors",JSON.stringify(invalidCataYear));
         window.localStorage.setItem("dupeIdErrors",JSON.stringify(dupeID));
 
@@ -218,15 +214,7 @@ function validateCatYear(data,x){
         return false;
     }
 }
-//validate ingest date, probably not necessary
-function validateDate(data, x){
-    //validate the ingest date just to be sure
-    if(data[x][15].match(/^\d{4}-\d{2}-\d{2}$/)){
-        return true;
-    } else{
-        return false;
-    }
-}
+
 //check for duplicate ID's
 function validateDuplicate(data,x){
 

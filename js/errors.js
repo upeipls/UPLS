@@ -2,7 +2,6 @@ var errors = [];
 var emailErrors = JSON.parse(window.localStorage.getItem("emailErrors"));
 var idErrors = JSON.parse(window.localStorage.getItem("idErrors"));
 var progErrors = JSON.parse(window.localStorage.getItem("progErrors"));
-var dateErrors = JSON.parse(window.localStorage.getItem("dateErrors"));
 var cataErrors = JSON.parse(window.localStorage.getItem("cataErrors"));
 var dupeIdErrors = JSON.parse(window.localStorage.getItem("dupeIdErrors"));
 
