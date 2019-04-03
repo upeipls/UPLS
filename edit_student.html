@@ -14,13 +14,13 @@ This file will provide the backbone for editing student info.
     <div class="main_menu" id="main_menu"></div>
     <a href="single_search.html"><button value="back" class="back_button"></button></a>
     <center>
-      <h1 align = "center">Edit Student Info</h1>
+      <h1 class="title">Edit Student Info</h1>
       <form>
+        <table id="studentInfo">
+        </table>
         <table>
-          <div id="student_info">
-          </div>
           <tr>
-          <td><input type="button" value="Submit" class="small_button" onclick="submit()"></td>
+          <td><input type="button" value="Submit" class="small_button" onclick="submitStudent()"></td>
           <td><a href="main_page.html"><input type="button" value="Cancel" class="small_button" formnovalidate="formnovalidate"></a></td>
           </tr>
         </table>
