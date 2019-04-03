@@ -4,9 +4,8 @@ sa.handleClientLoad();
 
 function updateSignInStatus(isSignedIn){
     if(isSignedIn){
-        //add method
-        getID();
         getProgs();
+        getID();
         console.log("You are Signed In!")
     } else {
         console.log("Need Log In!");
@@ -22,22 +21,32 @@ let objectArray;
 var data = [];
 var validatedData = [];
 var invalidData = [];
-var validCount = 1;
-var invalidCount = 1;
 var idArray = [];
 var idInfo = [];
 var progArray = [];
 var progInfo = [];
-var nameReturned = ["PROGRAMS"];
 
-var condition = {
-    header: "PROGRAMS",
-    value: "BA, Major in Applied Communication, Leadership and Culture",
-};
-conditions = [];
-conditions[0] = condition;
+/*INVALID DATA ARRAYS*/
+var invalidID = [];
+var invalidEmail = [];
+var dupeID = [];
+var invalidText = [];
+var invalidProg = [];
+var invalidDate = [];
+var invalidCataYear = [];
 
-validateProg();
+var validCount = 1;
+
+/*INVALID DATA COUNTERS*/
+var invalidEmailCount = 1;
+var invalidIDCount = 1;
+var duplicateIDCount = 1;
+var invalidCYCount = 1;
+var invalidProgCount = 1;
+var invalidDateCount = 1;
+
+
+
 //DATE
 var date = new Date();
 var year = date.getFullYear();
@@ -62,44 +71,70 @@ function openFile(event) {
             let temp = data[i].split('\t');
             data[i] = temp;
         }
+        //put ids into own array
 
-        for(let i = 1; i < idInfo.length; i++){
-            idArray[i] = idInfo[i][0];
-        }
-        console.log(idArray);
 
-        for(let i = 1; i < progInfo.length; i++){
-            progArray[i] = progInfo[i][0];
-            console.log(progArray[i]);
-        }
+
+        //put programs into own array
+
 
         validatedData[0] = data[0];
         invalidData[0] = data[0];
 
-        //run through data for validation
+        invalidID[0] = data[0];
+        invalidEmail[0] = data[0];
+        dupeID[0] = data[0];
+        invalidText[0] = data[0];
+        invalidProg[0] = data[0];
+        invalidDate[0] = data[0];
+        invalidCataYear[0] = data[0];
+
+        /*VALIDATE DATA*/
         for(var j = 1; j < data.length; j++){
-            console.log("Loop: " + j);
 
 
-            if(validateEmail(data, j) && checkDupe(data, j)){ //ADD REST OF VALIDATION FUNCTIONS WHEN DB FULL
-                validatedData[validCount] = data[j];
-                validCount = validCount + 1;
-                console.log("Is valid");
-                console.log(validatedData);
+           if(!validateEmail(data, j)) {
+                invalidEmail[invalidEmailCount] = data[j];
+                invalidEmailCount++;
+           }
+           if(!validateID(data, j)) {
+                invalidID[invalidIDCount] = data[j];
+                invalidIDCount++;
+           }
 
-            } else {
-                console.log("not valid");
-                invalidData[invalidCount] = data[j];
-                invalidCount++;
-            }
+           if(!validateCatYear(data, j)) {
+               invalidCataYear[invalidCYCount] = data[j];
+               invalidCYCount++;
+           }
+           if(!validateProg(data, j)) {
+               invalidProg[invalidProgCount] = data[j];
+               invalidProgCount++;
+           }
+           if(!validateDuplicate(data, j)) {
+               dupeID[duplicateIDCount] = data[j];
+               duplicateIDCount++;
+           }
+           if (validateEmail(data, j) && validateID(data, j) && validateCatYear(data, j) && validateProg(data, j) && validateDuplicate(data, j)) {
+               validatedData[validCount] = data[j];
+               validCount++;
+           }
         }
+
+        /*ADD CURRENT DATE TO VALIDATED DATA*/
         for(let i = 1; i < validatedData.length; i++) {
             validatedData[i][15] = currentDate;
         }
         console.log(data);
         console.log(validatedData);
         console.log(invalidData);
-        window.localStorage.setItem("errors",JSON.stringify(invalidData));
+        /*SEND ERRORS TO ERROR PAGE*/
+        window.localStorage.setItem("emailErrors",JSON.stringify(invalidEmail));
+        window.localStorage.setItem("idErrors",JSON.stringify(invalidID));
+        window.localStorage.setItem("progErrors",JSON.stringify(invalidProg));
+        window.localStorage.setItem("cataErrors",JSON.stringify(invalidCataYear));
+        window.localStorage.setItem("dupeIdErrors",JSON.stringify(dupeID));
+
+
 
     };
     console.log(input);
@@ -109,7 +144,7 @@ function openFile(event) {
 //function to send data to sheet
 function sendToSheet() {
     let actualRows = validatedData.length - 1;
-    var rowNum = confirm("Are you sure you want to send " + data.length + " rows?");
+    /*var rowNum = confirm("Are you sure you want to send " + data.length + " rows?");
     if (rowNum) {
         objectArray = arrayToObjects(validatedData);
         sa.getTableHeaders("UPLS").then(response => {
@@ -122,25 +157,43 @@ function sendToSheet() {
     var errors = confirm("Only " + actualRows + " uploaded. To see errors, click OK");
     if(errors) {
         window.open("errors.html", "_blank");
+    }*/
+
+
+    var submittableRows = data.length - 1; // The data array includes a header row.
+    if (actualRows != submittableRows) {
+        var errors = confirm("Only " + actualRows + " out of " + submittableRows + " are valid. Click 'OK' to see errors, then fix them and try again.");
+        if (errors) {
+            window.open("errors.html", "_blank");
+        }
+    } else {
+        // Insert the code that submits stuff to the sheet.
+        objectArray = arrayToObjects(validatedData);
+        sa.getTableHeaders("UPLS").then(response => {
+            sheetHeaders = sa.parseTableHeaders(response);
+            sa.insertIntoTableColValues(sheetHeaders, "UPLS", objectArray).then(response => {
+                console.log(sa.parseInsert(response));
+            });
+        });
     }
 }
 
 //validate email cells
 function validateEmail(data,x){
     //validate email address
-    if(!data[x][3].includes("@")){
-        return false;
-    } else{
+    if(data[x][3].includes("@")){
         return true;
+    } else{
+        return false;
     }
 }
 //validate ID
 function validateID(data,x){
     //validate student ID
-    if(!data[x][0].match(/^[0-9]+$/)){
-        return false;
-    } else{
+    if(data[x][0].match(/^[0-9]+$/)){
         return true;
+    } else{
+        return false;
     }
 }
 //validate any column with text(alpha only)
@@ -155,33 +208,25 @@ function validateText(data,x,y) {
 //validate Catalog year
 function validateCatYear(data,x){
     //validate catalog year
-    if(!data[x][11].match(/[0-9]+-/)){
-        return false;
-    } else{
+    if(data[x][10].match(/^\d{4}-\d{4}$/)){
         return true;
+    } else{
+        return false;
     }
 }
-//validate ingest date, probably not necessary
-function validateDate(data, x){
-    //validate the ingest date just to be sure
-    if(!data[x][15].match(/^\d{4}-\d{2}-\d{2}$/)){
-        return false;
-    } else{
-        return true;
-    }
-}
+
 //check for duplicate ID's
-function checkDupe(data,x){
+function validateDuplicate(data,x){
 
     if(idArray.includes(data[x][0])){
         return false;
     } else { return true; }
 
 }
-
+//Check if program exists in sheet
 function validateProg(data, x){
-    //check programs_and_librarians to see if data[x][13] is it, if not open a new window to add the program desc in programs_and_libs
-    if(progArray.includes(data[x][13])){
+    //check programs_and_librarians to see if data[x][6] is it, if not open a new window to add the program desc in programs_and_libs
+    if(progArray.includes(data[x][6])){
         return true;
     } else {return false;}
 
@@ -210,50 +255,29 @@ function arrayToObjects(array) {
     }
     return result;
 }
-function getModal() {
-//MODAL CREATION
-// Get the modal
-    var modal = document.getElementById('myModal');
 
-// Get the button that opens the modal
-    var btn = document.getElementById("myBtn");
-    var cancel = document.getElementById("cancel");
-// Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
 
-// When the user clicks the button, open the modal
-    btn.onclick = function () {
-        modal.style.display = "block";
-    }
-
-    cancel.onclick = function () {
-        modal.style.display = "none";
-    }
-// When the user clicks on <span> (x), close the modal
-    span.onclick = function () {
-        modal.style.display = "none";
-    }
-
-// When the user clicks anywhere outside of the modal, close it
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-}
 //GET STUDENT IDS
 function getID() {
-
     sa.getSheet("UPLS").then(response => {
         idInfo = sa.parseSheetValues(response);
         console.log(idInfo);
+        for(let i = 1; i < idInfo.length; i++){
+            idArray[i] = idInfo[i][0];
+        }
+        console.log(idArray);
 
     });
-
 }
-
+//GET LIST OF PROGRAMS
 function getProgs() {
     sa.getSheet("PROGRAMS_AND_LIBRARIANS").then(response => {
         progInfo = sa.parseSheetValues(response);
+        console.log(progInfo);
+        for(let i = 1; i < progInfo.length; i++){
+            progArray[i] = progInfo[i][0];
+        }
+        console.log(progArray);
     });
 }
+
