@@ -3,25 +3,31 @@ This file will provide the backbone for adding an interaction for a single stude
 -->
 <html>
   <head></head>
-  <title>Add Student Interaction</title>
+  <title>Edit Student Interaction</title>
   <link rel="stylesheet" type="text/css" href="css/upls_styles.css">
   <script src="https://apis.google.com/js/api.js"></script>
   <script src="js/SheetsApi.js"></script>
-  <script src="js/add_student_interaction.js"></script>
+  <script src="js/edit_interaction.js"></script>
   <script src="js/main_menu.js"></script>
   </head>
   <body onload="mainMenu()">
     <div class="main_menu" id="main_menu"></div>
     <a href="single_search.html"><button value="back" class="back_button"></button></a>
     <center>
-      <h1 class="title">Add Student Interaction</h1>
+      <h1 class="title">Edit Student Interaction</h1>
       <form>
       <table>
       <tr>
-        <td>Student:</td><td><span id="student_name"></span>, <span id="student_id"></span></td>
+        <td>Student:</td>
+        <td>
+        <input type="text" id="student_first_name" disabled>
+        <input type="text" id="student_last_name" disabled>
+        <select id="student_id" onchange="updateName()">
+        </select>
+        </td>
         </tr>
         <tr>
-        <td>Email:</td><td><span id="student_email"></span></td>
+        <td>Email:</td><td><input type="email" id="student_email" disabled></td>
         </tr>
         <tr>
         <td>Interaction Type:</td>

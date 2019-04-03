@@ -40,9 +40,9 @@ function fillStudentInfo() {
   }];
   sa.getSheet(interactions_table).then(response => {
     var interaction_types = sa.selectFromTableWhereConditions(response, ["INTERACTIONS_LIST"], interactions_condition, 0);
-    for (let i = 1; i < interaction_types.length; i++) {
+    for (let i = 0; i < interaction_types.length; i++) {
       var interaction_type = interaction_types[i].INTERACTIONS_LIST;
-      if (interaction_type !== "" && interaction_type !== "undefined") {
+      if (interaction_type != "" && interaction_type != "undefined") {
         var interaction_type_option = "<option>" + interaction_type + "</option>";
         document.getElementById("interaction_type").innerHTML += interaction_type_option;
       }
@@ -55,9 +55,9 @@ function fillStudentInfo() {
   var communication_condition = [];
   sa.getSheet(interactions_table).then(response => {
     var communication_channels = sa.selectFromTableWhereConditions(response, ["COMMUNICATION_CHANNEL"], communication_condition, 0);
-    for (let i = 1; i < communication_channels.length; i++) {
+    for (let i = 0; i < communication_channels.length; i++) {
       var communication_channel = communication_channels[i].COMMUNICATION_CHANNEL;
-      if (communication_channel !== "" && communication_channel !== "undefined") {
+      if (communication_channel != "" && communication_channel != "undefined") {
         var communication_channel_option = "<option>" + communication_channel + "</option>";
         document.getElementById("communication_channel").innerHTML += communication_channel_option;
       }
