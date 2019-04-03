@@ -9,33 +9,29 @@ This file will provide the backbone for editing student info.
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="js/SheetsApi.js"></script>
     <script src="js/edit_student.js"></script>
-
-    <style>
-      div.ex0{
-        width: 500px;
-        height: 700px;
-        border: solid;
-        border-width: 1px;
-      }
-      div.ex1{
-        width:240px;
-        height: auto;
-        float: left;
-        border: solid;
-        border-width: 1px;
-      }
-      div.ex2{
-        width: 240px;
-        height:auto;
-        float: right;
-        border: solid;
-        border-width: 1px;
-      }
-    </style>
   </head>
-  <h1 align = "center">Edit Student Info</h1>
-  <!--<script>window.onload=disp()</script>-->
+  <body onload="mainMenu()">
     <div class="main_menu" id="main_menu"></div>
-  <div id="main" align="center"></div>
+    <h1 class="title">Edit Student Info</h1>
+    <div class="column_side">
+    <a href="single_search.html"><button value="back" class="back_button" style="float:right"></button></a>
+    </div>
+    <div class="column_main">
+    <center>
+      <form>
+        <table id="studentInfo">
+        </table>
+        <table>
+          <tr>
+          <td><input type="button" value="Submit" class="small_button" onclick="submitStudent()"></td>
+          <td><a href="main_page.html"><input type="button" value="Cancel" class="small_button" formnovalidate="formnovalidate"></a></td>
+          </tr>
+        </table>
+      </form>
+    </center>
+    </div>
+    <div class="column_side">
+    </div>
+  </body>
 
 </html>
