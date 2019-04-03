@@ -86,6 +86,7 @@ button.hide {
 button.unavailable {
 	opacity: 0.6;
 	cursor: not-allowed;
+	title: 
 }
 
 .main_logo{
