@@ -67,27 +67,26 @@ function loadButtonListeners()
 	});	
 }
 
+function adminAvailability()
+{
+	if(sa.isAdmin()){
+		}
+		else {
+			document.getElementById("ingestButton").classList.add("unavailable");
+			document.getElementById("intTypeButton").classList.add("unavailable");
+			document.getElementById("comChannelButton").classList.add("unavailable");
+			document.getElementById("studentCategoryButton").classList.add("unavailable");
+			document.getElementById("ingestButton").disabled = true;
+			document.getElementById("intTypeButton").disabled = true;
+			document.getElementById("comChannelButton").disabled = true;
+			document.getElementById("studentCategoryButton").disabled = true;
+		}
+}
+
 function showMainAdminButtons()
 {
 	document.getElementById("ingestButton").classList.toggle("hide");
 	document.getElementById("intTypeButton").classList.toggle("hide");
 	document.getElementById("comChannelButton").classList.toggle("hide");
 	document.getElementById("studentCategoryButton").classList.toggle("hide");
-	
-	//ADD functionality: if the user is not an admin, these buttons should be semi-transparent and un-clickable.
-	/*
-		//adminCheck function located within main_menu.js
-		if(adminCheck()){
-		}
-		else {
-			document.getElementById("ingestButton").classList.toggle("unavailable");
-			document.getElementById("intTypeButton").classList.toggle("unavailable");
-			document.getElementById("comChannelButton").classList.toggle("unavailable");
-			document.getElementById("studentCategoryButton").classList.toggle("unavailable");
-			document.getElementById("ingestButton").disabled = true;
-			document.getElementById("intTypeButton").disabled = true;
-			document.getElementById("comChannelButton").disabled = true;
-			document.getElementById("studentCategoryButton").disabled = true;
-		}
-	*/
 }
