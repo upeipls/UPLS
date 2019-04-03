@@ -9,6 +9,8 @@ function SheetsApi() {
     let sheetId = "";
     let API_KEY = "";
     let CLIENT_ID = "";
+    let librarian = "";
+    let admin = "Unknown";
 
     /** Public
      * This function initialize the sheets api object created.
@@ -22,6 +24,30 @@ function SheetsApi() {
         CLIENT_ID = inputClientId;
     }
 
+    /** Public
+     * This function returns the current account's email address
+     * @return {string}
+     */
+    function getLibrarian() {
+        return librarian;
+    }
+
+    /** Public
+     * This function returns true if the current librarian is the administrator.
+     * @returns {boolean}
+     */
+    function isAdmin() {
+        return (librarian === admin);
+    }
+
+    /** Public
+     * This function sets the administrator email address.
+     * @param adminEmail the administrator's email address.
+     */
+    function setAdmin(adminEmail) {
+        admin = adminEmail;
+    }
+
     /**
      * Below 4 functions are used for client initialization of the google sheet api
      * Need to configure the sheetId, API_KEY, and CLIENT_ID when creating the SheetsApi
@@ -32,16 +58,23 @@ function SheetsApi() {
      * This function calls the google api to initialize the gapi.client.
      */
     function initClient() {
-        let SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
+        let SCOPE = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/gmail.compose';
 
         gapi.client.init({
             'apiKey': API_KEY,
             'clientId': CLIENT_ID,
             'scope': SCOPE,
-            'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+            'discoveryDocs': ["https://sheets.googleapis.com/$discovery/rest?version=v4","https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"],
         }).then(function () {
             gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
             updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+            if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+                gapi.client.gmail.users.getProfile({userId:"me"}).then(res => {
+                    librarian = res.result.emailAddress;
+                });
+            } else {
+                librarian = "";
+            }
         });
     }
 
@@ -59,7 +92,9 @@ function SheetsApi() {
      * @param event
      */
     function handleSignInClick(event) {
-        gapi.auth2.getAuthInstance().signIn();
+        gapi.auth2.getAuthInstance().signIn().then(response => {
+            librarian = response.w3.U3;
+        });
     }
 
     /** Public
@@ -96,6 +131,74 @@ function SheetsApi() {
     }
 
     /** Public
+     * This function returns the promise to get the values in HEADER_VOCAB_TYPE
+     * @return {Promise}
+     */
+    function getDataType() {
+        let params = {
+            spreadsheetId: sheetId,
+            range: "HEADER_VOCAB_TYPE"
+        };
+        return gapi.client.sheets.spreadsheets.values.get(params);
+    }
+
+    /** Public
+     * This function parse the response from getDataType and returns the data type for input headers
+     * @param response  The response from getDataType
+     * @param headers   The headers that need to get the data type
+     * @return {String[]}
+     */
+    function parseDataType(response, headers) {
+        let data = response.result.values;
+        let result = [headers.length];
+        for (let i = 0; i < headers.length; i++) {
+            for (let j = 0; j < data[0].length; j++) {
+                if (headers[i] === data[0][j]) {
+                    result[i] = data[1][j];
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    /** Public
+     * This function parse the response from getDataType and return the vocab of input headers.
+     * Header that has no vocabulary will have an undefined in the return array.
+     * @param response    Response from getDataType
+     * @param headers     The headers that need to get the vocabulary
+     * @return {String[]}
+     */
+    function parseVocab(response, headers) {
+        let data = response.result.values;
+        let result = [headers.length];
+        for (let i = 0; i < headers.length; i++) {
+            let headerFound = false;
+            for (let j = 0; j < data[0].length; j++) {
+                if (headers[i] === data[0][j]) {
+                    headerFound = true;
+                    let k = 2;
+                    if (data[k][j] === undefined || data[k][j] === "") {
+                        result[i] = undefined;
+                    } else {
+                        let vocab = [];
+                        while (data[k] && data[k][j] && data[k][j] !== "") {
+                            vocab[vocab.length] = data[k][j];
+                            k++;
+                        }
+                        result[i] = vocab.slice();
+                    }
+                    break;
+                }
+            }
+            if (!headerFound) {
+                result[i] = undefined;
+            }
+        }
+        return result;
+    }
+
+    /** Public
      * This method returns a promise for getting the target sheet
      * @param sheetName   The name of the target sheet
      * @returns {Promise}
@@ -114,7 +217,60 @@ function SheetsApi() {
      * @returns {array} A 2D array of all values of target sheet
      */
     function parseSheetValues(response) {
-        return response.result.values;
+        let range = response.result.range;
+        let values = response.result.values;
+        // Ensure undefined cells show up as empty, so they don't break loops
+        // with undefined array indices.
+        for (var i = 0; i < values.length; i++) {
+          while (values[i].length < values[0].length) {
+            values[i].push("");
+          }
+        }
+        return filterByLibrarian(range, values);
+    }
+
+    /** Private
+     * This method filter the values by the current login account
+     * @param range    The search range sent that got the values
+     * @param values   The 2D array of values
+     * @return {array} A 2D array of all values of target sheet
+     */
+    function filterByLibrarian(range, values) {
+        values = removeFrozen(values);
+        if (isAdmin()) {
+            return values;
+        }
+        if (range.includes("UPLS")) {
+            return filterByConditions(values, [{"header":"LIBRARIAN", "value":librarian}]);
+        } else {
+            return values;
+        }
+    }
+
+    /** Private
+     * This method removes the frozen account in the values
+     * @param values   The 2D array of values
+     * @return {array} A 2D array of all values of target sheet
+     */
+    function removeFrozen(values) {
+        let result = values.slice();
+        let headers = result[0];
+        let frozenIndex = -1;
+        for (let i = 0; i < headers.length; i++) {
+            if (headers[i] === "FROZEN_UPLS_ACCOUNT") {
+                frozenIndex = i;
+                break;
+            }
+        }
+        if (frozenIndex >= 0) {
+            for (let i = 1; i < result.length; i++) {
+                if (result[i][frozenIndex] === "TRUE") {
+                    result.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+        return result;
     }
 
     /** Public
@@ -123,30 +279,37 @@ function SheetsApi() {
      * This will return either an array of objects or a 2D array including headers
      * @param response    The response of getSheet(inputRange)
      * @param returnCols  An array of the names of columns need to return. Pass "*" will return all columns.
-     * @param conditions  An array of conditions. Each condition is an object with format:
-     *                    {header:"the name of a header", value:"the value to check for"}.
+     * @param conditions  An array of conditions in AND logic. Each condition is an object with format:
+     *                     {header:"the name of a header", value:"the value to check for"}.
+     *                     For OR logic between conditions, put them into an array.
+     *                     A complete example would be
+     *                     [{header:"h1", value:"v1"},[{header:"h2",value:"v2"}, {header:"h3", value:"v3"}]}]
      * @param returnType  0 for an array of objects. 1 for a 2D array including headers
      * @returns {*}       Either an array of objects or a 2D array including headers
      */
     function selectFromTableWhereConditions(response, returnCols, conditions, returnType) {
-        let values = response.result.values;
+        let values = response.result.values.slice();
+        let range = response.result.range;
         let headers = values[0].slice();
         let colIndex = [];
-        for (let i = 0; i < returnCols.length; i++) {
-            for (let j = 0; j < headers.length; j++) {
-                if (headers[j] === returnCols[i]) {
-                    colIndex[colIndex.length] = j;
-                    break;
+        if (returnCols === "*") {
+            for (let i = 0; i < headers.length; i++) {
+                colIndex[colIndex.length] = i;
+            }
+        } else {
+            for (let i = 0; i < returnCols.length; i++) {
+                for (let j = 0; j < headers.length; j++) {
+                    if (headers[j] === returnCols[i]) {
+                        colIndex[colIndex.length] = j;
+                        break;
+                    }
                 }
             }
         }
+        values = filterByLibrarian(range, values);
         values = filterByConditions(values, conditions);
         let result = [];
         let row = [];
-        for (let j = 0; j < colIndex.length; j++) {
-            row[row.length] = headers[colIndex[j]];
-        }
-        result[result.length] = row.slice();
         for (let i = 0; i < values.length; i++) {
             row = [];
             for (let j = 0; j < colIndex.length; j++) {
@@ -170,18 +333,71 @@ function SheetsApi() {
      */
     function filterByConditions(values, conditions) {
         for (let i = 0; i < conditions.length; i++) {
-            let conditionHeader = conditions[i].header;
-            let conditionValue = conditions[i].value;
-            let headerIndex = -1;
-            for (let j = 0; j < values[0].length; j++) {
-                if (conditionHeader === values[0][j]) {
-                    headerIndex = j;
-                    break;
+            if (conditions[i].length) {
+                let headerIndexes = [conditions[i].length];
+                let conditionValues = [conditions[i].length];
+                for (let j = 0; j < conditions[i].length; j++) {
+                    conditionValues[j] = conditions[i][j].value;
+                    for (let k = 0; k < values[0].length; k++) {
+                        if (conditions[i][j].header === values[0][k]) {
+                            headerIndexes[j] = k;
+                            break;
+                        }
+                    }
                 }
+                values = filterByKeywords(values, conditionValues, headerIndexes);
+            } else {
+                let conditionHeader = conditions[i].header;
+                let conditionValue = conditions[i].value;
+                let headerIndex = -1;
+                for (let j = 0; j < values[0].length; j++) {
+                    if (conditionHeader === values[0][j]) {
+                        headerIndex = j;
+                        break;
+                    }
+                }
+                values = filterByKeyword(values, conditionValue, headerIndex);
             }
-            values = filterByKeyword(values, conditionValue, headerIndex);
         }
         return values;
+    }
+
+    /** Private
+     * Returns the 2D array after filtering the input array.
+     * @param values        The input 2D array
+     * @param keywords      An array of searching keywords
+     * @param columnIndexes An array of the specific indexes of columns to be filtered
+     *                    if less than 0, then any column includes the keyword
+     *                    will add the row to the result.
+     * @returns {array}   A 2D array
+     */
+    function filterByKeywords(values, keywords, columnIndexes) {
+        let result = [];
+        result[0] = values[0];
+        let shouldStay = false;
+        let rows = values.length;
+        for (let i = 1; i < rows; i++) {
+            shouldStay = false;
+            for (let j = 0; j < keywords.length; j++) {
+                if (columnIndexes[j] < 0) {
+                    for (let k = 0; k < values[i].length; k++) {
+                        if (values[i][k] && values[i][k].toLowerCase().includes(keywords[j].toLowerCase())) {
+                            shouldStay = true;
+                            break;
+                        }
+                    }
+                } else {
+                    if (values[i][columnIndexes[j]] && values[i][columnIndexes[j]].toLowerCase().includes(keywords[j].toLowerCase())) {
+                        shouldStay = true;
+                    }
+                }
+                if (shouldStay) break;
+            }
+            if (shouldStay) {
+                result[result.length] = values[i].slice();
+            }
+        }
+        return result;
     }
 
     /** Private
@@ -194,29 +410,30 @@ function SheetsApi() {
      * @returns {array}   A 2D array
      */
     function filterByKeyword(values, keyword, columnIndex) {
+        let result = [];
+        keyword = keyword.toLowerCase();
         let shouldStay = false;
         let rows = values.length;
-        for (let i = 0; i < rows; i++) {
+        result[0] = values[0].slice();
+        for (let i = 1; i < rows; i++) {
             shouldStay = false;
             if (columnIndex < 0) {
                 for (let j = 0; j < values[i].length; j++) {
-                    if (values[i][j] !== undefined && values[i][j].includes(keyword)) {
+                    if (values[i][j] !== undefined && values[i][j].toLowerCase().includes(keyword)) {
                         shouldStay = true;
                         break;
                     }
                 }
             } else {
-                if (values[i][columnIndex].includes(keyword)) {
+                if (values[i][columnIndex] && values[i][columnIndex].toLowerCase().includes(keyword)) {
                     shouldStay = true;
                 }
             }
-            if (!shouldStay) {
-                values.splice(i, 1);
-                rows--;
-                i--;
+            if (shouldStay) {
+                result[result.length] = values[i].slice();
             }
         }
-        return values;
+        return result;
     }
 
     /** Public
@@ -229,14 +446,55 @@ function SheetsApi() {
         let params = {
             spreadsheetId: sheetId,
             range: inputRange,
-            valueInputOption: "RAW",
+            valueInputOption: "USER_ENTERED",
             values: inputValues
         };
         return gapi.client.sheets.spreadsheets.values.update(params);
     }
 
     /** Public
-     * This method returns the cells updated of batchAdd
+     * Following the sql format `update sheetName set colVal where conditions`
+     * This function will return a promise to update the first row that matches the conditions. If no match found, it will return -1.
+     * @param sheetValues This is the whole set of values including the headers in the target sheet
+     * @param sheetName   The target sheet name
+     * @param colVal      An object of values to be updated with format {header:"value"}
+     * @param conditions  An array of input conditions with format {header:"the name of a header", value:"the value to check for"}
+     * @returns {Promise | int}
+     */
+    function rowUpdate(sheetValues, sheetName, colVal, conditions) {
+        let values = filterByConditions(sheetValues.slice(), conditions);
+        let headers = sheetValues[0];
+        if (values.length < 2) {
+            console.log("rowUpdate no match found!");
+            return -1;
+        }
+        let row = values[1].slice();
+        let index = 0;
+        for (let i = 0; i < sheetValues.length; i++) {
+            if (arrayEquals(sheetValues[i], row)) {
+                index = i+1; // Sheet index starts at 1, not 0.
+                break;
+            }
+        }
+        return update(sheetName + "!" + index + ":" + index, [fillRowValues(objectToArrayByHeaders(headers, colVal), sheetValues)]);
+    }
+
+    /** Private
+     * This function returns true if two array have the same items
+     * @param array1
+     * @param array2
+     * @returns {boolean}
+     */
+    function arrayEquals(array1, array2) {
+        if (array1.length !== array2.length) return false;
+        for (let i = 0; i < array1.length; i++) {
+            if (array1[i] !== array2[i]) return false;
+        }
+        return true;
+    }
+
+    /** Public
+     * This method returns the cells updated of update or rowUpdate
      * @param response The response of update(inputRange, inputValues)
      * @returns {int}  Number of rows updated
      */
@@ -299,7 +557,13 @@ function SheetsApi() {
      * @returns {string}
      */
     function getCharFromNum(num) {
-        return String.fromCharCode('A'.charCodeAt(0) + num);
+        let result = "";
+        if (num > 25) {
+            result += String.fromCharCode('A'.charCodeAt(0) + num / 26 - 1);
+            num = num % 26;
+        }
+        result += String.fromCharCode('A'.charCodeAt(0) + num);
+        return result;
     }
 
     /** Public
@@ -339,15 +603,19 @@ function SheetsApi() {
      * @returns {Promise}
      */
     function insertIntoTableColValues(headers, sheetName, toInsert) {
+        if (!sheetName.includes("!")) {
+            sheetName = sheetName + "!A:A";
+        }
         let values = [];
         for (let i = 0; i < toInsert.length; i++) {
             values[i] = objectToArrayByHeaders(headers, toInsert[i]);
         }
+        console.log(values);
         let params = {
             spreadsheetId: sheetId,
-            range: sheetName + "!A:A",
+            range: sheetName,
             majorDimension: "ROWS",
-            valueInputOption: "RAW",
+            valueInputOption: "USER_ENTERED",
             values: values
         };
         return gapi.client.sheets.spreadsheets.values.append(params);
@@ -366,7 +634,7 @@ function SheetsApi() {
      * This function takes an array of objects and corresponding headers and transfer it into a 2D array
      * This is a helper method for insertIntoTableColValues
      * @param headers  An array of the headers of the target sheet
-     * @param toInsert This is an array of objects with format [{header1:"value1", header2:"value2"}, {...},...,{...}]
+     * @param toInsert This is an object with format {header1:"value1", header2:"value2"}
      * @returns {Array}
      */
     function objectToArrayByHeaders(headers, toInsert) {
@@ -380,14 +648,16 @@ function SheetsApi() {
         return values;
     }
 
-    //Function for update
+
+
     /** Public
      * Following the sql format `update sheetName set colVal where conditions`
      * This function will return a promise to send the gapi batchUpdate request
      * @param sheetValues This is the whole set of values including the headers in the target sheet
      * @param sheetName   The target sheet name
      * @param colVal      An object of values to be updated with format {header:"value"}
-     * @param conditions  An array of input conditions with format {header:"the name of a header", value:"the value to check for"}
+     * @param conditions  An array of conditions in OR logic, each with format {header:"the name of a header", value:"the value to check for"}
+     *                    For AND logic, use rowUpdate multiple times.
      * @returns {Promise}
      */
     function batchUpdateTable(sheetValues, sheetName, colVal, conditions) {
@@ -411,9 +681,8 @@ function SheetsApi() {
                 };
             }
         }
-        console.log(data);
         let requestBody = {
-            valueInputOption: 'RAW',
+            valueInputOption: 'USER_ENTERED',
             data: data
         };
         return gapi.client.sheets.spreadsheets.values.batchUpdate(params, requestBody);
@@ -445,7 +714,6 @@ function SheetsApi() {
                 for (let j = 1; j < values.length; j++) {
                     if (values[j][i] === value) {
                         rowNumbers[rowNumbers.length] = j;
-                        console.log(rowNumbers);
                     }
                 }
             }
@@ -479,17 +747,16 @@ function SheetsApi() {
     function alterTableAddCol(sheetName, colNames, headersLength) {
         let startNotation = getCharFromNum(headersLength);
         let endNotation = getCharFromNum(headersLength + colNames.length - 1);
-        console.log(startNotation + ":" + endNotation);
         let params = {
             spreadsheetId: sheetId,
             range: sheetName + "!" + startNotation + "1:" + endNotation + "1",
-            valueInputOption: "RAW",
+            valueInputOption: "USER_ENTERED",
             values: [colNames]
         };
-        return gapi.client.sheets.spreadsheets.values.update(params);
+        return gapi.client.sheets.spreadsheets.values.append(params);
     }
 
-    /**
+    /** Public
      * This function will parse the response from alterTableAddCol and return the updated columns
      * @param response The response from alterTableAddCol
      * @returns {int}
@@ -498,13 +765,115 @@ function SheetsApi() {
         return response.result.updatedColumns;
     }
 
+    /** Public
+     * This function returns a promise to get the draft(s) by subject line
+     * @param subject the subject line
+     * @returns {Promise}
+     */
+    function getDraftBySubject(subject) {
+        return gapi.client.gmail.users.drafts.list({
+            'userId': 'me',
+            'q': "subject:" + subject
+        });
+    }
+
+    /** Public
+     * This function parses the response from getDraftBySubject and returns
+     * a list of drafts, a promise to get the specific draft, or null if no drafts found
+     * @param response response from getDraftBySubject
+     * @returns {String[] | Promise | null}
+     */
+    function parseDraftBySubject(response) {
+        if (response.result.resultSizeEstimate > 0) {
+            if (response.result.resultSizeEstimate > 1) {
+                return response.result.drafts;
+            } else {
+                let draftId = response.result.drafts[0].id;
+                return gapi.client.gmail.users.drafts.get({
+                    'userId': 'me',
+                    'id': draftId,
+                    'format': "raw"
+                });
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /** Public
+     * This function decodes a base64URL encoded string and returns the result
+     * @param str the base64URL encoded string
+     * @returns {String}
+     */
+    function decode(str) {
+        return window.atob(str.replace(/-/g, "+").replace(/_/g, "/"));
+    }
+
+    /** Public
+     * This function returns a promise to send a email
+     * @param message the base64URL encoded message of the email
+     * @returns {Promise}
+     */
+    function sendEmail(message) {
+        return gapi.client.gmail.users.messages.send({
+            'userId': 'me',
+            'resource': {'raw': message}
+        });
+    }
+
+    /** Public
+     * This function replace the variables in the message with corresponding values
+     * and returns the final message
+     * @param message   the email message contains the variables
+     * @param variables an object of variables and corresponding values, in the format
+     *                  {variable: [value1, value2, ...], variable2: ...}
+     * @param index     the index of value to use
+     * @returns {String}
+     */
+    function replaceVar(message, variables, index) {
+        let startIndex = message.indexOf("$");
+        let tempStr, endIndex;
+        let loop = 0;
+        while (startIndex >= 0 && loop < 5) {
+            tempStr = message.substr(startIndex + 1);
+            endIndex = tempStr.indexOf("$");
+            if (endIndex < 0) {
+                return message;
+            }
+            tempStr = tempStr.substr(0, endIndex);
+            message = message.replace("$"+tempStr+"$", variables[tempStr][index]);
+            startIndex = message.indexOf("$");
+            loop++;
+        }
+        return message;
+    }
+
+    /** Public
+     * This function adds the destination email address to the message
+     * @param message   the email message
+     * @param address   the destination email address
+     * @returns {String}
+     */
+    function addAddress(message, address) {
+        let startIndex = message.indexOf("From:");
+        let endIndex = message.indexOf("Content-Type:");
+        let tempStr = message.substr(startIndex, endIndex - startIndex);
+        return message.replace(tempStr, tempStr + "To: " + address + "\n");
+    }
+
     return Object.freeze({
         setKeys,
+        getLibrarian,
+        isAdmin,
+        setAdmin,
         handleClientLoad,
         handleSignInClick,
         handleSignOutClick,
         getSpreadsheetInfo,
         parseSpreadsheetInfo,
+        getDataType,
+        parseDataType,
+        parseVocab,
         getSheet,
         parseSheetValues,
         selectFromTableWhereConditions,
@@ -518,9 +887,16 @@ function SheetsApi() {
         arrayToObjects,
         insertIntoTableColValues,
         parseInsert,
+        rowUpdate,
         batchUpdateTable,
         parseBatchUpdate,
         alterTableAddCol,
-        parseAlter
+        parseAlter,
+        getDraftBySubject,
+        parseDraftBySubject,
+        decode,
+        sendEmail,
+        replaceVar,
+        addAddress
     });
 }

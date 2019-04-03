@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Interaction Categories</title>
+    <link rel="stylesheet" type="text/css" href="css/fontawesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="css/upls_styles.css">
+    <link rel="stylesheet" type="text/css" href="css/edit_header.css">
+    <script src="js/main_menu.js"></script>
+</head>
+<body onload="mainMenu()">
+<div class="main_menu" id="main_menu"></div>
+<div id="content">
+    <h1 class="title">Communication Channel  List</h1>
+    <div id="table"><table id="headers_table"></table></div>
+</div>
+
+<div id="add-card" class="card invisible alter-card">
+    <div class="fl-rt"><button class="borderless-btn" onclick="closeCard()"><i class="fas fa-times"></i></button></div>
+    <h1 class="card-title">Add Communication Channel</h1>
+    <table class="card-table">
+        <tr>
+            <td class="input-label">Channel Name:</td>
+            <td><input id="new-header-name" type="text" class="input-box"></td>
+        </tr>
+    </table>
+    <div class="vocabulary-div">
+        <button onclick="addHeader()" class="button fl-lt">Add</button>
+        <button onclick="closeCard()" class="button fl-rt">Cancel</button>
+    </div>
+</div>
+
+<div id="disable-canvas" class="invisible"></div>
+
+<script>
+    const sheetName = "CHANNEL";
+</script>
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="js/SheetsApi.js"></script>
+<script src="js/edit_header.js"></script>
+</body>
+</html>

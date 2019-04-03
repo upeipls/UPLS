@@ -5,6 +5,8 @@
  * 		#F1B434 is Gold
  *		#F3E7D3 is Warm-White
  *		first 3 colours are UPEI-specific, taken from UPEI's style guide. 
+ *
+ *  Last edit 2019/19/03 by Connor Mayhew
  */
       body, html {
   width: 100%;
@@ -48,11 +50,79 @@
     src: url("fonts/simplifica_typeface-webfont.ttf");
 }
 
-.title{
+h1.title{
 	color: #7C2529;
 	text-align: center;
 	font-size: 5em;
 	font-family: simplifica, arial, sans-serif;
+	padding: 0px;
+	margin: 10px;
+}
+
+img{
+	max-width: 100%;
+	max-height: 100%;
+}
+
+div.title{
+	width:100%;
+	height: 100px;
+	float: left;
+	position: relative;
+}
+
+div.menu_bar{
+	width: 100%;
+	height: 20px;
+	float: left;
+	overflow-y: visible;
+	position: relative;
+	z-index: 99999;
+}
+
+div.column_30 {
+	width: 30%;
+	float: left;
+	min-width: 200px;
+	position: relativd;
+}
+
+div.column_half {
+	width: 50%;
+	float: left;
+	position: relative;
+}
+
+div.column_70 {
+	width: 70%;
+	float: left;
+	min-width: 500px;
+	position: relative;
+}
+
+div.column_side {
+	float: left;
+	width: 15%;
+	min-height: 200px;
+	position: relative;
+}
+
+div.column_main {
+	float: left;
+	width: 70%;
+	min-height: 200px;
+	min-width: 700px;
+	position: relative;
+}
+ 
+button.hide {
+	display: none;
+}
+
+button.unavailable {
+	opacity: 0.6;
+	cursor: not-allowed;
+	title: 
 }
 
 .main_logo{
@@ -62,7 +132,6 @@
  
 .dropdown_items {
   display: none;
-  padding-top: 2px;
 }
 
 .show {
@@ -77,26 +146,30 @@
   float: right;
 }
 
-
 .invisible {
   display: none;
 }
 
-.back_button {
+.hide{
+	visibility: hidden;
+}
+
+button.back_button {
 	border: none;
 	background-color: F3E7D3;
 	background-image: url("images/backbuttonbg.png");
 	background-size:cover;
 	height: 3em;
 	width: 3em;
-	padding: 0.5em;
+	margin-right: 2em;
+	float: right;
 }
 
-.back_button:hover {
+button.back_button:hover {
 	background-image: url("images/backbuttoninvertedbg.png");
 }
 
-.close_button {
+button.close_button {
 	border: none;
 	background-color: F3E7D3;
 	background-image: url("images/xbuttonbg.png");
@@ -106,11 +179,11 @@
 	padding: 0.2em;
 }
 
-.close_button:hover {
+button.close_button:hover {
 	background-image: url("images/xbuttoninvertedbg.png");
 }
 
-.flow_button {
+button.small_button {
 	background-color: #789D4A;
 	border: none;
 	text-align: center;
@@ -120,7 +193,7 @@
 	min-width: 12.5em;
 }
 
-.flow_button:hover {
+button.small_button:hover {
 	Background-color: #FFFFFF;
 	color: #000000;
 	border-style: solid;
@@ -128,17 +201,12 @@
 	border-color: #789D4A;
 }
 
-.admin_flow_button {
+button.small_button.admin{
 	background-color: #F1B434;
-	border: none;
-	text-align: center;
-	color: #FFFFFF;
-	height: 1.5em;
-	width: fit-content;
-	min-width: 12.5em;
+	display: block
 }
 
-.admin_flow_button:hover {
+button.small_button.admin:hover {
 	Background-color: #FFFFFF;
 	color: #000000;
 	border-style: solid;
@@ -146,17 +214,39 @@
 	border-color: #F1B434;
 }
 
-.nav_button {
+button.small_button.menu_bar {
+	display: inline-block;
+	border: 1px solid black;
+	border-right: none;
+}
+
+button.small_button.menu_bar:last-child {
+	border-right: 1px solid black;
+}
+
+button.small_button.menu_bar.admin {
+	display: block;
+	border: 1px solid black;
+	border-top: none;
+}
+
+button.small_button.menu_bar.admin:first-child {
+	border-top: 1px solid black;
+	border-left: none;
+}
+
+button.medium_button {
 	background-color: #789D4A;
 	border: none;
 	text-align: center;
 	color: #FFFFFF;
 	width: fit-content;
-	min-width: 25em;
-	height: 5em;
+	min-width: 15em;
+	height: 3em;
+	padding: 3px;
 }
 
-.nav_button:hover {
+button.medium_button:hover {
 	Background-color: #FFFFFF;
 	color: #000000;
 	border-style: solid;
@@ -164,26 +254,35 @@
 	border-color: #789D4A;
 }
 
-.admin_nav_button {
-	background-color: #F1B434;
-	border: none;
+button.large_button {
+	border:none;
+	cursor: pointer;
+	display: block;
+	background-color: #789D4A;
 	text-align: center;
 	color: #FFFFFF;
-	width: fit-content;
-	min-width: 25em;
+	width: 25em;
 	height: 5em;
 }
-.admin_nav_button:hover {
+
+button.large_button:hover {
+	Background-color: #FFFFFF;
+	color: #000000;
+	border-style: solid;
+	border-width: medium;
+	border-color: #789D4A;
+}
+
+button.large_button.admin {
+	background-color: #F1B434;
+}
+
+button.large_button.admin:hover {
 	Background-color: #FFFFFF;
 	color: #000000;
 	border-style: solid;
 	border-width: medium;
 	border-color: #F1B434;
-}
-
-.nav_list {
-	padding: 0;
-	list-style-type: none;
 }
 
 .preview_scroll_box {
@@ -200,34 +299,15 @@
 	display: inline;
 }
 
-.column_third {
-	float: left;
-	width: 33.33%;
-	min-height: 200px;
-	padding-left: 30px;
-	background-color: #FFFFFF;
-}
 
-.column_two_thirds {
-	float: left;
-	width: 66.67%;
-	min-height: 200px;
-}
-
-.top_half {
-	float: top;
-	height: 50%;
+.row{
 	max-height: 500px;
 	min-height: 200px;
 }
 
-.bottom_half {
-	float: bottom;
-	height: 50%;
-	max-height: 500px;
-	min-height: 200px;
+br.small{
+	line-height:50%;
 }
-
 body {
 	background-color: #F3E7D3;}
 
@@ -236,3 +316,32 @@ p {
 	font-family: serif;
 }
 
+/**
+ * Tooltip stuff is taken from https://www.w3schools.com/css/css_tooltip.asp and only slightly modified.
+ */
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: #7C2529;
+  color: #fff;
+  text-align: left;
+  padding: 5px 0;
+  border-radius: 6px;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}

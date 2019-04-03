@@ -56,24 +56,23 @@ function getStudentInfo(){
     }
     tbody.appendChild(commentsRow);
     table.appendChild(tbody);
-    table.setAttribute("border","5");
-			document.getElementById("div1").appendChild(table);
-		  	var buttonDiv = document.createElement('div');
-		  	var editBtn = document.createElement("BUTTON");
-		  	var t = document.createTextNode("Go to edit student");
-		  	editBtn.onclick = function(){
-		  		window.location.href="edit_student.html";
-		  	};
-		  	editBtn.appendChild(t);
-		  	editBtn.setAttribute("class","flow_button");
-		  	var backBtn = document.createElement("BUTTON");
-		  	var t = document.createTextNode("Main Menu");
-		  	backBtn.onclick = function(){
-		  		window.location.href="index.html";
-		  	};
-		  	backBtn.appendChild(t);
-		  	backBtn.setAttribute("class","flow_button");
-		  	document.getElementById("div1").appendChild(backBtn);
-		  	document.getElementById("div1").appendChild(editBtn);
-		});
-	}
+    body.appendChild(table);
+    document.getElementsByTagName('body')[0].appendChild(commentsDiv);
+    var editBtn = document.createElement("BUTTON");
+    var t = document.createTextNode("Go to edit student");
+    editBtn.onclick = function(){
+      window.location.href="edit_student.html";
+    };
+    editBtn.appendChild(t);
+    editBtn.setAttribute("class","small_button");
+    var backBtn = document.createElement("BUTTON");
+    var t = document.createTextNode("Main Menu");
+    backBtn.onclick = function(){
+      window.location.href="index.html";
+    };
+    backBtn.appendChild(t);
+    backBtn.setAttribute("class","small_button");
+    document.getElementsByTagName('body')[0].appendChild(backBtn);
+    document.getElementsByTagName('body')[0].appendChild(editBtn);
+  });
+}
