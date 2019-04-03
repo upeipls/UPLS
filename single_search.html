@@ -28,55 +28,77 @@ last edit 2019/03/20 by Connor Mayhew
 		<div class="column_main">
 			<div class="column_30">
 				<div class="row">
+					<table style="width:100%;">
+						<tr>
+							<td>
 					First Name:
-					<br>
-					<input id="firstNameField" type="text" placeholder="John" align="right"></input>
-					<br>
-					
+							</td>
+							<td>
+					<input id="firstNameField" type="text" placeholder="John" class="fl-rt"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
 					Last Name:
-					<br>
-					<input id="lastNameField" type="text" placeholder="Smith"></input>
-					<br>
-					
+							</td>
+							<td>
+					<input id="lastNameField" type="text" placeholder="Smith" class="fl-rt"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
 					Email: 
-					<br>
-					<input id="emailField" type="text" placeholder="jsmith@upei.ca"></input>
-					<br>
-					
+							</td>
+							<td>
+					<input id="emailField" type="text" placeholder="jsmith@upei.ca" class="fl-rt"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>					
 					Student ID#: 
+							</td>
+							<td>
+					<input id="idNumberField" type="number" placeholder="000000" class="fl-rt"></input>
+							</td>
+						</tr>
+					</table>
+					
 					<br>
-					<input id="idNumberField" type="number" placeholder="000000"></input>
-					<br><br>
-					<button id="searchButton" class="small_button">Search</button>
+					<center>
+						<button id="searchButton" class="medium_button">Search</button>
+					</center>
 				</div>
 				
 				<div class="row" style="min-height:100px" id="feedback">
-				
-					<p id="feedBackMessage" class="err_msg invisible"></p>
+						<p id="feedBackMessage" class="err_msg invisible"></p>
 				</div>
 				
 				<div class="row" id="functionButtons">
-					<button id="viewStudentButton" type="button" value="View Student" class="medium_button invisible">View Student</button>
-					<button id="editStudentButton" type="button" value="Edit Student" class="medium_button invisible">Edit Student</button>
-					<button id="viewInteractionButton" type="button" value="View Student Interaction" class="medium_button invisible">View Student Interaction</button>
-					<button id="editInteractionButton" type="button" value="Edit Student Interaction" class="medium_button invisible">Edit Student Interaction</button>
-					<button id="addInteractionButton" type="button" value="Add Student Interaction" class="medium_button invisible">Add Student Interaction</button>
-					</div>
+					<center>
+						<button id="viewStudentButton" type="button" value="View Student" class="medium_button invisible">View Student</button>
+						<button id="editStudentButton" type="button" value="Edit Student" class="medium_button invisible">Edit Student</button>
+						<button id="viewInteractionButton" type="button" value="View Student Interaction" class="medium_button invisible">View Student Interaction</button>
+						<button id="editInteractionButton" type="button" value="Edit Student Interaction" class="medium_button invisible">Edit Student Interaction</button>
+						<button id="addInteractionButton" type="button" value="Add Student Interaction" class="medium_button invisible">Add Student Interaction</button>
+					</center>
+				</div>
 				
 			</div>
 			<div class="column_70">
-				<table width="550px" border="1" id="studentTable">
-					<thead>
-						<th>Select</th>
-						<th>Student ID</th>
-						<th>First Name</th>
-						<th>Last Name</th>
-						<th>Email</th>
-						<th>Year of Study</th>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
+				<center>
+					<table width="600px" border="1" id="studentTable">
+						<thead>
+							<th>Select</th>
+							<th>Student ID</th>
+							<th>First Name</th>
+							<th>Last Name</th>
+							<th>Email</th>
+							<th>Year of Study</th>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</center>
 			</div>
 		</div>
 		

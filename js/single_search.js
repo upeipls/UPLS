@@ -56,6 +56,11 @@ var submitID;
 	{
 		searchStudents();
 	});
+	
+	document.getElementById("backButton").addEventListener("click", function() 
+	{
+		toPage("main_page.html");
+	});
  }
   
  function showFunctionButton(code)
@@ -205,7 +210,7 @@ var submitID;
 				});
 				
 				//add text
-				selectButton.appendChild(document.createTextNode("XXXX"));				
+				selectButton.appendChild(document.createTextNode("Select"));				
 				
 				//add values to cells
 				selectCell.appendChild(selectButton);
