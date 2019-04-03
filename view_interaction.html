@@ -56,16 +56,25 @@
     }
 </style>
 
-<form action = select_interaction.html>
-    <input type = "submit" id = "back" value = "Back">
-</form>
-<h1 align="center">View Student Interaction</h1>
+<div class="title">
+	<h1 class="title" align="center">View Student Interaction</h1>
+</div>
+
+<div class="column_side">
+    <a href="select_interaction.html"><button class="back_button" id = "back"></button></a>
+</div>
+
+<div class="column_main">
 <div id="main" align="center" class="ex1"></div>
-
-
-</body>
+<center>
 <form action = main_page.html>
-    <input type = "submit" align = "center" id = "whydoweneed2" value="Return">
+    <input class="small_button" style="margin: 5px;" type = "submit" align = "center" id = "whydoweneed2" value="Return to Main Page">
 </form>
+</center>
+</div>
+
+<div class="column_side">
+</div>
+</body>
 <script>window.onload=disp()</script>
 </html>

@@ -2,20 +2,10 @@ body {
     min-width: 860px;
 }
 
-h1 {
-    width: 565px;
-    margin: auto;
-}
-
 td {
     width:80px;
 }
 
-.back_button {
-    position: absolute;
-    top: 78px;
-    left: 24px;
-}
 
 button:hover {
     cursor: pointer;

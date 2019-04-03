@@ -43,7 +43,7 @@ var submitID;
 	document.getElementById("editInteractionButton").addEventListener("click", function() 
 	{
 		//edit interaction page
-		submitStudent("edit_interaction.html");
+		submitStudent("select_interaction.html");
 	});
 	
 	document.getElementById("addInteractionButton").addEventListener("click", function() 
@@ -55,6 +55,11 @@ var submitID;
 	document.getElementById("searchButton").addEventListener("click", function() 
 	{
 		searchStudents();
+	});
+	
+	document.getElementById("backButton").addEventListener("click", function() 
+	{
+		toPage("main_page.html");
 	});
  }
   
@@ -205,7 +210,7 @@ var submitID;
 				});
 				
 				//add text
-				selectButton.appendChild(document.createTextNode("XXXX"));				
+				selectButton.appendChild(document.createTextNode("Select"));				
 				
 				//add values to cells
 				selectCell.appendChild(selectButton);
