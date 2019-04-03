@@ -56,11 +56,10 @@ function dispHeaders() {
         headerDiv.appendChild(txt);
 
         if(uplsHeaders[i] == "LIBRARIAN"){
-            /*textField = document.createElement("div");
-            let insertLib = document.createTextNode(lib);
-            textField.appendChild(insertLib);*/
-            textField = document.createElement("input");
-            textField.value = lib;
+            textField = document.createElement("span");
+            textField.innerHTML = lib;
+            /*textField = document.createElement("input");
+            textField.value = lib;*/
         }
         else if(uplsHeaders[i] == "STATUS_IN_PROGRAM"){
             textField = document.createElement("select");
@@ -96,8 +95,8 @@ function dispHeaders() {
             /*textField = document.createElement("div");
             let insertDate = document.createTextNode(currentDate);
             textField.appendChild(insertDate);*/
-            textField = document.createElement("input");
-            textField.value = currentDate;
+            textField = document.createElement("span");
+            textField.innerHTML = currentDate;
 
         }
         else if(uplsHeaders[i] == "STUDENT_ID"){
@@ -151,8 +150,12 @@ function dispHeaders() {
 
 
 function getData() {
+    document.getElementById('field12').value = document.getElementById('field12').innerHTML;
+    document.getElementById('field15').value = document.getElementById('field15').innerHTML;
+
     for(let i = 0; i < uplsHeaders.length; i++) {
         if(i === 13) {continue;}
+
         fields[i] = document.getElementById("field" + i).value;
 
         console.log(document.getElementById("field"+i).value);
@@ -217,7 +220,7 @@ function getProgs() {
             if(progInfo[i][1] === lib) {
                 progArray[i] = progInfo[i][0];
             }
-            if(lib == "upei.personal.librarian@gmail.com"){
+            if(sa.isAdmin()){
                 progArray[i] = progInfo[i][0];
             }
         }

@@ -33,22 +33,21 @@
 </head>
 <body onload="mainMenu()">
 <div class="main_menu" id="main_menu"></div>
-<h1 align = "center">Batch Ingest</h1>
+<h1 class = "title" align = "center">Batch Ingest</h1>
 
-<form action="main_page.html">
-    <input type="submit" value="Back">
-</form>
+<button class="back_button" onclick="window.location.href='main_page.html'"></button>
+
 
 
 
 <div class="ex1" align = "center" id="message">
-    <button class="ex3" id="myBtn" onclick="window.open('https://github.com/upeipls/UPLS/wiki/Batch-Ingest#example-tsv-file', '_blank')">Help</button>
-
+    <br>
+    <button class="small_button" id="myBtn" onclick="window.open('https://github.com/upeipls/UPLS/wiki/Batch-Ingest#example-tsv-file', '_blank')">Help</button>
+    <br>
+    <br>
     <input type="file" id="picker" name="picker" accept="text/tab-separated-values" onchange="openFile(event)"><br><br>
-    <input class = "ex2" type="submit" onclick="sendToSheet()">
-    <form action="main_page.html">
-        <input class="ex2" type="submit" value="Return to Main">
-    </form>
+    <button class = "small_button" type="submit" onclick="sendToSheet()">Submit</button>
+
     <output id="output"></output>
 </div>
 
