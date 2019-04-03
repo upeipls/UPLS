@@ -19,6 +19,8 @@ h1.title{
 	text-align: center;
 	font-size: 5em;
 	font-family: simplifica, arial, sans-serif;
+	padding: 0px;
+	margin: 10px;
 }
 
 img{
@@ -29,9 +31,8 @@ img{
 div.title{
 	width:100%;
 	height: 100px;
-	padding-top: 10px;
-	padding-bottom: 10px;
 	float: left;
+	position: relative;
 }
 
 div.menu_bar{
@@ -39,8 +40,45 @@ div.menu_bar{
 	height: 20px;
 	float: left;
 	overflow-y: visible;
+	position: relative;
+	z-index: 99999;
 }
 
+div.column_30 {
+	width: 30%;
+	float: left;
+	min-width: 200px;
+	position: relativd;
+}
+
+div.column_half {
+	width: 50%;
+	float: left;
+	position: relative;
+}
+
+div.column_70 {
+	width: 70%;
+	float: left;
+	min-width: 500px;
+	position: relative;
+}
+
+div.column_side {
+	float: left;
+	width: 15%;
+	min-height: 200px;
+	position: relative;
+}
+
+div.column_main {
+	float: left;
+	width: 70%;
+	min-height: 200px;
+	min-width: 700px;
+	position: relative;
+}
+ 
 button.hide {
 	display: none;
 }
@@ -48,6 +86,7 @@ button.hide {
 button.unavailable {
 	opacity: 0.6;
 	cursor: not-allowed;
+	title: 
 }
 
 .main_logo{
@@ -86,7 +125,8 @@ button.back_button {
 	background-size:cover;
 	height: 3em;
 	width: 3em;
-	padding: 0.5em;
+	margin-right: 2em;
+	float: right;
 }
 
 button.back_button:hover {
@@ -223,34 +263,6 @@ button.large_button.admin:hover {
 	display: inline;
 }
 
-.column_30 {
-	width: 30%;
-	float: left;
-	min-width: 200px;
-}
-
-.column_half {
-	width: 50%;
-	float: left;
-}
-
-.column_70 {
-	width: 70%;
-	float: left;
-	min-width: 500px;
-}
-.column_side {
-	float: left;
-	width: 15%;
-	min-height: 200px;
-}
-
-.column_main {
-	float: left;
-	width: 70%;
-	min-height: 200px;
-	min-width: 700px;
-}
 
 .row{
 	max-height: 500px;

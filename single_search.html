@@ -7,20 +7,22 @@ last edit 2019/03/20 by Connor Mayhew
 		<title>Known Item Search</title>
 		
   		<link rel="stylesheet" type="text/css" href="css/upls_styles.css">	
-		
-		<script src="js/main_menu.js"></script>
+				
 		<script src="https://apis.google.com/js/api.js"></script>
 		<script src="js/SheetsApi.js"></script>
+		<script src="js/main_menu.js"></script>
 		<script src="js/single_search.js"></script>
 	</head>
   
 	<body>
 		<div class="main_menu" id="main_menu"></div>
 		
-		<h1 class="title" >Known Item Search</h1>
+		<div class="title">
+		<h1 class="title">Known Item Search</h1>
+		</div>
 			
 		<div class="column_side">
-		
+			<button id="backButton" class="back_button"></button>
 		</div>
 		
 		<div class="column_main">
@@ -45,7 +47,7 @@ last edit 2019/03/20 by Connor Mayhew
 					<br>
 					<input id="idNumberField" type="number" placeholder="000000"></input>
 					<br><br>
-					<button id="searchButton" class="flow_button">Search</button>
+					<button id="searchButton" class="small_button">Search</button>
 				</div>
 				
 				<div class="row" style="min-height:100px" id="feedback">
