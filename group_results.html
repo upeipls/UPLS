@@ -13,7 +13,7 @@
     var array = [];
     let sa = new SheetsApi("1gNQpWqetXTtiyZIa9RiAiwpnJWNa6nTeQGZDcGAHWS0", "AIzaSyD5KpN_FCSGTRJGlDFN9CvXD3gyg-f8ZC4", "656316403501-g3io4mu5ibfebpls8jrnht04rg8g2mr1.apps.googleusercontent.com");
     window.onload = sa.handleClientLoad();
-    let sheetHeaders;
+    let uplsHeaders;
     let objectArray;
 
     function getParams(){
@@ -41,7 +41,7 @@
     console.log(columns);
     array[0] = ["PROG_STATUS", "PROG_CODE", "DEPT_NAME", "DIV_NAME", "HON_CODE", "CLASS_LVL", "MAIN_MAJOR", "MINORS"];
     array[1] = columns;
-    // sheetHeaders = array[0];
+    // uplsHeaders = array[0];
     objectArray = arrayToObjects(array);
 
     function viewResults() {

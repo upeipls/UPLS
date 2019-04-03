@@ -1,101 +1,229 @@
-var columns = [];
-var array = [];
 let sa = new SheetsApi();
 sa.handleClientLoad();
+let lib = sa.getLibrarian();
 
 function updateSignInStatus(isSignedIn){
     if(isSignedIn){
-        //add method
-
+        getVocab();
+        getTypes();
+        getLibs();
+        getProgs();
         console.log("You are Signed In!")
     } else {
         console.log("Need Log In!");
         sa.handleSignInClick();
     }
 }
+var uplsHeaders = [];
+var vocabHeaders = [];
+var fields = [];
+var objectArray = [];
+var librarians = [];
+var types = [];
+var typeArray = [];
+var vocabs = [];
+var vocabsArray = [];
+var progInfo = [];
+var progArray = [];
 
-let sheetHeaders;
-let objectArray;
-
-function getParams(){
-    var idx = document.URL.indexOf('?');
-    var params = [];
-    if (idx != -1) {
-        var pairs = document.URL.substring(idx+1, document.URL.length).split('&');
-        for (var i=0; i<pairs.length; i++){
-            nameVal = pairs[i].split('=');
-            params[nameVal[0]] = nameVal[1];
-        }
-    }
-    return params;
-}
-params = getParams();
-//studentIDString = unescape(params["studentID"]);
-//studentIDInt = parseInt(studentIDString);
-columns[0] = unescape(params["studentID"])
-columns[1] = unescape(params["firstName"]);
-columns[2] = unescape(params["lastName"]);
-columns[3] = unescape(params["email"]);
-columns[4] = unescape(params["progStatus"]);
-columns[5] = unescape(params["progCode"]);
-columns[6] = unescape(params["progDesc"]);
-columns[7] = unescape(params["deptName"]);
-columns[8] = unescape(params["deptCode"]);
-columns[9] = unescape(params["divCode"]);
-columns[10] = unescape(params["divName"]);
-columns[11] = unescape(params["honCode"]);
-columns[12] = unescape(params["classLvl"]);
-columns[13] = unescape(params["cataYear"]);
-columns[14] = unescape(params["majors"]);
-columns[15] = unescape(params["main_major"]);
-columns[16] = unescape(params["minors"]);
-columns[17] = unescape(params["frozen"]);
-console.log(columns);
-array[0] = ["STUDENT_ID", "FIRST_NAME", "LAST_NAME", "EMAIL", "PROG_STATUS", "PROG_CODE", "PROG_DESC", "DEPT_NAME", "DEPT_CODE", "DIV_CODE", "DIV_NAME", "HON_CODE", "CLASS_LVL", "CATA_YEAR", "MAJORS", "MAIN_MAJOR", "MINORS", "FROZEN"];
-array[1] = columns;
-sheetHeaders = array[0];
-objectArray = arrayToObjects(array);
-
-
-function arrayToObjects(array) {
-    let headers = array[0];
-    let result = [];
-    let tempStr = "";
-    for (let i = 1; i < array.length; i++) {
-        tempStr = "{";
-        for (let j = 0; j< array[i].length; j++) {
-            tempStr += "\"" + headers[j] + "\":\"" + array[i][j] + "\"";
-            if (j < array[i].length - 1) {
-                tempStr += ",";
-            }
-        }
-        tempStr += "}";
-        console.log(tempStr);
-        result[i-1] = JSON.parse(tempStr.replace(/\n/g, "\\n")
-            .replace(/\r/g, "\\r")
-            .replace(/\t/g, "\\t")
-            .replace(/\f/g, "\\f"));
-    }
-    return result;
-
-
-}//Function to display student information for review
-function dispStudent(){
-    for (let i = 0; i < array[0].length; i++) {
-        document.writeln("<pre>");
-        document.write(sheetHeaders[i] + ": ");
-        document.write(columns[i]);
-    }
-}
-
-//Function to add a student using API.js functions
-function addStudent(){
+//DATE
+var date = new Date();
+var year = date.getFullYear();
+var month = date.getMonth() + 1;
+var day = date.getDate();
+var currentDate = year + "-" + month + "-" + day;
+console.log(currentDate);
+fields[12] = lib;
+fields[14] = currentDate;
+function getHeaders(){
     sa.getTableHeaders("UPLS").then(response => {
-        sheetHeaders = sa.parseTableHeaders(response);
-        sa.insertIntoTableColValues(sheetHeaders, "UPLS", objectArray).then(response => {
-            console.log(sa.parseInsert(response));
-            window.alert("You've added a student");
-        });
+        uplsHeaders = sa.parseTableHeaders(response);
+        objectArray[0] = uplsHeaders;
+        console.log(uplsHeaders);
+        dispHeaders();
     });
 
+}
+
+function dispHeaders() {
+    let textField;
+    for(let i = 0; i < uplsHeaders.length; i++){
+        let headerDiv = document.createElement("div");
+        headerDiv.className = "ex1";
+        headerDiv.setAttribute("id", "div"+i);
+        let txt = document.createTextNode(uplsHeaders[i]);
+        if (uplsHeaders[i] == "FROZEN_UPLS_ACCOUNT") { continue;}
+        headerDiv.appendChild(txt);
+
+        if(uplsHeaders[i] == "LIBRARIAN"){
+            textField = document.createElement("span");
+            textField.innerHTML = lib;
+            /*textField = document.createElement("input");
+            textField.value = lib;*/
+        }
+        else if(uplsHeaders[i] == "STATUS_IN_PROGRAM"){
+            textField = document.createElement("select");
+            textField.style.width = "auto";
+            console.log(vocabsArray[i]);
+            for(let j = 0; j < vocabsArray[i].length; j++) {
+                let option = document.createElement("option");
+                option.value = vocabsArray[4][j];
+                option.text = vocabsArray[4][j];
+                textField.appendChild(option);
+
+            }
+        }
+        else if(uplsHeaders[i] == "PROGRAM_DESCRIPTION") {
+            textField = document.createElement("select");
+            textField.style.width = "250px";
+            for(let i = 1; i < progArray.length; i++) {
+                if(progArray[i] == undefined) {continue;}
+                let option = document.createElement("option");
+                option.value = progArray[i];
+                option.text = progArray[i];
+                textField.appendChild(option);
+            }
+        }
+        else if(uplsHeaders[i] == "GENERAL_COMMENT") {
+            textField = document.createElement("textarea");
+        }
+        else if(uplsHeaders[i] == "CLASS_LEVEL") {
+            textField = document.createElement("input");
+            textField.type = "number";
+        }
+        else if(uplsHeaders[i] == "DATE_ADDED_TO_SYSTEM"){
+            /*textField = document.createElement("div");
+            let insertDate = document.createTextNode(currentDate);
+            textField.appendChild(insertDate);*/
+            textField = document.createElement("span");
+            textField.innerHTML = currentDate;
+
+        }
+        else if(uplsHeaders[i] == "STUDENT_ID"){
+            textField = document.createElement("input");
+            textField.type = "number";
+        }
+        else if(uplsHeaders[i]  == "EMAIL"){
+            textField = document.createElement("input");
+            textField.type = "email";
+        }
+        else if(i>15 && typeArray[i] == "CheckBox"){
+            textField = document.createElement("input");
+            textField.type = "checkbox";
+        }
+        else if(i>15 && typeArray[i] == "Date"){
+            textField = document.createElement("input");
+            textField.type = "date";
+        }
+        else if(i>15 && typeArray[i] == "Number"){
+            textField = document.createElement("input");
+            textField.type = "number";
+        }
+        else if(i>15 &&  vocabsArray[i] !== undefined){
+            textField = document.createElement("select");
+            textField.style.width = "auto";
+            console.log(vocabsArray[i]);
+            for(let j = 0; j < vocabsArray[i].length; j++) {
+                let option = document.createElement("option");
+                option.value = vocabsArray[i][j];
+                option.text = vocabsArray[i][j];
+                textField.appendChild(option);
+            }
+        }
+        else {
+            textField = document.createElement("input");
+        }
+
+        /****ADD SOME VALIDATION TO THIS FOR OTHER FIELDS*/
+        textField.setAttribute("id", "field"+i);
+        textField.style.cssFloat = "right";
+
+        headerDiv.appendChild(textField);
+        document.getElementById("main").appendChild(document.createElement("br"));
+        document.getElementById("main").appendChild(document.createElement("br"));
+
+        document.getElementById("main").appendChild(headerDiv);
+
+    }
+
+}
+
+
+function getData() {
+    document.getElementById('field12').value = document.getElementById('field12').innerHTML;
+    document.getElementById('field15').value = document.getElementById('field15').innerHTML;
+
+    for(let i = 0; i < uplsHeaders.length; i++) {
+        if(i === 13) {continue;}
+
+        fields[i] = document.getElementById("field" + i).value;
+
+        console.log(document.getElementById("field"+i).value);
+    }
+    objectArray[1] = fields;
+    console.log(fields);
+    var student = confirm("Are you sure you want to add this student?");
+    if(student) {
+        sendData();
+    } else {}
+}
+
+function sendData() {
+    objectArray = sa.arrayToObjects(objectArray);
+    sa.insertIntoTableColValues(uplsHeaders, "UPLS", objectArray).then(response => {
+        console.log(sa.parseInsert(response));
+    });
+
+}
+
+function getLibs(){
+    sa.getSheet("LIBRARIANS").then(response => {
+        console.log(response);
+        librarians = sa.parseSheetValues(response);
+        console.log(librarians);
+    });
+}
+
+function getVocab() {
+    sa.getTableHeaders("HEADER_VOCAB_TYPE").then(response => {
+        vocabHeaders = sa.parseTableHeaders(response);
+        sa.getDataType().then(response => {
+            vocabs = sa.parseVocab(response, vocabHeaders);
+            for(let i = 0; i < vocabs.length; i++){
+                vocabsArray[i] = vocabs[i];
+            }
+            console.log(vocabsArray);
+        });
+    });
+}
+function getTypes() {
+    sa.getTableHeaders("HEADER_VOCAB_TYPE").then(response => {
+        vocabHeaders = sa.parseTableHeaders(response);
+        sa.getDataType().then(response => {
+            types = sa.parseDataType(response, vocabHeaders);
+
+            for(let i = 0; i < types.length; i++){
+                typeArray[i] = types[i];
+            }
+            console.log(typeArray);
+            getHeaders();
+        });
+    });
+}
+
+
+//GET LIST OF PROGRAMS
+function getProgs() {
+    sa.getSheet("PROGRAMS_AND_LIBRARIANS").then(response => {
+        progInfo = sa.parseSheetValues(response);
+        for(let i = 1; i < progInfo.length; i++){
+            if(progInfo[i][1] === lib) {
+                progArray[i] = progInfo[i][0];
+            }
+            if(sa.isAdmin()){
+                progArray[i] = progInfo[i][0];
+            }
+        }
+        console.log(progArray);
+    });
 }

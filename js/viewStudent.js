@@ -8,7 +8,6 @@ function updateSignInStatus(isSignedIn) {
         sa.handleSignInClick();
     }
 }
-
 function getStudentInfo(){
   var id = window.localStorage.getItem("studentID");
   var condition = {header : "STUDENT_ID",value : id,};
@@ -20,6 +19,7 @@ function getStudentInfo(){
   sa.getSheet("UPLS").then(response => {
     headers = sa.parseTableHeaders(response);
     studentInfo = sa.selectFromTableWhereConditions(response,"*",conditions,1);
+    console.log(studentInfo);
     var commentsDiv = document.createElement('div');
     var body = document.getElementsByTagName("body")[0];
     var table = document.createElement("table");
