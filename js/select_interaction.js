@@ -17,7 +17,7 @@ function updateSignInStatus(isSignedIn){
 
 //columns to be returned
 var nameReturned = ["LAST_NAME", "FIRST_NAME", "EMAIL"];
-var interactionReturned = ["INTERACTION_TYPE", "INTERACTION_DATE", "LIBRARIAN_INITIATED", "FOLLOW_UP", "MINUTES", "COMMUNICATION_CHANNEL", "URL", "NOTES"];
+var interactionReturned = ["INTERACTION_TYPE", "INTERACTION_DATE", "LIBRARIAN_INITIATED", "FOLLOW_UP", "MINUTES", "COMMUNICATION_CHANNEL", "URL", "INTERACTION_NOTE"];
 
 //conditions to search by
 var condition = {
@@ -67,14 +67,27 @@ function createDiv(){
             let intDiv = document.createElement("div");
             intDiv.className = "ex0";
             let btn = document.createElement("BUTTON");
-            let text = document.createTextNode("Select");
-            btn.setAttribute("id", "btn" + i); //add IDs to buttons
-            btn.addEventListener("click", function() {
-                window.localStorage.setItem("interactionInfo",JSON.stringify(interactionInfo[i]));
+            let text = document.createTextNode("Placeholder");
+            var functionCode = localStorage.getItem("functionCode");
+            if (functionCode === "20") {
+              text = document.createTextNode("View");
+              btn.setAttribute("id", "btn" + i); //add IDs to buttons
+              btn.addEventListener("click", function() {
+                  window.localStorage.setItem("interactionInfo",JSON.stringify(interactionInfo[i]));
+                  console.log("Sending: " + interactionInfo[i]);
+                  //will also need to open view_interaction page
+                  window.open("view_interaction.html", "_top");
+              });
+            }
+            if (functionCode === "21") {
+              text = document.createTextNode("Edit");
+              btn.setAttribute("id", "btn" + i);
+              btn.addEventListener("click", function() {
+                window.localStorage.setItem("interactionInfo", JSON.stringify(interactionInfo[i]));
                 console.log("Sending: " + interactionInfo[i]);
-                //will also need to open view_interaction page
-                window.open("view_interaction.html", "_top");
-            });
+                window.location.href = "edit_interaction.html";
+              });
+            }
             btn.appendChild(text);
             btn.style.marginTop = "65px";
             intDiv.appendChild(btn);
