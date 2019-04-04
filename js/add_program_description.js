@@ -24,9 +24,7 @@ function loadPage() {
 }
 
 var progDesc = JSON.parse(window.localStorage.getItem("progDesc")); // Retrieving
-var librarian = JSON.parse(window.localStorage.getItem("librarian")); // Retrieving
 console.log(progDesc);
-console.log(librarian);
 
 
 var librarians = [];
@@ -104,6 +102,7 @@ function sendDesc() {
         sheetHeaders = sa.parseTableHeaders(response);
         sa.insertIntoTableColValues(sheetHeaders, "PROGRAMS_AND_LIBRARIANS", objectArray).then(response => {
             console.log(objectArray);
+            alert("Program has been added. You can close this tab now.");
         });
     });
 }

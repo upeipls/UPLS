@@ -43,7 +43,6 @@ function createProgTable(tableData) {
             button.addEventListener("click", function() {
                 console.log(rowData[6] + rowData[12]);
                 window.localStorage.setItem("progDesc",JSON.stringify(rowData[6]));
-                window.localStorage.setItem("librarian",JSON.stringify(rowData[12]));
                 window.open("add_program_description.html", "_blank");
             });
             count++;
