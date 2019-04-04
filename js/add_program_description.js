@@ -55,6 +55,7 @@ function disp() {
     var sendBtn = document.createElement("button");
     sendBtn.setAttribute("id", "sendBtn");
     var btnTxt = document.createTextNode("Send");
+    sendBtn.classList.add("small_button");
     sendBtn.appendChild(btnTxt);
     sendBtn.addEventListener("click", function() {
         var send = confirm("Are you sure you want to send this program description?");
