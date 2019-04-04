@@ -67,7 +67,7 @@ function fillStudentInfo() {
       // PROGRAM_MAJOR_1
       studentInfo[11] = inputObject(headers[11], "text", old_student_info[1][11]);
       // LIBRARIAN (no editing)
-      studentInfo[12] = undefined;
+      studentInfo[12] = {header: headers[12], value: "<input type=\"text\" id=\"" + headers[12] + "\" value=\"" + old_student_info[1][12] + "\" disabled>"};
       // FROZEN_UPLS_ACCOUNT
       studentInfo[13] = inputObject(headers[13], "checkbox", old_student_info[1][13]);
       studentInfo[13].value = "<div class=\"tooltip\">" + studentInfo[13].value +
@@ -94,9 +94,18 @@ function fillStudentInfo() {
             document.getElementById("studentInfo").innerHTML += "<tr><td>" + studentInfo[i].header+ "</td><td>" + studentInfo[i].value + "</td></tr>";
           }
         }
+        document.getElementById("PROGRAM_DESCRIPTION").setAttribute("onchange", "setLibrarianInput()");
       });
 
     });
+  });
+}
+
+function setLibrarianInput() {
+  sa.getSheet("PROGRAMS_AND_LIBRARIANS").then(response => {
+    var selectedProgram = document.getElementById("PROGRAM_DESCRIPTION").value;
+    var lib = sa.selectFromTableWhereConditions(response, ["LIBRARIANS"], [{header: "PROGRAMS", value: selectedProgram}], 1)[1][0];
+    document.getElementById("LIBRARIAN").value = lib;
   });
 }
 
