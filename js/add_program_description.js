@@ -102,7 +102,7 @@ function sendDesc() {
         sheetHeaders = sa.parseTableHeaders(response);
         sa.insertIntoTableColValues(sheetHeaders, "PROGRAMS_AND_LIBRARIANS", objectArray).then(response => {
             console.log(objectArray);
-            alert("Program has been added. You can close this tab now.");
+            alert("Program has been added. You can close this tab now. If you still have the batch ingest page open, you will need to refresh it so it can register the new program.");
         });
     });
 }
