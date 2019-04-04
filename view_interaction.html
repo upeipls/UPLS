@@ -10,30 +10,13 @@
     <script src="js/view_interaction.js"></script>
     <style>
         div.ex1{
-            background-color: white;
             width: 500px;
-            height: 500px;
             /*overflow: scroll;*/
             /*display: table;*/
             margin: 0 auto;
             position: static;
         }
-        div.ex2{
-            background-color: white;
-            width: 450px;
-            height: auto;
-        }
-        div.ex3{
-            background-color: white;
-            width: 250px;
-            height: 100px;
-            overflow: scroll;
-            float: right;
-            border-style: solid;
-            border-width: 1px;
-        }
         div.ex4{
-            background-color: white;
             width: auto;
             height: auto;
             float: left;
@@ -42,7 +25,6 @@
             text-align: left;
         }
         div.ex5{
-            background-color: white;
             width: auto;
             height: auto;
             float: right;
@@ -55,13 +37,8 @@
 <br>
 <body onload="mainMenu()">
 <div class="main_menu" id="main_menu"></div>
+
 <h1 class="title" align="center">View Student Interaction</h1>
-
-<button class="back_button" onclick="window.location.href='select_interaction.html'"></button>
-
-<div class="title">
-	<h1 class="title" align="center">View Student Interaction</h1>
-</div>
 
 <div class="column_side">
     <a href="select_interaction.html"><button class="back_button" id = "back"></button></a>
@@ -69,11 +46,6 @@
 
 <div class="column_main">
 <div id="main" align="center" class="ex1"></div>
-<center>
-<form action = main_page.html>
-    <input class="small_button" style="margin: 5px;" type = "submit" align = "center" id = "whydoweneed2" value="Return to Main Page">
-</form>
-</center>
 </div>
 
 <div class="column_side">

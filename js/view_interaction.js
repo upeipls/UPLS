@@ -70,14 +70,10 @@ function disp() {
     }
 
     let noteDiv = document.createElement("div");
-    let noteBox = document.createElement("div");
-    noteDiv.className = "ex2";
-    noteBox.className = "ex3";
+    let notes = document.createElement("textArea");
     let noteTag = document.createTextNode("Notes: ");
-    let notes = document.createTextNode(receiveInteraction[7]);
+    notes.value = receiveInteraction[7];
     tagDiv.appendChild(noteTag);
-    noteBox.appendChild(notes);
-    noteDiv.appendChild(noteBox);
-    document.getElementById("main").appendChild(noteDiv);
+    dataDiv.appendChild(notes);
 
 }
