@@ -177,10 +177,15 @@ function sendToSheet() {
         // Insert the code that submits stuff to the sheet.
         objectArray = arrayToObjects(validatedData);
         sa.getTableHeaders("UPLS").then(response => {
-            sheetHeaders = sa.parseTableHeaders(response);
-            sa.insertIntoTableColValues(sheetHeaders, "UPLS", objectArray).then(response => {
-                console.log(sa.parseInsert(response));
-            });
+            var submitRows = confirm("Are you sure you want to submit " + submittableRows + " student entries?");
+            if (submitRows) {
+              sheetHeaders = sa.parseTableHeaders(response);
+              sa.insertIntoTableColValues(sheetHeaders, "UPLS", objectArray).then(response => {
+                  console.log(sa.parseInsert(response));
+                  alert("Rows have been submitted.");
+                  window.location.href = "main_page.html";
+              });
+            } else {}
         });
     }
 }
