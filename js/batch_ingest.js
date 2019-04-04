@@ -78,12 +78,6 @@ function openFile(event) {
             let temp = data[i].split('\t');
             data[i] = temp;
         }
-        //put ids into own array
-
-
-
-        //put programs into own array
-
 
         validatedData[0] = data[0];
         invalidData[0] = data[0];
@@ -127,13 +121,19 @@ function openFile(event) {
            }
         }
 
-        /*ADD CURRENT DATE TO VALIDATED DATA*/
-        for(let i = 1; i < validatedData.length; i++) {
-            validatedData[i][15] = currentDate;
-        }
-        console.log(data);
-        console.log(validatedData);
-        console.log(invalidData);
+        /*ADD CURRENT DATE AND LIBRARIAN TO VALIDATED DATA*/
+        validatedData[0][12] = "DATE_ADDED_TO_SYSTEM";
+        validatedData[0][13] = "LIBRARIAN";
+        sa.getSheet("PROGRAMS_AND_LIBRARIANS").then(response => {
+          for(let i = 1; i < validatedData.length; i++) {
+              validatedData[i][12] = currentDate;
+                var lib = sa.selectFromTableWhereConditions(response, ["LIBRARIANS"], [{header: "PROGRAMS", value: validatedData[i][6]}], 1);
+              validatedData[i][13] = lib[1][0];
+          }
+          console.log(data);
+          console.log(validatedData);
+          console.log(invalidData);
+        });
         /*SEND ERRORS TO ERROR PAGE*/
         window.localStorage.setItem("emailErrors",JSON.stringify(invalidEmail));
         window.localStorage.setItem("idErrors",JSON.stringify(invalidID));
@@ -147,6 +147,7 @@ function openFile(event) {
     console.log(input);
     reader.readAsText(input.files[0]);
 }
+
 
 //function to send data to sheet
 function sendToSheet() {
