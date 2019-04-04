@@ -1,18 +1,27 @@
 let sa = new SheetsApi();
 sa.handleClientLoad();
-let lib = sa.getLibrarian();
+let lib = "";
 
 function updateSignInStatus(isSignedIn){
     if(isSignedIn){
-        getVocab();
-        getTypes();
-        getLibs();
-        getProgs();
-        console.log("You are Signed In!")
+      console.log("You are Signed In!")
     } else {
         console.log("Need Log In!");
         sa.handleSignInClick();
     }
+}
+
+/** This is a function that gets called by sa.handleClientLoad() and sa.handleSignInClick()
+ * when the librarian variable gets set. Anything that depends on knowing the currently logged
+ * in librarian should be called from within this function.
+ */
+function loadPage() {
+  lib = sa.getLibrarian();
+  getVocab();
+  getTypes();
+  getLibs();
+  getProgs();
+  addUserInfo();
 }
 var uplsHeaders = [];
 var vocabHeaders = [];
@@ -76,6 +85,13 @@ function dispHeaders() {
         else if(uplsHeaders[i] == "PROGRAM_DESCRIPTION") {
             textField = document.createElement("select");
             textField.style.width = "250px";
+            let option = document.createElement("option");
+            option.value = "---";
+            option.text = "---";
+            option.selected = "true";
+            option.disabled = "true";
+            textField.setAttribute("onchange", "setLibrarian()");
+            textField.appendChild(option);
             for(let i = 1; i < progArray.length; i++) {
                 if(progArray[i] == undefined) {continue;}
                 let option = document.createElement("option");
@@ -83,6 +99,8 @@ function dispHeaders() {
                 option.text = progArray[i];
                 textField.appendChild(option);
             }
+            textField.required = true;
+
         }
         else if(uplsHeaders[i] == "GENERAL_COMMENT") {
             textField = document.createElement("textarea");
@@ -102,10 +120,12 @@ function dispHeaders() {
         else if(uplsHeaders[i] == "STUDENT_ID"){
             textField = document.createElement("input");
             textField.type = "number";
+            textField.required = true;
         }
         else if(uplsHeaders[i]  == "EMAIL"){
             textField = document.createElement("input");
             textField.type = "email";
+            textField.required = true;
         }
         else if(i>15 && typeArray[i] == "CheckBox"){
             textField = document.createElement("input");
@@ -139,10 +159,10 @@ function dispHeaders() {
         textField.style.cssFloat = "right";
 
         headerDiv.appendChild(textField);
-        document.getElementById("main").appendChild(document.createElement("br"));
-        document.getElementById("main").appendChild(document.createElement("br"));
 
         document.getElementById("main").appendChild(headerDiv);
+        document.getElementById("main").appendChild(document.createElement("br"));
+        document.getElementById("main").appendChild(document.createElement("br"));
 
     }
 
@@ -162,16 +182,35 @@ function getData() {
     }
     objectArray[1] = fields;
     console.log(fields);
-    var student = confirm("Are you sure you want to add this student?");
-    if(student) {
-        sendData();
-    } else {}
+    sa.getSheet("UPLS").then(response => {
+      var id = document.getElementById("field0").value;
+      if (id.length == 0) {
+        alert("STUDENT_ID is required.");
+      } else {
+        var stdnt = sa.selectFromTableWhereConditions(response, ["STUDENT_ID"], [{header:"STUDENT_ID",value: id}], 1);
+        var duplicate = (stdnt.length > 1);
+        if (duplicate) {
+          alert("A student with this ID already exists. Go to the Edit Student or View Student pages to see their existing info.");
+        } else {
+          var student = confirm("Are you sure you want to add this student?");
+          if(student) {
+              sendData();
+          } else {}
+        }
+      }
+  });
 }
 
 function sendData() {
     objectArray = sa.arrayToObjects(objectArray);
     sa.insertIntoTableColValues(uplsHeaders, "UPLS", objectArray).then(response => {
         console.log(sa.parseInsert(response));
+        var another = confirm("Student has been added. Click OK to enter another student, or cancel to return to Home page.");
+        if (another) {
+          window.location.href = "add_student.html";
+        } else {
+          window.location.href = "main_page.html";
+        }
     });
 
 }
@@ -226,4 +265,11 @@ function getProgs() {
         }
         console.log(progArray);
     });
+}
+
+function setLibrarian() {
+  sa.getSheet("PROGRAMS_AND_LIBRARIANS").then(response => {
+    lib = sa.selectFromTableWhereConditions(response, ["LIBRARIANS"], [{header:"PROGRAMS", value:document.getElementById("field6").value}], 1)[1][0];
+    document.getElementById("field12").innerHTML = lib;
+  });
 }

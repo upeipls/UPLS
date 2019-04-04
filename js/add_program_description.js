@@ -15,6 +15,14 @@ function updateSignInStatus(isSignedIn){
     }
 }
 
+/** This is a function that gets called by sa.handleClientLoad() and sa.handleSignInClick()
+ * when the librarian variable gets set. Anything that depends on knowing the currently logged
+ * in librarian should be called from within this function.
+ */
+function loadPage() {
+  addUserInfo();
+}
+
 var progDesc = JSON.parse(window.localStorage.getItem("progDesc")); // Retrieving
 var librarian = JSON.parse(window.localStorage.getItem("librarian")); // Retrieving
 console.log(progDesc);

@@ -182,10 +182,21 @@ function showAdminButtons()
 	studentCategoryBtn.classList.toggle("hide");
 }
 
-function adminCheck()
-{
-	//return boolean
+function addUserInfo() {
+  var menu = document.getElementById("main_menu");
+
+  var user = document.createElement("button");
+  user.classList.add("logout", "tooltip");
+  user.innerHTML = sa.getLibrarian();
+
+  var logoutInfo = document.createElement("div");
+  logoutInfo.classList.add("tooltiptext");
+  logoutInfo.innerHTML = "To logout or change accounts, do so within a google application in some other tab in this browser.";
+
+  user.appendChild(logoutInfo);
+
+  var userInfoDiv = document.createElement("div");
+  userInfoDiv.appendChild(user);
+  menu.appendChild(userInfoDiv);
+  
 }
-
-
-

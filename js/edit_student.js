@@ -13,6 +13,15 @@ function updateSignInStatus(isSignedIn) {
   }
 }
 
+/** This is a function that gets called by sa.handleClientLoad() and sa.handleSignInClick()
+ * when the librarian variable gets set. Anything that depends on knowing the currently logged
+ * in librarian should be called from within this function.
+ */
+function loadPage() {
+  addUserInfo();
+}
+
+
 function fillStudentInfo() {
   // Get headers.
   sa.getSheet("UPLS").then(response => {

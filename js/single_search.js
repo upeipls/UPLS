@@ -5,8 +5,6 @@
  */
  
 let sa = new SheetsApi();
-//!!set key!!-- remove this in final product (at least remove keys in pull requests)	
-//!!set key!!
 sa.handleClientLoad();
 
 function updateSignInStatus(isSignedIn) {
@@ -15,6 +13,15 @@ function updateSignInStatus(isSignedIn) {
         console.log("Need Log In!");
         sa.handleSignInClick();
     }
+}
+
+
+/** This is a function that gets called by sa.handleClientLoad() and sa.handleSignInClick()
+ * when the librarian variable gets set. Anything that depends on knowing the currently logged
+ * in librarian should be called from within this function.
+ */
+function loadPage() {
+  addUserInfo();
 }
 
 //variable for id representing student to be submitted to next page

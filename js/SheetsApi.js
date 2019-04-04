@@ -6,11 +6,11 @@
  * @constructor
  */
 function SheetsApi() {
-    let sheetId = "";
-    let API_KEY = "";
-    let CLIENT_ID = "";
-    let librarian = "Unknown";
-    let admin = "Unknown";
+    let sheetId = "1CqFEWYmI9jR590HW4GjgTWwHGWJCsInP7XUv8a2I1cE";
+    let API_KEY = "AIzaSyDt0szfzIfDLMjxb2CLeNzJHyW9lFesGjQ";
+    let CLIENT_ID = "1026345574194-qtu5vpd6llf7b1u7sopjmsufnbf4vh34.apps.googleusercontent.com";
+    let librarian = "Unknown librarian";
+    let admin = "Unknown admin";
 
     /** Public
      * This function initialize the sheets api object created.
@@ -71,6 +71,7 @@ function SheetsApi() {
             if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
                 gapi.client.gmail.users.getProfile({userId:"me"}).then(res => {
                     librarian = res.result.emailAddress;
+                    loadPage();
                 });
             } else {
                 librarian = "";
@@ -94,6 +95,7 @@ function SheetsApi() {
     function handleSignInClick(event) {
         gapi.auth2.getAuthInstance().signIn().then(response => {
             librarian = response.w3.U3;
+            loadPage();
         });
     }
 

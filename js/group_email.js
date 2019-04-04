@@ -19,6 +19,15 @@ function updateSignInStatus(isSignedIn) {
     }
 }
 
+/** This is a function that gets called by sa.handleClientLoad() and sa.handleSignInClick()
+ * when the librarian variable gets set. Anything that depends on knowing the currently logged
+ * in librarian should be called from within this function.
+ */
+function loadPage() {
+  addUserInfo();
+}
+
+
 function backStep() {
     if (stepNumber === 1) {
         window.location.href = "main_page.html";
