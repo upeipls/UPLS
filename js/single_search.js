@@ -109,6 +109,8 @@ var submitID;
   *  Also 
   */
  {
+        // Clear any selected id from previous search.
+        submitID = undefined;
 	//gapi search functionality here
 	//booleans for checking if fields filled, default no
 	var boolID = false;
@@ -167,12 +169,6 @@ var submitID;
 		var tableData = "<table border=\"1\"><tr><th>Select</th><th>Student ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Year of Study</th></tr>"
 		
 		//submit a search with criteria
-		/*
-		 *
-		 * This GAPI search part needs some review- testing has revealed that the entries are case sensitive
-		 * and some searches give back incorrect results
-		 *
-		 */
 		sa.getSheet("UPLS").then(res =>
 		{
 			let result = sa.selectFromTableWhereConditions(res, ["STUDENT_ID","FIRST_NAME","LAST_NAME","EMAIL", "CLASS_LEVEL"], conditions, 1).slice(1);
@@ -268,7 +264,7 @@ var submitID;
  function submitStudent(address)
  {
 	 //ensure a student has been selected before submission
-	 if (submitID in window)
+	 if (submitID === undefined)
 		{
 			feedback("You must select a student in order to continue.");
 		}
