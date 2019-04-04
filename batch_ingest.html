@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
-    <title>Batch Ingest</title>
+    <title>
+      Batch Ingest
+    </title>
     <link rel="stylesheet" type="text/css" href="css/upls_styles.css">
-    <script src="js/main_menu.js"></script>
-    <script src="https://apis.google.com/js/api.js"></script>
-    <script src="js/SheetsApi.js"></script>
-    <script src="js/batch_ingest.js"></script>
-
+    <script src="js/main_menu.js">
+    </script>
+    <script src="https://apis.google.com/js/api.js">
+    </script>
+    <script src="js/SheetsApi.js">
+    </script>
+    <script src="js/batch_ingest.js">
+    </script>
     <style>
         div.ex1 {
             width: 350px;
@@ -30,30 +35,27 @@
 
 
     </style>
-</head>
-<body onload="mainMenu()">
-<div class="main_menu" id="main_menu"></div>
-<h1 class = "title" align = "center">Batch Ingest</h1>
-<div class="column_side">
-<button class="back_button" onclick="window.location.href='main_page.html'"></button>
-</div>
-
-
-<div class="column_main">
-<div class="ex1" align = "center" id="message">
-    <br>
-    <button class="small_button" id="myBtn" onclick="window.open('https://github.com/upeipls/UPLS/wiki/Batch-Ingest#example-tsv-file', '_blank')">Help</button>
-    <br>
-    <br>
-    <input type="file" id="picker" name="picker" accept="text/tab-separated-values" onchange="openFile(event)"><br><br>
-    <button class = "small_button" type="submit" onclick="sendToSheet()">Submit</button>
-
-    <output id="output"></output>
-</div>
-</div>
-<div class="column_side">
-</div>
-
-
-</body>
+  </head>
+  <body onload="mainMenu()">
+    <div class="main_menu" id="main_menu"></div>
+    <h1 class="title" align="center">
+      Batch Ingest
+    </h1>
+    <div class="column_side"></div>
+    <div class="column_main">
+      <div class="ex1" align="center" id="message">
+        <br>
+        <button class="small_button" id="myBtn" onclick=
+        "window.open('https://github.com/upeipls/UPLS/wiki/Batch-Ingest#example-tsv-file', '_blank')">
+        Help</button><br>
+        <br>
+        <input type="file" id="picker" name="picker" accept=
+        "text/tab-separated-values" onchange="openFile(event)"><br>
+        <br>
+        <button class="small_button" type="submit" onclick=
+        "sendToSheet()">Submit</button> <output id="output"></output>
+      </div>
+    </div>
+    <div class="column_side"></div>
+  </body>
 </html>

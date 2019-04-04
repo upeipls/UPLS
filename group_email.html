@@ -1,54 +1,67 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>Email Students</title>
-  <link rel="stylesheet" type="text/css" href="css/upls_styles.css">
-  <link rel="stylesheet" type="text/css" href="css/group_email.css">
-  <script src="js/main_menu.js"></script>
-</head>
-<body onload="mainMenu()">
-<div class="main_menu" id="main_menu"></div>
-
-<div class="title">
-	<center>
-		<h1 id="title" class="title">Group Email - Criteria</h1>
-	</center>
-</div>
-
-<div class="column_side" >
-  <button class="back_button" onclick="backStep()" ></button>
-</div>
-
-<div class="column_main">
-  <div id="content" style="padding-top: 0px; margin-top: 0px">  
-  <div id="number_label">This group currently contains 0 people.</div>
-
-  <div id="criteria" class="invisible">
-    <div id="operations" class="fl-rt">
-      <button class="small_btn" onclick="nextStep()">Continue</button>
-      <button class="small_btn" onclick="addCriteria()">Add Criteria</button>
+  <head>
+    <title>
+      Email Students
+    </title>
+    <link rel="stylesheet" type="text/css" href="css/upls_styles.css">
+    <link rel="stylesheet" type="text/css" href="css/group_email.css">
+    <script src="js/main_menu.js">
+    </script>
+  </head>
+  <body onload="mainMenu()">
+    <div class="main_menu" id="main_menu"></div>
+    <div class="title">
+      <center>
+        <h1 id="title" class="title">
+          Group Email - Criteria
+        </h1>
+      </center>
     </div>
-  </div>
-  <div id="template" class="invisible">
-    <p>Please enter the subject line of the email you wish to use as a template (from your drafts folder)</p>
-    <div><label for="input_subject">Subject Line: </label><input id="input_subject" type="text"></div>
-    <button class="small_btn" onclick="nextStep()">Continue</button>
-  </div>
-  <div id="preview" class="invisible">
-    <p>The email with the following subject line has been selected:</p>
-    <p id="email_subject"></p>
-    <p>which contains the body text:</p>
-    <textarea class="preview_scroll_box" id="preview_content" disabled></textarea>
-    <button class="small_btn" onclick="sendEmails()">Send</button>
-  </div>
-  </div>
-</div>
-
-<div class="column_side">
-</div>
-
-<script src="https://apis.google.com/js/api.js"></script>
-<script src="js/SheetsApi.js"></script>
-<script src="js/group_email.js"></script>
-</body>
+    <div class="column_side"></div>
+    <div class="column_main">
+      <div id="content" style="padding-top: 0px; margin-top: 0px">
+        <div id="number_label">
+          This group currently contains 0 people.
+        </div>
+        <div id="criteria" class="invisible">
+          <div id="operations" class="fl-rt">
+            <button class="small_btn" onclick="nextStep()">Continue</button>
+            <button class="small_btn" onclick="addCriteria()">Add
+            Criteria</button>
+          </div>
+        </div>
+        <div id="template" class="invisible">
+          <p>
+            Please enter the subject line of the email you wish to use as a
+            template (from your drafts folder)
+          </p>
+          <div>
+            <label for="input_subject">Subject Line:</label> <input id=
+            "input_subject" type="text">
+          </div><button class="small_btn" onclick=
+          "nextStep()">Continue</button>
+        </div>
+        <div id="preview" class="invisible">
+          <p>
+            The email with the following subject line has been selected:
+          </p>
+          <p id="email_subject"></p>
+          <p>
+            which contains the body text:
+          </p>
+          <textarea class="preview_scroll_box" id="preview_content" disabled
+          ></textarea> <button class="small_btn" onclick=
+          "sendEmails()">Send</button>
+        </div>
+      </div>
+    </div>
+    <div class="column_side"></div>
+    <script src="https://apis.google.com/js/api.js">
+    </script> 
+    <script src="js/SheetsApi.js">
+    </script> 
+    <script src="js/group_email.js">
+    </script>
+  </body>
 </html>
