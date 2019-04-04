@@ -9,9 +9,14 @@
 </head>
 <body onload="mainMenu()">
 <div class="main_menu" id="main_menu"></div>
-<div id="content">
     <h1 class="title">Communication Channel  List</h1>
+    <div class="column_side">
+      <button class="back_button" onclick="window.location.href='main_page.html'"></button>
+    </div>
+<div class="column_main">
+<div id="content">
     <div id="table"><table id="headers_table"></table></div>
+</div>
 </div>
 
 <div id="add-card" class="card invisible alter-card">
@@ -30,6 +35,9 @@
 </div>
 
 <div id="disable-canvas" class="invisible"></div>
+
+<div class="column_side">
+</div>
 
 <script>
     const sheetName = "CHANNEL";
