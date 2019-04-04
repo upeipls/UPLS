@@ -334,6 +334,21 @@ function SheetsApi() {
      * @returns {array}  The 2D array after filtering
      */
     function filterByConditions(values, conditions) {
+      // STUDENT_ID should be filtered strictly with equals, not includes (like filterByKeywords).
+      for (var i = 0; i < conditions.length; i++) {
+        if (conditions[i].header == "STUDENT_ID") {
+          var id_index = values[0].indexOf("STUDENT_ID");
+          var new_values = [];
+          new_values[0] = values[0];
+          for (var j = 1; j < values.length; j++) {
+            if (values[j][id_index] == conditions[i].value) {
+              new_values.push(values[j]);
+            }
+          }
+          values = new_values;
+        }
+      }
+        
         for (let i = 0; i < conditions.length; i++) {
             if (conditions[i].length) {
                 let headerIndexes = [conditions[i].length];
