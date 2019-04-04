@@ -29,9 +29,9 @@ function getStudentInfo(){
     headers = sa.parseTableHeaders(response);
     studentInfo = sa.selectFromTableWhereConditions(response,"*",conditions,1);
     console.log(studentInfo);
-    var commentsDiv = document.createElement('div');
-    var body = document.getElementsByTagName("body")[0];
+    var body = document.getElementById("main");
     var table = document.createElement("table");
+    table.setAttribute("style", "display: inline-block");
     var tbody = document.createElement("body");
     var commentsRow = document.createElement("tr");
     var commentsHeader = document.createElement("td");
@@ -53,12 +53,12 @@ function getStudentInfo(){
       }
       if (headers[a] == "GENERAL_COMMENT"){
         var generalCommentHeader = document.createTextNode(headers[a]);
-	var scrollableDiv = document.createElement('div');
-	scrollableDiv.setAttribute("style","float: right;height:40px;width:120px;border:1px solid #ccc;overflow:auto;");
-	var commentsString = document.createTextNode(studentInfo[1][a]);
-	scrollableDiv.appendChild(commentsString);
+	var commentInput = document.createElement('textarea');
+        commentInput.disabled = true;
+	var commentsString = studentInfo[1][a];
+	commentInput.innerHTML = (commentsString);
 	commentsHeader.appendChild(generalCommentHeader);
-        commentsContent.appendChild(scrollableDiv);
+        commentsContent.appendChild(commentInput);
 	commentsRow.appendChild(commentsHeader);
 	commentsRow.appendChild(commentsContent);
       }
@@ -66,7 +66,6 @@ function getStudentInfo(){
     tbody.appendChild(commentsRow);
     table.appendChild(tbody);
     body.appendChild(table);
-    document.getElementsByTagName('body')[0].appendChild(commentsDiv);
     var editBtn = document.createElement("BUTTON");
     var t = document.createTextNode("Go to edit student");
     editBtn.onclick = function(){
@@ -74,14 +73,13 @@ function getStudentInfo(){
     };
     editBtn.appendChild(t);
     editBtn.setAttribute("class","small_button");
-    var backBtn = document.createElement("BUTTON");
-    var t = document.createTextNode("Main Menu");
-    backBtn.onclick = function(){
-      window.location.href="index.html";
-    };
-    backBtn.appendChild(t);
-    backBtn.setAttribute("class","small_button");
-    document.getElementsByTagName('body')[0].appendChild(backBtn);
-    document.getElementsByTagName('body')[0].appendChild(editBtn);
+    var row = document.createElement("tr");
+    var cell = document.createElement("td");
+    cell.setAttribute("colspan", "2");
+    cell.setAttribute("style", "text-align: center");
+    editBtn.setAttribute("style", "display: inline-block");
+    cell.appendChild(editBtn);
+    row.appendChild(cell);
+    tbody.appendChild(row);
   });
 }
