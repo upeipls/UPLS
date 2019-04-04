@@ -230,8 +230,10 @@ function validateCatYear(data,x){
 
 //check for duplicate ID's
 function validateDuplicate(data,x){
-
-    if(idArray.includes(data[x][0])){
+    // Need to strip leading zeros for accurate comparison.
+    // All numbers have leading zeros stripped when submitted,
+    // so all existing entries have no leading zeros.
+    if(idArray.includes(String(Number(data[x][0])))){
         return false;
     } else { return true; }
 

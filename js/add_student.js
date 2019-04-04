@@ -183,7 +183,9 @@ function getData() {
     objectArray[1] = fields;
     console.log(fields);
     sa.getSheet("UPLS").then(response => {
-      var id = document.getElementById("field0").value;
+      // Weird way of stripping leading zeros to facilitate comparison with stored
+      // IDs, which get their zeros stripped when submitted.
+      var id = String(Number(document.getElementById("field0").value));
       if (id.length == 0) {
         alert("STUDENT_ID is required.");
       } else {
