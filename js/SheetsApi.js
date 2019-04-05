@@ -442,7 +442,7 @@ function SheetsApi() {
                     }
                 }
             } else {
-                if (values[i][columnIndex] && values[i][columnIndex].toLowerCase().includes(keyword)) {
+                if (values[i][columnIndex] !== undefined && values[i][columnIndex].toLowerCase().includes(keyword)) {
                     shouldStay = true;
                 }
             }
